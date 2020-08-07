@@ -1,3 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'sign_in.dart';
+
 class Database {
   List<String> tracks = [
     'beginners',
@@ -87,4 +91,39 @@ class Database {
       {'butterfly', 'baddha konasana'},
     ]
   };
+
+  /// For easy uploading of tracks to the database
+  uploadTracks() async {
+    // beginners
+    int id = 1;
+    poses.forEach((key, value) async {
+      DocumentReference documentReferencer =
+          documentReference.collection('tracks').document(key);
+
+      Map<String, dynamic> name = <String, dynamic>{
+        "id": id,
+        "name": key,
+      };
+      id = id + 1;
+
+      await documentReferencer.setData(name).whenComplete(() {
+        print("$key track added to the database");
+      }).catchError((e) => print(e));
+
+      value.forEach((element) async {
+        DocumentReference poseDocs = documentReferencer
+            .collection('poses')
+            .document(element.elementAt(0));
+
+        Map<String, String> data = <String, String>{
+          "title": element.elementAt(0),
+          "sub": element.elementAt(1),
+        };
+
+        await poseDocs.setData(data).whenComplete(() {
+          print("${element.elementAt(0)} added to the database");
+        }).catchError((e) => print(e));
+      });
+    });
+  }
 }
