@@ -168,4 +168,14 @@ class Database {
 
     return userInfo;
   }
+
+  /// For retrieving the tracks from the database
+  retrieveTracks() async {
+    QuerySnapshot tracksQuery = await documentReference
+        .collection('tracks')
+        .orderBy('id', descending: false)
+        .getDocuments();
+
+    return tracksQuery.documents;
+  }
 }
