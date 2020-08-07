@@ -58,3 +58,14 @@ Future<String> signInWithGoogle() async {
 
   return 'signInWithGoogle succeeded: $user';
 }
+
+/// For signing out of their Google account
+void signOutGoogle() async {
+  await googleSignIn.signOut();
+
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setBool('auth', false);
+  authSignedIn = false;
+
+  print("User Sign Out");
+}
