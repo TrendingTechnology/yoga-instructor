@@ -17,6 +17,36 @@ String imageUrl;
 final CollectionReference mainCollection =
     Firestore.instance.collection('sofia');
 
+// Use this for production
+// final DocumentReference documentReference = mainCollection.document('prod');
+
+// Use this for testing
+final DocumentReference documentReference = mainCollection.document('test');
+
+/// For checking if the user is already signed into the
+/// app using Google Sign In
+Future getUser() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  authSignedIn = prefs.getBool('auth') ?? false;
+  detailsUploaded = prefs.getBool('details_uploaded') ?? false;
+
+  final FirebaseUser user = await _auth.currentUser();
+
+  if (authSignedIn == true) {
+    if (user != null) {
+      uid = user.uid;
+      name = user.displayName;
+      email = user.email;
+      imageUrl = user.photoUrl;
+    }
+  }
+}
+
+/// For authenticating user using Google Sign In
+/// with Firebase Authentication API.
+///
+/// Retrieves some general user related information
+/// from their Google account for ease of the login process
 Future<String> signInWithGoogle() async {
   final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
   final GoogleSignInAuthentication googleSignInAuthentication =
