@@ -153,4 +153,19 @@ class Database {
       });
     });
   }
+
+  // Future getProducts() async {
+  //   QuerySnapshot productQuery =
+  //       await documentReference.collection('departments').getDocuments();
+
+  //   return productQuery.documents;
+  // }
+
+  /// For retrieving the user info from the database
+  retrieveUserInfo() async {
+    DocumentSnapshot userInfo =
+        await documentReference.collection('user_info').document(uid).get();
+
+    return userInfo;
+  }
 }
