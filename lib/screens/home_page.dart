@@ -59,6 +59,47 @@ class _HomePageState extends State<HomePage> {
   String _currentLocaleId = "";
   List<LocaleName> _localeNames = [];
 
+  /// For invoking a TTS voice output
+  Future _speak(String speechText) async {
+    await flutterTts.setVolume(volume);
+    await flutterTts.setSpeechRate(rate);
+    await flutterTts.setPitch(pitch);
+
+    // _controller.setState(() {
+    //   _assistantText = speechText;
+    // });
+
+    await flutterTts.speak(speechText);
+
+    // if (speechText != null) {
+    //   if (speechText.isNotEmpty) {
+    //     await flutterTts.speak(speechText);
+    //   }
+    // }
+    // await Future.delayed(Duration(seconds: 4));
+  }
+
+  /// Initializing the Speech to Text API
+  Future<void> initSpeechState() async {
+    bool hasSpeech = await speech.initialize(
+      onError: errorListener,
+      onStatus: statusListener,
+    );
+
+    if (hasSpeech) {
+      _localeNames = await speech.locales();
+
+      var systemLocale = await speech.systemLocale();
+      _currentLocaleId = systemLocale.localeId;
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _hasSpeech = hasSpeech;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
