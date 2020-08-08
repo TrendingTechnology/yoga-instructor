@@ -47,6 +47,27 @@ class _AgePageState extends State<AgePage> {
     textFocusNode = FocusNode();
   }
 
+  String _validateString(String value) {
+    value = value.trim();
+
+    if (textController.text != null) {
+      if (value.isEmpty) {
+        return 'Age Can\'t Be Empty';
+      } else if (!isNumeric(value)) {
+        return 'Age should be numeric';
+      }
+    }
+
+    return null;
+  }
+
+  bool isNumeric(String s) {
+    if (s == null) {
+      return false;
+    }
+    return double.tryParse(s) != null;
+  }
+
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
