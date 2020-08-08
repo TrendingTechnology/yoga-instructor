@@ -243,6 +243,87 @@ class _HomePageState extends State<HomePage> {
     // database.uploadTracks();
   }
 
+  /// For generating the widgets to be displayed on the home screen
+  generateChildren(var screenSize, String trackName, String desc) {
+    result.add(
+      Container(
+        color: Colors.transparent,
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: screenSize.width / 20,
+            right: screenSize.width / 20,
+            bottom: screenSize.height / 30,
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: Card(
+              elevation: 3,
+              shadowColor: Color(0xFFffc7b8),
+              color: Color(0xFFffe5de),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(screenSize.width / 10),
+              ),
+              // height: screenSize.height / 10,
+              // width: double.maxFinite,
+              // decoration: BoxDecoration(
+              //   color: Color(0xFFffe5de),
+              //   borderRadius: BorderRadius.all(
+              //     Radius.circular(20),
+              //   ),
+              // ),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(screenSize.width / 10),
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => TrackPage(
+                        trackName: trackName,
+                        desc: desc,
+                      ),
+                    ),
+                  );
+                },
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    top: screenSize.height / 80,
+                    bottom: screenSize.height / 60,
+                    left: screenSize.width / 15,
+                    right: screenSize.width / 20,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            trackName.toUpperCase(),
+                            style: GoogleFonts.openSans(
+                              fontSize: screenSize.width / 28,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: screenSize.height / 8,
+                        width: screenSize.height / 5,
+                        child: Image.asset('assets/images/$trackName.png'),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
