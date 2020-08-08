@@ -327,6 +327,213 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
-    return Scaffold();
+    return Scaffold(
+      key: _key,
+      // appBar: AppBar(
+      //   elevation: 0,
+      //   backgroundColor: Color(0xFFffe5de),
+      //   centerTitle: true,
+      //   title: Text(
+      //     '',
+      //     style: TextStyle(color: Color(0xFFf3766e)),
+      //   ),
+      // ),
+      floatingActionButton: VoiceAssistantButton(),
+      body: FutureBuilder(
+        future: database.retrieveTracks(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            String beginnersTrackName = snapshot.data[0].data['name'];
+            String beginnersTrackDesc = snapshot.data[0].data['desc'];
+
+            /// Generating the Name View tile
+            Widget _nameView() {
+              return FutureBuilder(
+                future: database.retrieveUserInfo(),
+                builder: (context, snapshot2) {
+                  if (snapshot2.hasData) {
+                    String storedName = snapshot2.data['name'];
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: Color(0xFFFFF3F0),
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(20),
+                          bottomRight: Radius.circular(20),
+                        ),
+                      ),
+                      child: Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            bottom: screenSize.height / 20,
+                            top: screenSize.height / 20,
+                          ),
+                          child: Text(
+                            'Hi, ${storedName != null ? storedName.split(' ')[0] : 'there'}!',
+                            style: GoogleFonts.lato(
+                              fontSize: screenSize.width / 15.5,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+                  return Container();
+                },
+              );
+            }
+
+            /// Generating the Beginners Track tile
+            Widget _beginnersTrack() {
+              return Padding(
+                padding: EdgeInsets.only(
+                  left: screenSize.width / 20,
+                  right: screenSize.width / 20,
+                  bottom: screenSize.height / 30,
+                ),
+                child: Card(
+                  elevation: 3,
+                  shadowColor: Color(0xFFffc7b8),
+                  color: Color(0xFFffe5de),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(screenSize.width / 10),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      top: screenSize.height / 60,
+                      bottom: screenSize.height / 30,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                            top: screenSize.height / 80,
+                            bottom: screenSize.height / 60,
+                            left: screenSize.width / 80,
+                            right: screenSize.width / 20,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              SizedBox(
+                                width: screenSize.width * 0.50,
+                                child: Center(
+                                  child: Text(
+                                    beginnersTrackName.toUpperCase(),
+                                    style: GoogleFonts.openSans(
+                                      fontSize: screenSize.width / 20,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Image.asset(
+                                    'assets/images/$beginnersTrackName.png'),
+                              )
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          width: screenSize.width * 0.80,
+                          child: FlatButton(
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => TrackPage(
+                                    trackName: beginnersTrackName,
+                                    desc: beginnersTrackDesc,
+                                  ),
+                                ),
+                              );
+                            },
+                            color: Color(0xFFffc7b8),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                screenSize.height / 30,
+                              ),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                top: screenSize.height / 60,
+                                bottom: screenSize.height / 60,
+                              ),
+                              child: Text(
+                                'START NOW',
+                                style: GoogleFonts.poppins(
+                                  letterSpacing: 2,
+                                  color: Colors.black54,
+                                  fontSize: screenSize.height / 38,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }
+
+            result.clear();
+
+            // Adding the widgets to the list
+            result.add(_nameView());
+            result.add(SizedBox(height: screenSize.height / 30));
+            result.add(_beginnersTrack());
+            result.add(Padding(
+              padding: EdgeInsets.only(
+                bottom: screenSize.height / 40,
+              ),
+              child: Center(
+                child: Text(
+                  'EXPLORE',
+                  style: TextStyle(
+                      letterSpacing: 3,
+                      fontWeight: FontWeight.bold,
+                      fontSize: screenSize.width / 25,
+                      color: Colors.black54),
+                ),
+              ),
+            ));
+
+            for (int i = 1; i < snapshot.data.length; i++) {
+              String trackName = snapshot.data[i].data['name'];
+              String description = snapshot.data[i].data['desc'];
+              generateChildren(screenSize, trackName, description);
+            }
+
+            // Displaying the list widgets
+            return Container(
+              color: Color(0xFFFFF3F0),
+              child: ListView(
+                physics: BouncingScrollPhysics(),
+                children: result,
+              ),
+            );
+          }
+
+          // While the result is being retreived from the API,
+          // show this widget
+          return Container(
+            color: Color(0xFFFFF3F0),
+            child: Center(
+              child: CircularProgressIndicator(
+                valueColor: new AlwaysStoppedAnimation<Color>(
+                  Color(0xFFffc7b8),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 }
