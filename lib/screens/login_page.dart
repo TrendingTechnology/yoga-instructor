@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_auth0/flutter_auth0.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sofia/secrets.dart';
 import 'package:sofia/utils/sign_in.dart';
 import 'package:websafe_svg/websafe_svg.dart';
 
@@ -12,6 +14,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  Auth0 auth0;
+
   bool webLogged;
   dynamic currentWebAuth;
 
@@ -19,6 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     webLogged = false;
+    auth0 = Auth0(baseUrl: 'https://$authDomain/', clientId: authClientID);
   }
 
   @override
@@ -80,6 +85,28 @@ class _LoginPageState extends State<LoginPage> {
         );
       },
     );
+  }
+
+  /// For usign Web Login using Auth0
+  void webLogin() async {
+    try {
+      var response = await auth0.webAuth.authorize({
+        'audience': 'https://$authDomain/userinfo',
+        'scope': 'openid email offline_access',
+      });
+      DateTime now = DateTime.now();
+      showInfo('Web Login', '''
+      \ntoken_type: ${response['token_type']}
+      \nexpires_in: ${DateTime.fromMillisecondsSinceEpoch(response['expires_in'] + now.millisecondsSinceEpoch)}
+      \nrefreshToken: ${response['refresh_token']}
+      \naccess_token: ${response['access_token']}
+      ''');
+      webLogged = true;
+      currentWebAuth = Map.from(response);
+      setState(() {});
+    } catch (e) {
+      print('Error: $e');
+    }
   }
 
   /// Creating the Google Sign In button
