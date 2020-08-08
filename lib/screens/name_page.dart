@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:sofia/screens/gender_page.dart';
 import 'package:sofia/utils/sign_in.dart';
 
+/// Widget for generating the Name Screen,
+/// taking the user name which is later stored in the database
 class NamePage extends StatefulWidget {
   @override
   _NamePageState createState() => _NamePageState();
