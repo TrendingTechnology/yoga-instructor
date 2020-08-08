@@ -68,6 +68,35 @@ class _AgePageState extends State<AgePage> {
     return double.tryParse(s) != null;
   }
 
+  Future<void> _uploadData() async {
+    textFocusNode.unfocus();
+    setState(() {
+      _isStoring = true;
+    });
+
+    var ageString = textController.text.trim();
+    ageString.contains('.')
+        ? ageString = ageString.split('.')[0]
+        : ageString = ageString;
+
+    _age = int.parse(ageString);
+    print('DONE EDITING');
+    print('AGE: $_age');
+    await _database.storeUserData(
+      userName: widget.userName,
+      gender: widget.gender,
+      age: _age,
+    );
+    _isStoring = false;
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) {
+          return HomePage();
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
