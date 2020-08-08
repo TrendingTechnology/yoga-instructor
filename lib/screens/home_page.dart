@@ -100,6 +100,40 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  /// To start listening for voice input
+  /// given by the user
+  Future<void> startListening() async {
+    _isListening = true;
+    lastWords = "";
+    lastError = "";
+    await speech.listen(
+      onResult: resultListener,
+      listenFor: Duration(seconds: 10),
+      localeId: _currentLocaleId,
+      onSoundLevelChange: soundLevelListener,
+      cancelOnError: true,
+      partialResults: true,
+    );
+    setState(() {});
+  }
+
+  /// Stop the voice input recognition
+  Future<void> stopListening() async {
+    await speech.stop();
+    setState(() {
+      level = 0.0;
+    });
+  }
+
+  /// For cancelling a voice input recognition
+  /// even if the processing is not complete (force stop)
+  void cancelListening() {
+    speech.cancel();
+    setState(() {
+      level = 0.0;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
