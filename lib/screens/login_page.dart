@@ -55,6 +55,33 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  /// Show Info after the Auth0 authentication is complete
+  void showInfo(String text, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(text),
+          content: Text(message),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Close"),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return NamePage();
+                    },
+                  ),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   /// Creating the Google Sign In button
   Widget _signInButton() {
     return DecoratedBox(
