@@ -134,6 +134,107 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  /// For specifying how load or low voice it should
+  /// pich up for recognition
+  void soundLevelListener(double level) {
+    minSoundLevel = min(minSoundLevel, level);
+    maxSoundLevel = max(maxSoundLevel, level);
+    // print("sound level $level: $minSoundLevel - $maxSoundLevel ");
+    setState(() {
+      this.level = level;
+    });
+  }
+
+  /// After voice is recognized, use the result
+  /// for making decision accordingly
+  void resultListener(SpeechRecognitionResult result) {
+    setState(() {
+      lastWords = "${result.recognizedWords} - ${result.finalResult}";
+    });
+    _controller.setState(() {
+      String input = lastWords.split(' - ')[0];
+      _userText = input[0].toUpperCase() + input.substring(1);
+    });
+    print(lastWords);
+    print('USER INPUT: $_userText');
+
+    // To check if the speech was recognized
+    // with good probability
+    if (result.finalResult && !_isListening) {
+      stopListening();
+      // Checking the recognized words
+      if (_userText == 'Yes') {
+        stopListening();
+        _controller.setState(() {
+          _assistantText = startWithTrack;
+        });
+        _speak(startWithTrack);
+      } else if (_userText == 'No') {
+        stopListening();
+        setState(() {
+          _isListening = false;
+        });
+        _controller.setState(() {
+          _isListening = false;
+        });
+
+        // Navigator.of(context).push(
+        //   MaterialPageRoute(
+        //     builder: (context) => HomePage(afterCompletion: true),
+        //   ),
+        // );
+      } else {
+        _controller.setState(() {
+          _assistantText = notRecognized;
+        });
+        _speak(notRecognized);
+        stopListening();
+        flutterTts.setCompletionHandler(() async {
+          _hasSpeech ? null : await initSpeechState();
+          !_hasSpeech || speech.isListening ? null : await startListening();
+        });
+      }
+    } else {
+      // If speech not recognized
+      // stopListening();
+      // _controller.setState(() {
+      //   _assistantText = notRecognized;
+      //   _speak(notRecognized);
+      // });
+    }
+  }
+
+  /// Handling error case
+  void errorListener(SpeechRecognitionError error) {
+    print("Received error status: $error, listening: ${speech.isListening}");
+    // setState(() {
+    //   lastError = "${error.errorMsg} - ${error.permanent}";
+    // });
+  }
+
+  /// To understand when the speech recognition is listening
+  /// to the user input and when it is complete
+  void statusListener(String status) {
+    print(
+      "Received listener status: $status, listening: ${speech.isListening}",
+    );
+    setState(() {
+      lastStatus = "$status";
+      // speech.isListening ? _isListening = true : _isListening = false;
+    });
+
+    _controller.setState(() {
+      speech.isListening ? _isListening = true : _isListening = false;
+    });
+    if (!_isListening) {
+      // Navigator.of(context).push(
+      //   MaterialPageRoute(
+      //     builder: (context) => HomePage(afterCompletion: true),
+      //   ),
+      // );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
