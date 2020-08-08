@@ -1,4 +1,18 @@
+import 'dart:async';
+import 'dart:io';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:sofia/screens/track_page.dart';
+import 'package:sofia/speech/output_speech.dart';
+import 'package:sofia/utils/database.dart';
+import 'package:sofia/utils/sign_in.dart';
+import 'package:sofia/widget/voice_assistant_button.dart';
+import 'package:speech_to_text/speech_recognition_error.dart';
+import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 class HomePage extends StatefulWidget {
   final bool afterCompletion;
@@ -9,6 +23,42 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  Database database = Database();
+
+  List<Widget> result = [];
+  FlutterTts flutterTts = FlutterTts();
+
+  GlobalKey<ScaffoldState> _key = GlobalKey();
+  PersistentBottomSheetController _controller;
+  // var timer;
+
+  var screenSize;
+
+  int _currentPosition = 0;
+
+  String _assistantText = '';
+  String _userText = '';
+
+  bool _isListening = false;
+
+  // For text to speech
+  double volume = 0.8;
+  double pitch = 1;
+  double rate = Platform.isAndroid ? 0.8 : 0.6;
+
+  // For speech to text
+  final SpeechToText speech = SpeechToText();
+
+  bool _hasSpeech = false;
+  double level = 0.0;
+  double minSoundLevel = 50000;
+  double maxSoundLevel = -50000;
+  String lastWords = "";
+  String lastError = "";
+  String lastStatus = "";
+  String _currentLocaleId = "";
+  List<LocaleName> _localeNames = [];
+
   @override
   void initState() {
     super.initState();
