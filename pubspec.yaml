@@ -19,8 +19,12 @@ dependencies:
   shared_preferences: ^0.5.7+3
   google_fonts: ^1.1.0
   websafe_svg: ^1.1.0
+  font_awesome_flutter: ^8.8.1
   flutter_tts: ^1.2.2
   speech_to_text: ^2.2.0
+  showcaseview: ^0.1.5
+  camera: ^0.5.8+2
+  video_player: ^0.10.11+1
   flutter_auth0: ^0.5.0
 
 dev_dependencies:
