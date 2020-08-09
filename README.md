@@ -106,6 +106,22 @@ Migraine is a neurological disorder that causes recurring headaches ranging from
 - ### **ASTHMA**
 Yoga can help increase breath and body awareness, slow your respiratory rate, and promote calm and relieve stress — all of which are beneficial for people who have asthma.
 
+# Tech Stack
+
+Our tech stack consists of the following:
+
+* **Flutter** (cross-platform app development framework)
+  
+* **Auth0** (for user authentication)
+  
+* **Firebase Cloud Firestore** (for storing app data and user information)
+
+* **Firebase Storage** (for storing videos)
+
+* [Google TTS](https://cloud.google.com/text-to-speech) and [Google STT](https://cloud.google.com/speech-to-text)
+
+* **TFLite** (for creating the yoga pose recognition model)
+
 # License
 
 Copyright (c) 2020 Souvik Biswas and Soumi Bardhan
