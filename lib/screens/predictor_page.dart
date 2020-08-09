@@ -52,20 +52,31 @@ class _PredictorPageState extends State<PredictorPage> {
   static int delay = 10;
 
   // For surya namaskar
+  // List<int> durationList = [
+  //   13,
+  //   25 + delay,
+  //   41 + delay * 2,
+  //   56 + delay * 3,
+  //   71 + delay * 4,
+  //   82 + delay * 5,
+  //   92 + delay * 6,
+  //   117 + delay * 7,
+  //   131 + delay * 8,
+  //   142 + delay * 9,
+  //   154 + delay * 10,
+  //   165 + delay * 11,
+  //   175 + delay * 12,
+  // ];
+
+  // For trikonasana
   List<int> durationList = [
-    13,
-    25 + delay,
-    41 + delay * 2,
-    56 + delay * 3,
-    71 + delay * 4,
-    82 + delay * 5,
-    92 + delay * 6,
-    117 + delay * 7,
-    131 + delay * 8,
-    142 + delay * 9,
-    154 + delay * 10,
-    165 + delay * 11,
-    175 + delay * 12,
+    14,
+    35 + delay,
+    49 + delay * 2,
+    82 + delay * 3,
+    115 + delay * 4,
+    123 + delay * 5,
+    137 + delay * 6,
   ];
 
   // For text to speech
@@ -271,14 +282,11 @@ class _PredictorPageState extends State<PredictorPage> {
       setState(() {});
     });
 
-    // For trikonasana
-    // List<int> durationList = [21, 57, 112];
-
     //  0 pause
     // +1 speak
-    // +9 move on -> 5
-    // +14 status 0 -> 10
-    // +14 play -> 10
+    // +9 move on -> 4
+    // +14 status 0 -> 9
+    // +14 play -> 9
 
     for (int i = 0; i < durationList.length; i++) {
       Timer(Duration(seconds: durationList[i]), () {
@@ -286,52 +294,52 @@ class _PredictorPageState extends State<PredictorPage> {
           videoPlayerController.pause();
         });
       });
-      Timer(Duration(seconds: durationList[i] + 1), () {
+      Timer(Duration(seconds: durationList[i] + 0), () {
         setState(() {
           predictionStatus = 1;
           flutterTts.speak('Recognizing the pose');
         });
       });
 
-      if (i == 12) {
-        Timer(Duration(seconds: durationList[i] + 5), () {
+      if (i == 6) {
+        Timer(Duration(seconds: durationList[i] + 4), () {
           setState(() {
             predictionStatus = 2;
-            flutterTts.speak('Surya Namaskar successfully complete');
+            flutterTts.speak('Triangle pose successfully complete');
           });
         });
       } else if (i == 3) {
-        Timer(Duration(seconds: durationList[i] + 5), () {
+        Timer(Duration(seconds: durationList[i] + 4), () {
           setState(() {
             predictionStatus = 4;
-            flutterTts.speak(
-                'Couldn\'t recognize the pose. Can you please repeat the pose?');
+            flutterTts
+                .speak('Couldn\'t recognize. Can you please repeat the pose?');
           });
         });
-        Timer(Duration(seconds: durationList[i] + 10), () {
+        Timer(Duration(seconds: durationList[i] + 9), () {
           setState(() {
             predictionStatus = 0;
           });
         });
-        Timer(Duration(seconds: durationList[i] + 10), () {
+        Timer(Duration(seconds: durationList[i] + 9), () {
           setState(() {
-            videoPlayerController.seekTo(Duration(seconds: 41));
+            videoPlayerController.seekTo(Duration(seconds: 49));
             videoPlayerController.play();
           });
         });
       } else {
-        Timer(Duration(seconds: durationList[i] + 5), () {
+        Timer(Duration(seconds: durationList[i] + 4), () {
           setState(() {
             predictionStatus = 2;
             flutterTts.speak('Moving on to the next step');
           });
         });
-        Timer(Duration(seconds: durationList[i] + 10), () {
+        Timer(Duration(seconds: durationList[i] + 9), () {
           setState(() {
             predictionStatus = 0;
           });
         });
-        Timer(Duration(seconds: durationList[i] + 10), () {
+        Timer(Duration(seconds: durationList[i] + 9), () {
           setState(() {
             videoPlayerController.play();
           });
@@ -423,7 +431,7 @@ class _PredictorPageState extends State<PredictorPage> {
     //   });
     // });
 
-    Timer(Duration(seconds: durationList[12] + 11), () async {
+    Timer(Duration(seconds: durationList[6] + 9), () async {
       _controller = _key.currentState.showBottomSheet(
         (_) => Container(
           decoration: BoxDecoration(
@@ -525,7 +533,7 @@ class _PredictorPageState extends State<PredictorPage> {
       });
     });
 
-    Timer(Duration(seconds: durationList[12] + 17), () async {
+    Timer(Duration(seconds: durationList[6] + 16), () async {
       // _speak('');
       stopListening();
       setState(() {});
@@ -581,7 +589,7 @@ class _PredictorPageState extends State<PredictorPage> {
                 ),
                 child: Center(
                   child: Text(
-                    "SURYA NAMASKAR",
+                    "TRIANGLE POSE",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 30,
@@ -605,7 +613,7 @@ class _PredictorPageState extends State<PredictorPage> {
                           padding: const EdgeInsets.only(top: 20),
                           child: Container(
                             // height: screenSize.height * 0.45,
-                            width: screenSize.width / 1.5,
+                            // width: screenSize.width / 1.5,
                             child: AspectRatio(
                               aspectRatio: _cameraController.value.aspectRatio,
                               child: CameraPreview(_cameraController),
