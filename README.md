@@ -39,6 +39,7 @@
 </p>
 
 # Addressing the after-effects
+
  Addressing the after-effects of COVID-19. After COVID, people are having to stay in their houses and avoid going out. Fitness arenas and gyms are closed or functioning selectively. People are avoiding gatherings to save themselves from the virus. A lot of companies have implemented work from home, hence people are stuck to their homes for now, till the situation is taken under control. This has lead to physical inactivity and even mental problems. People need to be able to exercise at their homes. Sofia is a personal yoga instructor, which teaches yoga. It is artificially intelligent, it recognises each pose and guides the user through it. 
 
 # About
