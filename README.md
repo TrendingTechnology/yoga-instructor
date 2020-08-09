@@ -40,26 +40,23 @@
 
 # Addressing the after-effects
 
- Addressing the after-effects of COVID-19. After COVID, people are having to stay in their houses and avoid going out. Fitness arenas and gyms are closed or functioning selectively. People are avoiding gatherings to save themselves from the virus. A lot of companies have implemented work from home, hence people are stuck to their homes for now, till the situation is taken under control. This has lead to physical inactivity and even mental problems. People need to be able to exercise at their homes. Sofia is a personal yoga instructor, which teaches yoga. It is artificially intelligent, it recognises each pose and guides the user through it. This is aimed at improving global health after covid.
+ After COVID, people are having to stay in their houses and avoid going out. Fitness arenas and gyms are closed or functioning selectively. People are avoiding gatherings to save themselves from the virus. A lot of companies have implemented work from home, hence people are stuck to their homes for now, till the situation is taken under control. This has lead to physical inactivity and even mental problems. People need to be able to exercise at their homes. Sofia is a personal yoga instructor, which teaches yoga. It is artificially intelligent, it recognises each pose and guides the user through it.
 
 # About
 
-## Problem Statment
+## Problem Statment : Addressing the after-effects
 
-- With COVID 19, people have resorted to quarantine as the last resort to protect themselves from the deadly virus.
+- With **COVID 19**, people have resorted to **quarantine** as the last resort to **protect** themselves from the deadly virus.
 
-- As time progresses, this can lead to health problems due to physical inactivity. Obesity is already a very big worldwide health issue.
+- As time progresses, this can lead to **health problems** due to **physical inactivity**. **Obesity** is already a very big worldwide health issue.
 
-- Physical inactivity can lead to diseases,both physical and mental. In these trying times, any kind of diseases can be deadly and physical activity helps boost immunity and keep diseases away.
-People have terribly hectic schedules, they don’t have time to go to the gym. 
+- Physical inactivity can lead to **diseases**,both **physical and mental**. In these trying times, any kind of diseases can be deadly and **physical activity** helps boost **immunity** and keep diseases away.
 
-- In this hectic lifestyle, we all get so busy with our daily schedule & this is where we always forget to take care of ourselves. It is important for us to take care of our body and mind as well. 
-Maintaining correct posture while exercising is essential, as wrong postures can lead to body problems.
+- In this hectic lifestyle, we all get so busy with our daily schedule & this is where we always forget to take care of ourselves. It is important for us to take care of our body and mind as well. Maintaining correct posture while exercising is essential, as wrong postures can lead to body problems.
 
 ## Our Solution
 
-
-- Sofia is your real time interactive YOGA instructor, allowing anyone to harness the benefits of yoga from any place in the world.
+- **Sofia** is your real time interactive YOGA instructor, allowing anyone to harness the benefits of yoga from any place in the world.
 
 - Sofia will ensure that however busy a person might be, they spend at least 50 mins of their day in physical activity and mental exercises. It's time for people from all walks of life to start paying attention to physical as well as mental fitness.
 
