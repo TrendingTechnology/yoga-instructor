@@ -56,22 +56,22 @@
 
 ## Our Solution
 
-- **Sofia** is your real time interactive YOGA instructor, allowing anyone to harness the benefits of yoga from any place in the world.
+- **Sofia** is your **real time interactive YOGA instructor**, allowing anyone to harness the benefits of yoga from any place in the world.
 
 - Sofia will ensure that however busy a person might be, they spend at least 50 mins of their day in physical activity and mental exercises. It's time for people from all walks of life to start paying attention to physical as well as mental fitness.
 
-- Practitioners tout yoga for its mind-body benefits—flexibility, toned muscles, reduced stress, among others. 
+- Practitioners tout yoga for its **mind-body benefits—flexibility, toned muscles, reduced stress**, among others. 
 
 - More recently, scientists have begun to test yoga's effect on serious medical conditions. 
 
-- The results have been impressive enough that investigators expect yoga will soon become part of the standard treatment for a number of disorders.
+- The results have been impressive enough that investigators expect yoga will soon become part of the **standard treatment** for a number of disorders.
 
 
-- Sofia will let everyone practise yoga. There are yoga tracks for beginners to Power Yoga tracks for a workout. Now, more than ever, we need our immune systems to function better. We have the immunity booster yoga track. The cardiovascular track  helps increase blood flow to the muscles. The stress release track will make you feel relaxed and peaceful.
+- There are yoga tracks for beginners to Power Yoga tracks for a workout. **Now, more than ever, we need our immune systems to function better**. We have the immunity booster yoga track. The cardiovascular track  helps increase blood flow to the muscles. The stress release track will make you feel relaxed and peaceful.
 
-- Most important part of any kind of exercise you do while watching a video is the posture. Maintaining correct posture while exercising is essential, as wrong postures can lead to body problems. Sofia recognizes in real time. As you follow the video and reach an intermediate step in each pose, it analyses the posture and lets you proceed only when you complete the step successfully.
+- Most important part of any kind of exercise you do while watching a video is the posture. **Maintaining correct posture while exercising is essential, as wrong postures can lead to body problems**. Sofia recognizes poses in **real time**. As you follow the video and reach an intermediate step in each pose, it analyses the posture and lets you proceed **only** when you complete the step **successfully**.
 
-- We have gamified the app to let the users enjoy it more. They are awarded stars as points based on how good the accuracy of their pose is once they complete and progress through each step in the track. This ensures a fun and exciting approach to perfecting yoga postures.
+- We have **gamified** the app to let the users **enjoy** it more. They are **awarded** stars as points based on how good the accuracy of their pose is once they complete and progress through each step in the track. This ensures a **fun and exciting** approach to perfecting yoga postures.
 
 ## How is Sofia different from all the applications out there? 
 
@@ -80,17 +80,6 @@
 Simply because no other app out there implements real time pose prediction technology!
 Every time you are stuck on a step or an yoga asana, Sofia waits for you to complete it, and only then it gives instructions for the next asana, just like a personal yoga instructor who attends to you real time.
 You don’t need to pause the video or anything. It will automatically detect if you have achieved the correct pose and adapt accordingly.
-
-
-## Description
-
-- As you follow the video and reach an intermediate step in each pose, it analyses the posture and lets you proceed only when you complete the step successfully.
-
-- We have gamified the app to let the users enjoy it more.
-
-- They are awarded stars as points based on how good the accuracy of their pose is once they complete and progress through each step in the track.
-
-- This ensures a fun and exciting approach to perfecting yoga postures.
 
 
 ## Features
