@@ -59,7 +59,7 @@ Maintaining correct posture while exercising is essential, as wrong postures can
 ## Our Solution
 
 
--This is where yoga comes into play. Sofia is your real time interactive YOGA instructor, allowing anyone to harness the benefits of yoga from any place in the world.
+- Sofia is your real time interactive YOGA instructor, allowing anyone to harness the benefits of yoga from any place in the world.
 
 - Sofia will ensure that however busy a person might be, they spend at least 50 mins of their day in physical activity and mental exercises. It's time for people from all walks of life to start paying attention to physical as well as mental fitness.
 
