@@ -2,6 +2,8 @@
   <img src="https://github.com/sbis04/yoga-instructor/raw/master/screenshots/sofia.png" alt="Sofia Cover" />
 </p>
 
+<a href="https://drive.google.com/file/d/159VfepULMO6beNnGjqo_uKPfmCzs3-86/view?usp=sharing"><h4 align="center">Download the APK here</h4></a>
+
 **Sofia** is your personal AI powered Yoga instructor, allowing you to harness the benefits of yoga from any place you want.
 
 * The app is built using a cross-platform framework called **Flutter**, so it can run on both **iOS** and **Android**.
