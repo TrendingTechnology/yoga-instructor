@@ -38,10 +38,6 @@
   <img width="250" src="https://github.com/sbis04/yoga-instructor/raw/master/screenshots/tri_pose_2.png" alt="Sofia Pose 2" />
 </p>
 
-# Addressing the after-effects
-
- After COVID, people are having to stay in their houses and avoid going out. Fitness arenas and gyms are closed or functioning selectively. People are avoiding gatherings to save themselves from the virus. A lot of companies have implemented work from home, hence people are stuck to their homes for now, till the situation is taken under control. This has lead to physical inactivity and even mental problems. People need to be able to exercise at their homes. Sofia is a personal yoga instructor, which teaches yoga. It is artificially intelligent, it recognises each pose and guides the user through it.
-
 # About
 
 ## Problem Statment : Addressing the after-effects
@@ -112,6 +108,9 @@ Muscles are challenged as the mind and body have to work together simultaneously
 
 - ### **IMMUNITY** 
 Yoga poses help massage organs and strengthens muscles while breathing techniques and meditation release stress and improve immunity.
+
+- ### **MORNING**
+A list of curated yoga poses for performing in the morning to feel fresh and energised throughout the day.
 
 - ### **YOGA IN PREGNANCY** 
 Yoga is a great way to stay active and is healthy for you and your baby. Yoga classes in pregnancy use relaxation and breathing techniques with postures that are adapted for pregnancy.
