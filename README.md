@@ -122,6 +122,22 @@ Our tech stack consists of the following:
 
 * **Python**, **Tensorflow**, **Keras** and **TFLite** (for creating the yoga pose recognition model)
 
+# How to use the app
+
+Follow the steps below in order to get the app running from code:
+
+* **Clone** the project:
+  
+  ```bash
+  git clone https://github.com/sbis04/yoga-instructor.git
+  ```
+
+* Setup **Flutter** on your system following the guide [here](https://flutter.dev/docs/get-started/install).
+
+* Complete the **Firebase setup** by creating a new project from [here](https://console.firebase.google.com/) for the specific platform (Android or iOS) on which you want to run the app.
+
+* Include the Firebase secret files to the proper location in the project, `google-services.json` file for **Android** or `GoogleService-Info.plist` file for **iOS**.
+
 # License
 
 Copyright (c) 2020 Souvik Biswas and Soumi Bardhan
