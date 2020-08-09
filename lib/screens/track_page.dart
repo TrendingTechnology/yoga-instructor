@@ -148,8 +148,7 @@ class _TrackPageState extends State<TrackPage> {
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) =>
-                            PredictorPage('surya_namasker.mp4'),
+                        builder: (context) => PredictorPage('trikonasana.mp4'),
                       ),
                     );
                   },
