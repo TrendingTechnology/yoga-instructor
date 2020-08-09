@@ -73,13 +73,6 @@
 
 - We have **gamified** the app to let the users **enjoy** it more. They are **awarded** stars as points based on how good the accuracy of their pose is once they complete and progress through each step in the track. This ensures a **fun and exciting** approach to perfecting yoga postures.
 
-## How is Sofia different from all the applications out there? 
-
-### Why would you choose Sofia? 
-
-Simply because no other app out there implements real time pose prediction technology!
-Every time you are stuck on a step or an yoga asana, Sofia waits for you to complete it, and only then it gives instructions for the next asana, just like a personal yoga instructor who attends to you real time.
-You don’t need to pause the video or anything. It will automatically detect if you have achieved the correct pose and adapt accordingly.
 
 
 ## Features
