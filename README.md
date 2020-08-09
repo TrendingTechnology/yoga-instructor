@@ -118,7 +118,7 @@ Our tech stack consists of the following:
 
 * **Firebase Storage** (for storing videos)
 
-* [Google TTS](https://cloud.google.com/text-to-speech) and [Google STT](https://cloud.google.com/speech-to-text)
+* [Google TTS](https://cloud.google.com/text-to-speech) and [Google STT](https://cloud.google.com/speech-to-text) (for creating the voice assistant)
 
 * **TFLite** (for creating the yoga pose recognition model)
 
