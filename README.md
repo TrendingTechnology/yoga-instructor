@@ -120,7 +120,7 @@ Our tech stack consists of the following:
 
 * [Google TTS](https://cloud.google.com/text-to-speech) and [Google STT](https://cloud.google.com/speech-to-text) (for creating the voice assistant)
 
-* **TFLite** (for creating the yoga pose recognition model)
+* **Python**, **Tensorflow**, **Keras** and **TFLite** (for creating the yoga pose recognition model)
 
 # License
 
