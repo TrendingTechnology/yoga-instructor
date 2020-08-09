@@ -138,6 +138,21 @@ Follow the steps below in order to get the app running from code:
 
 * Include the Firebase secret files to the proper location in the project, `google-services.json` file for **Android** or `GoogleService-Info.plist` file for **iOS**.
 
+* Register a new **Native app** on **Auth0** by following this [guide](https://auth0.com/docs/dashboard/guides/applications/register-app-native)
+
+* Add the **Auth0** secrets by creating a new file under `lib` folder called `secrets.dart` in the following format:
+  
+  ```dart
+  final String authDomain = '<Add Auth0 Domain here>';
+  final String authClientID = '<Add Auth0 Client ID here>';
+  ```
+
+* Now, you have successfully completed the setup. Run it by using the following command:
+  
+  ```bash
+  flutter run yoga-instructor
+  ```
+
 # License
 
 Copyright (c) 2020 Souvik Biswas and Soumi Bardhan
