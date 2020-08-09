@@ -183,9 +183,8 @@ class _AgePageState extends State<AgePage> {
                     decoration: InputDecoration(
                       suffix: _isStoring
                           ? CircularProgressIndicator(
-                              valueColor: new AlwaysStoppedAnimation<Color>(
-                                Colors.redAccent[800],
-                              ),
+                              valueColor:
+                                  new AlwaysStoppedAnimation<Color>(Colors.red),
                             )
                           : IconButton(
                               icon: Icon(
