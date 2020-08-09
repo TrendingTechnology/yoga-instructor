@@ -14,16 +14,17 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  Auth0 auth0;
+  // Auth0 auth0;
 
-  bool webLogged;
+  // bool webLogged;
   dynamic currentWebAuth;
+  bool _isAuth0Processing = false;
 
   @override
   void initState() {
     super.initState();
-    webLogged = false;
-    auth0 = Auth0(baseUrl: 'https://$authDomain/', clientId: authClientID);
+    // webLogged = false;
+    // auth0 = Auth0(baseUrl: 'https://$authDomain/', clientId: authClientID);
   }
 
   @override
@@ -53,65 +54,43 @@ class _LoginPageState extends State<LoginPage> {
               width: MediaQuery.of(context).size.width,
               semanticsLabel: 'Cover Image',
             ),
-            _signInButton(),
-            _auth0SignIn(),
+            // _googleSignInButton(),
+            _auth0SignInButton(),
           ],
         ),
       ),
     );
   }
 
-  /// Show Info after the Auth0 authentication is complete
-  void showInfo(String text, String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(text),
-          content: Text(message),
-          actions: <Widget>[
-            FlatButton(
-              child: Text("Close"),
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return NamePage();
-                    },
-                  ),
-                );
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  /// For usign Web Login using Auth0
-  void webLogin() async {
-    try {
-      var response = await auth0.webAuth.authorize({
-        'audience': 'https://$authDomain/userinfo',
-        'scope': 'openid email offline_access',
-      });
-      DateTime now = DateTime.now();
-      showInfo('Web Login', '''
-      \ntoken_type: ${response['token_type']}
-      \nexpires_in: ${DateTime.fromMillisecondsSinceEpoch(response['expires_in'] + now.millisecondsSinceEpoch)}
-      \nrefreshToken: ${response['refresh_token']}
-      \naccess_token: ${response['access_token']}
-      ''');
-      webLogged = true;
-      currentWebAuth = Map.from(response);
-      setState(() {});
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
+  // /// Show Info after the Auth0 authentication is complete
+  // void showInfo(String text, String message) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Text(text),
+  //         content: Text(message),
+  //         actions: <Widget>[
+  //           FlatButton(
+  //             child: Text("Close"),
+  //             onPressed: () {
+  //               // Navigator.of(context).push(
+  //               //   MaterialPageRoute(
+  //               //     builder: (context) {
+  //               //       return NamePage();
+  //               //     },
+  //               //   ),
+  //               // );
+  //             },
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
   /// Creating the Auth0 Authentication button
-  Widget _auth0SignIn() {
+  Widget _auth0SignInButton() {
     return DecoratedBox(
       decoration: ShapeDecoration(
           shape: RoundedRectangleBorder(
@@ -121,39 +100,64 @@ class _LoginPageState extends State<LoginPage> {
       child: OutlineButton(
         highlightColor: Color(0xFFffdbb7),
         splashColor: Color(0xFFffdbb7),
-        onPressed: !webLogged ? webLogin : null,
+        onPressed: () async {
+          setState(() {
+            _isAuth0Processing = true;
+          });
+          await signInWithAuth0().whenComplete(() {
+            setState(() {
+              _isAuth0Processing = false;
+            });
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return NamePage();
+                },
+              ),
+            );
+          }).catchError(
+            (e) => print('SIGN IN ERROR: $e'),
+          );
+          setState(() {
+            _isAuth0Processing = false;
+          });
+        },
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
         highlightElevation: 0,
         borderSide: BorderSide(color: Colors.black),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Image(
-                image: AssetImage("assets/images/auth0_logo.png"),
-                height: 35.0,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: Text(
-                  'Auth0',
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.red,
-                  ),
+          child: _isAuth0Processing
+              ? CircularProgressIndicator(
+                  valueColor: new AlwaysStoppedAnimation<Color>(Colors.red),
+                )
+              : Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Image(
+                      image: AssetImage("assets/images/auth0_logo.png"),
+                      height: 35.0,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Text(
+                        'Auth0',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.red,
+                        ),
+                      ),
+                    )
+                  ],
                 ),
-              )
-            ],
-          ),
         ),
       ),
     );
   }
 
   /// Creating the Google Sign In button
-  Widget _signInButton() {
+  Widget _googleSignInButton() {
     return DecoratedBox(
       decoration: ShapeDecoration(
           shape: RoundedRectangleBorder(
@@ -171,10 +175,10 @@ class _LoginPageState extends State<LoginPage> {
                   return NamePage();
                 },
               ),
-            ).catchError(
-              (e) => print('SIGN IN ERROR: $e'),
             );
-          });
+          }).catchError(
+            (e) => print('SIGN IN ERROR: $e'),
+          );
         },
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
         highlightElevation: 0,
