@@ -18,6 +18,7 @@ class _NamePageState extends State<NamePage> {
   FocusNode textFocusNode;
 
   String _userName;
+  bool _isEditing = false;
 
   @override
   void initState() {
@@ -109,6 +110,11 @@ class _NamePageState extends State<NamePage> {
                         ),
                         controller: textController,
                         cursorColor: Colors.deepOrange,
+                        onChanged: (value) {
+                          setState(() {
+                            _isEditing = true;
+                          });
+                        },
                         onSubmitted: (value) {
                           textFocusNode.unfocus();
                           _userName = textController.text;
@@ -159,7 +165,9 @@ class _NamePageState extends State<NamePage> {
                               'AI assistant will calling you by this name',
                           hintStyle:
                               TextStyle(color: Colors.grey, fontSize: 16),
-                          errorText: _validateString(textController.text),
+                          errorText: _isEditing
+                              ? _validateString(textController.text)
+                              : null,
                           errorStyle:
                               TextStyle(fontSize: 15, color: Colors.redAccent),
                         ),
