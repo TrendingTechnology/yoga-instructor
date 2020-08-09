@@ -40,23 +40,61 @@
 
 # Addressing the after-effects
 
- Addressing the after-effects of COVID-19. After COVID, people are having to stay in their houses and avoid going out. Fitness arenas and gyms are closed or functioning selectively. People are avoiding gatherings to save themselves from the virus. A lot of companies have implemented work from home, hence people are stuck to their homes for now, till the situation is taken under control. This has lead to physical inactivity and even mental problems. People need to be able to exercise at their homes. Sofia is a personal yoga instructor, which teaches yoga. It is artificially intelligent, it recognises each pose and guides the user through it. 
+ Addressing the after-effects of COVID-19. After COVID, people are having to stay in their houses and avoid going out. Fitness arenas and gyms are closed or functioning selectively. People are avoiding gatherings to save themselves from the virus. A lot of companies have implemented work from home, hence people are stuck to their homes for now, till the situation is taken under control. This has lead to physical inactivity and even mental problems. People need to be able to exercise at their homes. Sofia is a personal yoga instructor, which teaches yoga. It is artificially intelligent, it recognises each pose and guides the user through it. This is aimed at improving global health after covid.
 
 # About
 
-In this hectic lifestyle, we all get so busy with our daily schedule & this is where we always forget to take care of ourselves. It is important for us to take care of our body and mind as well. This is where yoga comes into play.
+## Problem Statment
 
-Practitioners tout yoga for its mind-body benefits—flexibility, toned muscles, reduced stress, among others. More recently, scientists have begun to test yoga's effect on serious medical conditions. The results have been impressive enough that investigators expect yoga will soon become part of the standard treatment for a number of disorders.
+- With COVID 19, people have resorted to quarantine as the last resort to protect themselves from the deadly virus.
 
-Sofia will make sure that from fitness experts to railway workers, who are exceptionally busy do not have to travel to practise yoga. They can do so at any convenient place. 
+- As time progresses, this can lead to health problems due to physical inactivity. Obesity is already a very big worldwide health issue.
 
-With the advent of COVID-19, social distancing has become very important. People cannot visit gyms where there are a lot of people and chances to contact the virus. Hence, without fitness places, obesity will emerge more profoundly.
+- Physical inactivity can lead to diseases,both physical and mental. In these trying times, any kind of diseases can be deadly and physical activity helps boost immunity and keep diseases away.
+People have terribly hectic schedules, they don’t have time to go to the gym. 
 
-Sofia will let everyone practise yoga. There are yoga tracks for beginners to Power Yoga tracks for a workout. Now, more than ever, we need our immune systems to function better. We have the immunity booster yoga track. The cardiovascular track  helps increase blood flow to the muscles. The stress release track will make you feel relaxed and peaceful.
+- In this hectic lifestyle, we all get so busy with our daily schedule & this is where we always forget to take care of ourselves. It is important for us to take care of our body and mind as well. 
+Maintaining correct posture while exercising is essential, as wrong postures can lead to body problems.
 
-Most important part of any kind of exercise you do while watching a video is the posture. Maintaining correct posture while exercising is essential, as wrong postures can lead to body problems. Sofia recognizes in real time. As you follow the video and reach an intermediate step in each pose, it analyses the posture and lets you proceed only when you complete the step successfully.
+## Our Solution
 
-We have gamified the app to let the users enjoy it more. They are awarded stars as points based on how good the accuracy of their pose is once they complete and progress through each step in the track. This ensures a fun and exciting approach to perfecting yoga postures.
+
+-This is where yoga comes into play. Sofia is your real time interactive YOGA instructor, allowing anyone to harness the benefits of yoga from any place in the world.
+
+- Sofia will ensure that however busy a person might be, they spend at least 50 mins of their day in physical activity and mental exercises. It's time for people from all walks of life to start paying attention to physical as well as mental fitness.
+
+- Practitioners tout yoga for its mind-body benefits—flexibility, toned muscles, reduced stress, among others. 
+
+- More recently, scientists have begun to test yoga's effect on serious medical conditions. 
+
+- The results have been impressive enough that investigators expect yoga will soon become part of the standard treatment for a number of disorders.
+
+
+- Sofia will let everyone practise yoga. There are yoga tracks for beginners to Power Yoga tracks for a workout. Now, more than ever, we need our immune systems to function better. We have the immunity booster yoga track. The cardiovascular track  helps increase blood flow to the muscles. The stress release track will make you feel relaxed and peaceful.
+
+- Most important part of any kind of exercise you do while watching a video is the posture. Maintaining correct posture while exercising is essential, as wrong postures can lead to body problems. Sofia recognizes in real time. As you follow the video and reach an intermediate step in each pose, it analyses the posture and lets you proceed only when you complete the step successfully.
+
+- We have gamified the app to let the users enjoy it more. They are awarded stars as points based on how good the accuracy of their pose is once they complete and progress through each step in the track. This ensures a fun and exciting approach to perfecting yoga postures.
+
+## How is Sofia different from all the applications out there? 
+
+### Why would you choose Sofia? 
+
+Simply because no other app out there implements real time pose prediction technology!
+Every time you are stuck on a step or an yoga asana, Sofia waits for you to complete it, and only then it gives instructions for the next asana, just like a personal yoga instructor who attends to you real time.
+You don’t need to pause the video or anything. It will automatically detect if you have achieved the correct pose and adapt accordingly.
+
+
+## Description
+
+- As you follow the video and reach an intermediate step in each pose, it analyses the posture and lets you proceed only when you complete the step successfully.
+
+- We have gamified the app to let the users enjoy it more.
+
+- They are awarded stars as points based on how good the accuracy of their pose is once they complete and progress through each step in the track.
+
+- This ensures a fun and exciting approach to perfecting yoga postures.
+
 
 ## Features
 
@@ -111,6 +149,16 @@ Migraine is a neurological disorder that causes recurring headaches ranging from
 
 - ### **ASTHMA**
 Yoga can help increase breath and body awareness, slow your respiratory rate, and promote calm and relieve stress — all of which are beneficial for people who have asthma.
+
+# What are the metrics that one can use to analyse the impact of Sofia?
+
+- The number of active users on the app
+
+- Retention rate of users on app
+
+- Social media engagement through gamification
+
+- On a larger scale, overall health of regular app users and non users can be judged.
 
 # Tech Stack
 
