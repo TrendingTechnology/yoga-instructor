@@ -39,6 +39,7 @@ class _MyAppState extends State<MyApp> {
 
   Future getUserInfo() async {
     await getUser();
+    await getUid();
     setState(() {});
     print(uid);
   }
