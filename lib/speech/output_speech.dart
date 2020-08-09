@@ -19,11 +19,11 @@ final String exploreTracksCompletion =
 final String notRecognized = 'I didn\'t quite get that. Can you please repeat?';
 
 // After completion of a pose
-final String poseCompletion = 'Do you want to continue to the next track?';
+final String poseCompletion = 'Do you want to continue to the next pose?';
 
 // Returning back to the home screen
 final String oneCompletion =
-    'You have received 120 stars, for completing the morning workout track.';
+    'You have received 10 stars, for completing one out of seven poses of the beginners track.';
 
 final String oneCompletionString =
-    'You have received ⭐120, for completing the Morning Workout track.';
+    'You have received ⭐10, for completing 1/7 poses of the Beginners track.';
