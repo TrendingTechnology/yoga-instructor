@@ -38,6 +38,9 @@
   <img width="250" src="https://github.com/sbis04/yoga-instructor/raw/master/screenshots/tri_pose_2.png" alt="Sofia Pose 2" />
 </p>
 
+# Addressing the after-effects
+ Addressing the after-effects of COVID-19. After COVID, people are having to stay in their houses and avoid going out. Fitness arenas and gyms are closed or functioning selectively. People are avoiding gatherings to save themselves from the virus. A lot of companies have implemented work from home, hence people are stuck to their homes for now, till the situation is taken under control. This has lead to physical inactivity and even mental problems. People need to be able to exercise at their homes. Sofia is a personal yoga instructor, which teaches yoga. It is artificially intelligent, it recognises each pose and guides the user through it. 
+
 # About
 
 In this hectic lifestyle, we all get so busy with our daily schedule & this is where we always forget to take care of ourselves. It is important for us to take care of our body and mind as well. This is where yoga comes into play.
