@@ -41,7 +41,6 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.005,
             ),
-            // TODO:Change fonts
             Text(
               "Sofia",
               style: GoogleFonts.titilliumWeb(
@@ -140,9 +139,9 @@ class _LoginPageState extends State<LoginPage> {
                       height: 35.0,
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 10),
+                      padding: const EdgeInsets.only(left: 5),
                       child: Text(
-                        'Auth0',
+                        'Continue with Auth0',
                         style: TextStyle(
                           fontSize: 20,
                           color: Colors.red,
