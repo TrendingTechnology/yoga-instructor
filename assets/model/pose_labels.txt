@@ -1,9 +1,0 @@
-0 mountain
-1 tree
-2 downwarddog
-3 tri1
-4 tri2
-5 tri3
-6 cobra
-7 child
-8 simple
