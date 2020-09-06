@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sofia/screens/login_page.dart';
 import 'package:sofia/screens/track_page.dart';
 import 'package:sofia/speech/output_speech.dart';
 import 'package:sofia/utils/database.dart';
@@ -361,19 +362,48 @@ class _HomePageState extends State<HomePage> {
                           bottomRight: Radius.circular(20),
                         ),
                       ),
-                      child: Center(
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                            bottom: screenSize.height / 20,
-                            top: screenSize.height / 20,
-                          ),
-                          child: Text(
-                            'Hi, ${storedName != null ? storedName.split(' ')[0] : 'there'}!',
-                            style: GoogleFonts.lato(
-                              fontSize: screenSize.width / 15.5,
-                              fontWeight: FontWeight.bold,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          left: 20.0,
+                          right: 20.0,
+                          bottom: screenSize.height / 60,
+                          top: screenSize.height / 20,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Hi, ${storedName != null ? storedName.split(' ')[0] : 'there'}!',
+                              style: GoogleFonts.lato(
+                                fontSize: screenSize.width / 15.5,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
+                            FlatButton(
+                              onPressed: () async {
+                                await signOutGoogle().whenComplete(
+                                  () => Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                      builder: (context) => LoginPage(),
+                                    ),
+                                  ),
+                                );
+                              },
+                              color: Colors.red,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: Text(
+                                'Sign out',
+                                style: GoogleFonts.poppins(
+                                  letterSpacing: 0,
+                                  color: Colors.white,
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     );

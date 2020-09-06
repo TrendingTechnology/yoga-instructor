@@ -92,8 +92,9 @@ Future<String> signInWithGoogle() async {
 }
 
 /// For signing out of their Google account
-void signOutGoogle() async {
+Future<void> signOutGoogle() async {
   await googleSignIn.signOut();
+  await _auth.signOut();
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.setBool('auth', false);
