@@ -11,6 +11,7 @@ import 'package:sofia/speech/output_speech.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
+import 'package:tflite/tflite.dart';
 import 'package:video_player/video_player.dart';
 
 import '../main.dart';
@@ -48,6 +49,7 @@ class _PredictorPageState extends State<PredictorPage> {
   String _userText = '';
 
   bool _isListening = false;
+  bool isDetecting = false;
 
   static int delay = 10;
 
@@ -68,17 +70,6 @@ class _PredictorPageState extends State<PredictorPage> {
   //   175 + delay * 12,
   // ];
 
-  // For trikonasana
-  List<int> durationList = [
-    14,
-    35 + delay,
-    49 + delay * 2,
-    82 + delay * 3,
-    115 + delay * 4,
-    123 + delay * 5,
-    137 + delay * 6,
-  ];
-
   // For text to speech
   double volume = 0.8;
   double pitch = 1;
@@ -97,23 +88,174 @@ class _PredictorPageState extends State<PredictorPage> {
   String _currentLocaleId = "";
   List<LocaleName> _localeNames = [];
 
-  Future<void> _initVideoPlayer() async {
-    videoPlayerController =
-        VideoPlayerController.asset('assets/videos/${widget.videoName}')
-          ..initialize().then((_) {
-            // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-            setState(() {});
-          })
-          ..setVolume(1)
-          ..play()
-          ..addListener(() {
-            final bool isPlaying = videoPlayerController.value.isPlaying;
+  List<dynamic> _recognitions;
+  int _imageHeight = 0;
+  int _imageWidth = 0;
+  int i = 0;
 
-            if (isPlaying) {
-              _currentPosition = videoPlayerController.value.position.inSeconds;
-              print("CURRENT POS: $_currentPosition");
-            }
-          });
+  int totalRecognitions = 0;
+
+  int totalRecognitionsTri = 0;
+  int totalRecognitionsTad = 0;
+
+  double avgPoseTrikonasana = 0.0;
+  double avgPoseTadasana = 0.0;
+
+  Future<void> _initVideoPlayer() async {
+    videoPlayerController = VideoPlayerController.asset(
+        'assets/videos/${widget.videoName}')
+      ..initialize().then((_) {
+        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+        setState(() {});
+      })
+      ..setVolume(1)
+      ..play()
+      ..addListener(() {
+        final bool isPlaying = videoPlayerController.value.isPlaying;
+
+        if (isPlaying) {
+          _currentPosition = videoPlayerController.value.position.inSeconds;
+          print("CURRENT POS: $_currentPosition");
+
+          if (_currentPosition == durationList[i]) {
+            videoPlayerController.pause();
+            setState(() {
+              predictionStatus = 1;
+            });
+
+            flutterTts.speak('Recognizing the pose');
+            _cameraController.startImageStream((CameraImage img) {
+              if (!isDetecting && predictionStatus == 1) {
+                isDetecting = true;
+
+                Tflite.runModelOnFrame(
+                  imageMean: 128,
+                  imageStd: 128,
+                  bytesList: img.planes.map((plane) {
+                    return plane.bytes;
+                  }).toList(),
+                  imageHeight: img.height,
+                  imageWidth: img.width,
+                  numResults: 2,
+                  asynch: true,
+                  rotation: 90,
+                  threshold: 0.2,
+                ).then((recognitions) {
+                  recognitions.map((res) {});
+
+                  print(recognitions);
+
+                  setRecognitions(recognitions, img.height, img.width);
+
+                  if (_recognitions != null && totalRecognitions <= 50) {
+                    totalRecognitions++;
+                    print(
+                        'TOTAL RECOGNITIONS: $totalRecognitions, TADASANA: $avgPoseTadasana, TRIKONASANA: $avgPoseTrikonasana');
+
+                    int length = _recognitions.length;
+
+                    for (int j = 0; j < length; j++) {
+                      if (_recognitions[j]["index"] == 0) {
+                        totalRecognitionsTad++;
+                        avgPoseTadasana += _recognitions[j]["confidence"];
+                      } else if (_recognitions[j]["index"] == 1) {
+                        totalRecognitionsTri++;
+                        avgPoseTrikonasana += _recognitions[j]["confidence"];
+                      }
+                    }
+                  }
+
+                  if (totalRecognitions == 50) {
+                    totalRecognitions = 0;
+                    int recognizedPose;
+                    print(
+                        'TADASANA: ${(avgPoseTadasana / totalRecognitionsTad) * 100}, TRIKONASANA: ${(avgPoseTrikonasana / totalRecognitionsTri) * 100}');
+
+                    if ((avgPoseTadasana / totalRecognitionsTad) * 100 <
+                        (avgPoseTrikonasana / totalRecognitionsTri) * 100) {
+                      recognizedPose = 1;
+                    } else {
+                      recognizedPose = 0;
+                    }
+
+                    if (recognizedPose == indexPose[i]) {
+                      if (i > 1) {
+                        predictionStatus = 2;
+                        flutterTts.speak('Triangle pose successfully complete');
+                      } else {
+                        predictionStatus = 2;
+                        flutterTts
+                            .speak('Moving on to the next step')
+                            .whenComplete(
+                              () => Future.delayed(Duration(seconds: 3), () {
+                                setState(() {
+                                  predictionStatus = 0;
+                                  i++;
+                                });
+
+                                videoPlayerController.play();
+                              }),
+                            );
+                      }
+                    } else {
+                      predictionStatus = 3;
+                      flutterTts
+                          .speak(
+                              'Couldn\'t recognize. Can you please repeat the pose?')
+                          .whenComplete(
+                            () => Future.delayed(Duration(seconds: 3), () {
+                              setState(() {
+                                predictionStatus = 0;
+                              });
+                              videoPlayerController
+                                  .seekTo(Duration(seconds: durationList[i]));
+                              videoPlayerController.play();
+                            }),
+                          );
+                    }
+
+                    avgPoseTadasana = 0;
+                    avgPoseTrikonasana = 0;
+                  }
+
+                  // if (_recognitions != null) {
+                  //   String label = _recognitions[0]["label"];
+                  //   int index = _recognitions[0]["index"];
+                  //   double accuracy = _recognitions[0]["confidence"] * 100;
+                  //   print('$index -> $accuracy');
+
+                  //   if (index == indexPose[i]) {
+                  //     // Tflite.close();
+                  //     // _cameraController.stopImageStream();
+
+                  //     if (i > 1) {
+                  //       predictionStatus = 2;
+                  //       flutterTts.speak('Triangle pose successfully complete');
+                  //     } else {
+                  //       predictionStatus = 2;
+                  //       flutterTts
+                  //           .speak('Moving on to the next step')
+                  //           .whenComplete(
+                  //             () => Future.delayed(Duration(seconds: 3), () {
+                  //               setState(() {
+                  //                 predictionStatus = 0;
+                  //                 i++;
+                  //               });
+
+                  //               videoPlayerController.play();
+                  //             }),
+                  //           );
+                  //     }
+                  //   }
+                  // }
+
+                  isDetecting = false;
+                });
+              }
+            });
+          }
+        }
+      });
   }
 
   Future _speak(String speechText) async {
@@ -267,20 +409,93 @@ class _PredictorPageState extends State<PredictorPage> {
     }
   }
 
+  loadModel() async {
+    String res;
+
+    res = await Tflite.loadModel(
+      model: "assets/model/new_trikonasana.tflite",
+      labels: "assets/model/new_trikonasana.txt",
+      isAsset: true,
+      numThreads: 2,
+      useGpuDelegate: true,
+    );
+
+    print(res);
+  }
+
+  setRecognitions(recognitions, imageHeight, imageWidth) {
+    setState(() {
+      _recognitions = recognitions;
+      _imageHeight = imageHeight;
+      _imageWidth = imageWidth;
+    });
+  }
+
+  // For trikonasana
+  // List<int> durationList = [
+  //   // 14,
+  //   35,
+  //   49 + delay * 2,
+  //   82 + delay * 3,
+  //   115 + delay * 4,
+  //   123 + delay * 5,
+  //   137 + delay * 6,
+  // ];
+
+  List<int> durationList = [35, 82, 104];
+  List<int> indexPose = [1, 1, 0];
+
   @override
   void initState() {
     isPredicted = false;
+    loadModel();
+
     super.initState();
 
     _initVideoPlayer();
 
-    _cameraController = CameraController(cameras[1], ResolutionPreset.medium);
+    _cameraController = CameraController(cameras[1], ResolutionPreset.low);
     _cameraController.initialize().then((_) {
       if (!mounted) {
         return;
       }
       setState(() {});
+
+      // if (!mounted) {
+      //   return;
+      // }
+
+      // _cameraController.startImageStream((CameraImage img) {
+      //   if (!isDetecting) {
+      //     isDetecting = true;
+
+      //     int startTime = new DateTime.now().millisecondsSinceEpoch;
+
+      //     Tflite.runModelOnFrame(
+      //       bytesList: img.planes.map((plane) {
+      //         return plane.bytes;
+      //       }).toList(),
+      //       imageHeight: img.height,
+      //       imageWidth: img.width,
+      //       numResults: 2,
+      //       asynch: true,
+      //     ).then((recognitions) {
+      //       recognitions.map((res) {});
+
+      //       print(recognitions);
+
+      //       int endTime = new DateTime.now().millisecondsSinceEpoch;
+      //       print("Detection took ${endTime - startTime}");
+
+      //       setRecognitions(recognitions, img.height, img.width);
+
+      //       isDetecting = false;
+      //     });
+      //   }
+      // });
     });
+
+    predictionStatus = 0;
 
     //  0 pause
     // +1 speak
@@ -289,282 +504,247 @@ class _PredictorPageState extends State<PredictorPage> {
     // +14 play -> 9
 
     for (int i = 0; i < durationList.length; i++) {
-      Timer(Duration(seconds: durationList[i]), () {
-        setState(() {
-          videoPlayerController.pause();
-        });
-      });
-      Timer(Duration(seconds: durationList[i] + 0), () {
-        setState(() {
-          predictionStatus = 1;
-          flutterTts.speak('Recognizing the pose');
-        });
-      });
+      // pause, set status to recognizing & speak
+      // Timer(Duration(seconds: durationList[i]), () {
+      //   setState(() {
+      //     videoPlayerController.pause();
+      //     predictionStatus = 1;
+      //     flutterTts.speak('Recognizing the pose');
+      //     _cameraController.startImageStream((CameraImage img) {
+      //       if (!isDetecting) {
+      //         isDetecting = true;
 
-      if (i == 6) {
-        Timer(Duration(seconds: durationList[i] + 4), () {
-          setState(() {
-            predictionStatus = 2;
-            flutterTts.speak('Triangle pose successfully complete');
-          });
-        });
-      } else if (i == 3) {
-        Timer(Duration(seconds: durationList[i] + 4), () {
-          setState(() {
-            predictionStatus = 4;
-            flutterTts
-                .speak('Couldn\'t recognize. Can you please repeat the pose?');
-          });
-        });
-        Timer(Duration(seconds: durationList[i] + 9), () {
-          setState(() {
-            predictionStatus = 0;
-          });
-        });
-        Timer(Duration(seconds: durationList[i] + 9), () {
-          setState(() {
-            videoPlayerController.seekTo(Duration(seconds: 49));
-            videoPlayerController.play();
-          });
-        });
-      } else {
-        Timer(Duration(seconds: durationList[i] + 4), () {
-          setState(() {
-            predictionStatus = 2;
-            flutterTts.speak('Moving on to the next step');
-          });
-        });
-        Timer(Duration(seconds: durationList[i] + 9), () {
-          setState(() {
-            predictionStatus = 0;
-          });
-        });
-        Timer(Duration(seconds: durationList[i] + 9), () {
-          setState(() {
-            videoPlayerController.play();
-          });
-        });
-      }
+      //         Tflite.runModelOnFrame(
+      //           imageMean: 128,
+      //           imageStd: 128,
+      //           bytesList: img.planes.map((plane) {
+      //             return plane.bytes;
+      //           }).toList(),
+      //           imageHeight: img.height,
+      //           imageWidth: img.width,
+      //           // numResults: 3,
+      //           asynch: true,
+      //           rotation: 0,
+      //         ).then((recognitions) {
+      //           recognitions.map((res) {});
+
+      //           // print(recognitions);
+
+      //           setRecognitions(recognitions, img.height, img.width);
+
+      //           if (_recognitions != null) {
+      //             String label = _recognitions[0]["label"];
+      //             int index = _recognitions[0]["index"];
+      //             double accuracy = _recognitions[0]["confidence"] * 100;
+      //             print('$index -> $accuracy');
+
+      //             if (index == indexPose[i]) {}
+      //           }
+
+      //           detectionCount++;
+      //           isDetecting = false;
+      //         });
+      //       }
+      //     });
+      //   });
+      // });
     }
 
-    // // First Step
-    // Timer(Duration(seconds: 21), () {
-    //   setState(() {
-    //     videoPlayerController.pause();
+    // PREVIOUS
+    // for (int i = 0; i < durationList.length; i++) {
+    //   Timer(Duration(seconds: durationList[i]), () {
+    //     setState(() {
+    //       videoPlayerController.pause();
+    //     });
     //   });
-    // });
-    // Timer(Duration(seconds: 22), () {
-    //   setState(() {
-    //     predictionStatus = 1;
-    //     flutterTts.speak('Recognizing the pose');
+    //   Timer(Duration(seconds: durationList[i] + 0), () {
+    //     setState(() {
+    //       predictionStatus = 1;
+    //       flutterTts.speak('Recognizing the pose');
+    //     });
     //   });
-    // });
-    // Timer(Duration(seconds: 30), () {
-    //   setState(() {
-    //     predictionStatus = 2;
-    //     flutterTts.speak('Let\'s move on to the next step');
+
+    //   if (i == 6) {
+    //     Timer(Duration(seconds: durationList[i] + 4), () {
+    //       setState(() {
+    //         predictionStatus = 2;
+    //         flutterTts.speak('Triangle pose successfully complete');
+    //       });
+    //     });
+    //   } else if (i == 3) {
+    //     Timer(Duration(seconds: durationList[i] + 4), () {
+    //       setState(() {
+    //         predictionStatus = 4;
+    //         flutterTts
+    //             .speak('Couldn\'t recognize. Can you please repeat the pose?');
+    //       });
+    //     });
+    //     Timer(Duration(seconds: durationList[i] + 9), () {
+    //       setState(() {
+    //         predictionStatus = 0;
+    //       });
+    //     });
+    //     Timer(Duration(seconds: durationList[i] + 9), () {
+    //       setState(() {
+    //         videoPlayerController.seekTo(Duration(seconds: 49));
+    //         videoPlayerController.play();
+    //       });
+    //     });
+    //   } else {
+    //     Timer(Duration(seconds: durationList[i] + 4), () {
+    //       setState(() {
+    //         predictionStatus = 2;
+    //         flutterTts.speak('Moving on to the next step');
+    //       });
+    //     });
+    //     Timer(Duration(seconds: durationList[i] + 9), () {
+    //       setState(() {
+    //         predictionStatus = 0;
+    //       });
+    //     });
+    //     Timer(Duration(seconds: durationList[i] + 9), () {
+    //       setState(() {
+    //         videoPlayerController.play();
+    //       });
+    //     });
+    //   }
+    // }
+
+    // Timer(Duration(seconds: durationList[6] + 9), () async {
+    //   _controller = _key.currentState.showBottomSheet(
+    //     (_) => Container(
+    //       decoration: BoxDecoration(
+    //         color: Colors.black87,
+    //         // borderRadius: BorderRadius.only(
+    //         //   topLeft: Radius.circular(10),
+    //         //   topRight: Radius.circular(10),
+    //         // ),
+    //       ),
+    //       child: Container(
+    //         child: Padding(
+    //           padding: EdgeInsets.only(
+    //             // bottom: screenSize.height / 20,
+    //             left: screenSize.width / 30,
+    //             right: screenSize.width / 30,
+    //           ),
+    //           child: Column(
+    //             children: [
+    //               Padding(
+    //                 padding: EdgeInsets.only(top: screenSize.height / 40),
+    //                 child: Text(
+    //                   'SOFIA',
+    //                   style: GoogleFonts.montserrat(
+    //                       color: Colors.white38,
+    //                       fontSize: 22,
+    //                       letterSpacing: 5,
+    //                       fontWeight: FontWeight.bold),
+    //                 ),
+    //               ),
+    //               Expanded(
+    //                 child: Column(
+    //                   mainAxisSize: MainAxisSize.max,
+    //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                   children: [
+    //                     Row(),
+    //                     Align(
+    //                       alignment: Alignment.centerLeft,
+    //                       child: Padding(
+    //                         padding: EdgeInsets.only(
+    //                           right: screenSize.width / 5,
+    //                         ),
+    //                         child: Text(
+    //                           _assistantText,
+    //                           style:
+    //                               TextStyle(color: Colors.white, fontSize: 16),
+    //                         ),
+    //                       ),
+    //                     ),
+    //                     Align(
+    //                       alignment: Alignment.centerRight,
+    //                       child: Padding(
+    //                         padding:
+    //                             EdgeInsets.only(left: screenSize.width / 5),
+    //                         child: Text(
+    //                           _userText,
+    //                           style: TextStyle(
+    //                               color: Colors.white54, fontSize: 16),
+    //                         ),
+    //                       ),
+    //                     )
+    //                   ],
+    //                 ),
+    //               ),
+    //               Visibility(
+    //                 maintainAnimation: true,
+    //                 maintainSize: true,
+    //                 maintainState: true,
+    //                 visible: _isListening,
+    //                 child: Padding(
+    //                   padding: EdgeInsets.only(top: screenSize.height / 40),
+    //                   child: LinearProgressIndicator(
+    //                     backgroundColor: Colors.black12,
+    //                     valueColor: new AlwaysStoppedAnimation<Color>(
+    //                       Colors.grey[700],
+    //                     ),
+    //                   ),
+    //                 ),
+    //               ),
+    //             ],
+    //           ),
+    //         ),
+    //       ),
+    //       height: screenSize.height * 0.35,
+    //     ),
+    //   );
+
+    //   await _speak('');
+    //   flutterTts.setCompletionHandler(() async {
+    //     _controller.setState(() {
+    //       _assistantText = poseCompletion;
+    //     });
+    //     await Future.delayed(Duration(milliseconds: 600));
+    //     await _speak(poseCompletion);
+    //     flutterTts.setCompletionHandler(() async {
+    //       await flutterTts.stop();
+    //       _hasSpeech ? null : await initSpeechState();
+    //       !_hasSpeech || speech.isListening ? null : await startListening();
+    //     });
     //   });
     // });
 
-    // // Second Step
-    // Timer(Duration(seconds: 36), () {
-    //   setState(() {
-    //     predictionStatus = 0;
+    // Timer(Duration(seconds: durationList[6] + 16), () async {
+    //   // _speak('');
+    //   stopListening();
+    //   setState(() {});
+    //   _controller.setState(() {
+    //     _assistantText = oneCompletionString;
+    //   });
+    //   await Future.delayed(Duration(milliseconds: 600));
+    //   await _speak(oneCompletion);
+    //   flutterTts.setCompletionHandler(() async {
+    //     await flutterTts.stop();
+    //     _controller.setState(() {
+    //       _assistantText = exploreTracksCompletion;
+    //     });
+    //     await Future.delayed(Duration(milliseconds: 600));
+    //     await _speak(exploreTracksCompletion);
+    //     flutterTts.setCompletionHandler(() async {
+    //       await flutterTts.stop();
+    //       Navigator.of(context).push(
+    //         MaterialPageRoute(
+    //           builder: (context) => HomePage(afterCompletion: true),
+    //         ),
+    //       );
+    //     });
     //   });
     // });
-    // Timer(Duration(seconds: 36), () {
-    //   setState(() {
-    //     videoPlayerController.play();
-    //   });
-    // });
-    // Timer(Duration(seconds: 57), () {
-    //   setState(() {
-    //     videoPlayerController.pause();
-    //   });
-    // });
-    // Timer(Duration(seconds: 58), () {
-    //   setState(() {
-    //     predictionStatus = 1;
-    //     flutterTts.speak('Recognizing the pose');
-    //   });
-    // });
-    // Timer(Duration(seconds: 67), () {
-    //   setState(() {
-    //     predictionStatus = 2;
-    //     flutterTts.speak('Great! Moving on to the last step');
-    //   });
-    // });
-
-    // // Third step
-    // Timer(Duration(seconds: 72), () {
-    //   setState(() {
-    //     predictionStatus = 0;
-    //   });
-    // });
-    // Timer(Duration(seconds: 72), () {
-    //   setState(() {
-    //     videoPlayerController.play();
-    //   });
-    // });
-    // Timer(Duration(seconds: 112), () {
-    //   setState(() {
-    //     videoPlayerController.pause();
-    //   });
-    // });
-    // Timer(Duration(seconds: 113), () {
-    //   setState(() {
-    //     predictionStatus = 1;
-    //     flutterTts.speak('Recognizing the pose');
-    //   });
-    // });
-    // Timer(Duration(seconds: 127), () {
-    //   setState(() {
-    //     predictionStatus = 2;
-    //     flutterTts.speak('You have successfully completed the pose!');
-    //     print('COMPLETE');
-    //   });
-    // });
-
-    // Timer(Duration(seconds: 132), () {
-    //   setState(() {
-    //     videoPlayerController.play();
-    //   });
-    // });
-
-    Timer(Duration(seconds: durationList[6] + 9), () async {
-      _controller = _key.currentState.showBottomSheet(
-        (_) => Container(
-          decoration: BoxDecoration(
-            color: Colors.black87,
-            // borderRadius: BorderRadius.only(
-            //   topLeft: Radius.circular(10),
-            //   topRight: Radius.circular(10),
-            // ),
-          ),
-          child: Container(
-            child: Padding(
-              padding: EdgeInsets.only(
-                // bottom: screenSize.height / 20,
-                left: screenSize.width / 30,
-                right: screenSize.width / 30,
-              ),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(top: screenSize.height / 40),
-                    child: Text(
-                      'SOFIA',
-                      style: GoogleFonts.montserrat(
-                          color: Colors.white38,
-                          fontSize: 22,
-                          letterSpacing: 5,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Expanded(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              right: screenSize.width / 5,
-                            ),
-                            child: Text(
-                              _assistantText,
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16),
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Padding(
-                            padding:
-                                EdgeInsets.only(left: screenSize.width / 5),
-                            child: Text(
-                              _userText,
-                              style: TextStyle(
-                                  color: Colors.white54, fontSize: 16),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Visibility(
-                    maintainAnimation: true,
-                    maintainSize: true,
-                    maintainState: true,
-                    visible: _isListening,
-                    child: Padding(
-                      padding: EdgeInsets.only(top: screenSize.height / 40),
-                      child: LinearProgressIndicator(
-                        backgroundColor: Colors.black12,
-                        valueColor: new AlwaysStoppedAnimation<Color>(
-                          Colors.grey[700],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          height: screenSize.height * 0.35,
-        ),
-      );
-
-      await _speak('');
-      flutterTts.setCompletionHandler(() async {
-        _controller.setState(() {
-          _assistantText = poseCompletion;
-        });
-        await Future.delayed(Duration(milliseconds: 600));
-        await _speak(poseCompletion);
-        flutterTts.setCompletionHandler(() async {
-          await flutterTts.stop();
-          _hasSpeech ? null : await initSpeechState();
-          !_hasSpeech || speech.isListening ? null : await startListening();
-        });
-      });
-    });
-
-    Timer(Duration(seconds: durationList[6] + 16), () async {
-      // _speak('');
-      stopListening();
-      setState(() {});
-      _controller.setState(() {
-        _assistantText = oneCompletionString;
-      });
-      await Future.delayed(Duration(milliseconds: 600));
-      await _speak(oneCompletion);
-      flutterTts.setCompletionHandler(() async {
-        await flutterTts.stop();
-        _controller.setState(() {
-          _assistantText = exploreTracksCompletion;
-        });
-        await Future.delayed(Duration(milliseconds: 600));
-        await _speak(exploreTracksCompletion);
-        flutterTts.setCompletionHandler(() async {
-          await flutterTts.stop();
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => HomePage(afterCompletion: true),
-            ),
-          );
-        });
-      });
-    });
   }
 
   @override
   void dispose() {
     _cameraController?.dispose();
     videoPlayerController?.dispose();
+    Tflite.close();
     super.dispose();
   }
 
@@ -612,6 +792,7 @@ class _PredictorPageState extends State<PredictorPage> {
                       ? Padding(
                           padding: const EdgeInsets.only(top: 20),
                           child: Container(
+                            height: MediaQuery.of(context).size.height * 0.45,
                             // height: screenSize.height * 0.45,
                             // width: screenSize.width / 1.5,
                             child: AspectRatio(
@@ -633,21 +814,6 @@ class _PredictorPageState extends State<PredictorPage> {
           ),
         ),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     setState(() {
-      //       videoPlayerController.value.isPlaying
-      //           ? videoPlayerController.pause()
-      //           : videoPlayerController.play();
-      //     });
-      //   },
-      //   child: Icon(
-      //     videoPlayerController.value.isPlaying
-      //         ? Icons.pause
-      //         : Icons.play_arrow,
-      //   ),
-      //   backgroundColor: Colors.grey,
-      // ),
     );
   }
 
@@ -672,13 +838,6 @@ class _PredictorPageState extends State<PredictorPage> {
     }
 
     switch (predictionStatus) {
-      // case 0:
-      //   return Center(
-      //     child: Text(
-      //       'Follow the video',
-      //       style: TextStyle(color: Colors.grey[800], fontSize: 20),
-      //     ),
-      //   );
       case 1:
         return Column(
           children: <Widget>[
@@ -724,7 +883,7 @@ class _PredictorPageState extends State<PredictorPage> {
           ],
         );
         break;
-      case 4:
+      case 3:
         return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
@@ -756,47 +915,5 @@ class _PredictorPageState extends State<PredictorPage> {
         );
         break;
     }
-    // return isPredicted
-    //     ? Column(
-    //         crossAxisAlignment: CrossAxisAlignment.center,
-    //         children: <Widget>[
-    //           Text(
-    //             'Successful',
-    //             style: TextStyle(color: Colors.greenAccent, fontSize: 20),
-    //           ),
-    //           SizedBox(
-    //             height: 20,
-    //           ),
-    //           SizedBox(
-    //             height: 30,
-    //             width: 30,
-    //             child: Icon(
-    //               Icons.check_circle,
-    //               color: Colors.greenAccent,
-    //               size: 30,
-    //             ),
-    //           )
-    //         ],
-    //       )
-    //     : Column(
-    //         children: <Widget>[
-    //           Text(
-    //             'Processing',
-    //             style: TextStyle(color: Colors.amber, fontSize: 20),
-    //           ),
-    //           SizedBox(
-    //             height: 20,
-    //           ),
-    //           SizedBox(
-    //             height: 30,
-    //             width: 30,
-    //             child: CircularProgressIndicator(
-    //               valueColor: AlwaysStoppedAnimation<Color>(
-    //                 Colors.amber,
-    //               ),
-    //             ),
-    //           )
-    //         ],
-    //       );
   }
 }
