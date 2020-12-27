@@ -16,8 +16,7 @@ String email;
 String imageUrl;
 
 /// The main Firestore collection
-final CollectionReference mainCollection =
-    Firestore.instance.collection('sofia');
+final CollectionReference mainCollection = Firestore.instance.collection('sofia');
 
 // Use this for production
 // final DocumentReference documentReference = mainCollection.document('prod');
@@ -82,13 +81,15 @@ Future<String> signInWithGoogle() async {
   assert(await user.getIdToken() != null);
 
   final FirebaseUser currentUser = await _auth.currentUser();
-  assert(user.uid == currentUser.uid);
 
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setBool('auth', true);
-  authSignedIn = true;
+  if (currentUser != null) {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('auth', true);
+    authSignedIn = true;
+    return user.uid;
+  }
 
-  return 'signInWithGoogle succeeded: $user';
+  return null;
 }
 
 /// For signing out of their Google account
