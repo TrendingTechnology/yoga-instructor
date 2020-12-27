@@ -16,13 +16,16 @@ void main() async {
   } on CameraException catch (e) {
     logError(e.code, e.description);
   }
+
+  // Starting point of the app
   runApp(MyApp());
 }
 
 /// For printing the camera error, if any occurs
-void logError(String code, String message) =>
-    print('Error: $code\nError Message: $message');
+void logError(String code, String message) => print('Error: $code\nError Message: $message');
 
+/// First stateless widget to get loaded as soon as
+/// the Dart engine runs
 class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
@@ -32,11 +35,12 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    // Checking if the user is already logged in
-    // and retrieve user info
+
     getUserInfo();
   }
 
+  /// Checking if the user is already logged in
+  /// and retrieve user info
   Future getUserInfo() async {
     await getUser();
     // await getUid();
@@ -52,7 +56,9 @@ class _MyAppState extends State<MyApp> {
       // Redirect to the respective page as per the
       // authentication info
       home: (uid != null && authSignedIn != false)
-          ? detailsUploaded ? HomePage() : NamePage()
+          ? detailsUploaded
+              ? HomePage()
+              : NamePage()
           : LoginPage(),
     );
   }

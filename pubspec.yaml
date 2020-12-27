@@ -17,16 +17,15 @@ dependencies:
   cloud_firestore: ^0.13.6
   google_sign_in: ^4.5.1
   shared_preferences: ^0.5.7+3
-  google_fonts: ^1.1.0
   websafe_svg: ^1.1.0
   font_awesome_flutter: ^8.8.1
   flutter_tts: ^1.2.2
   speech_to_text: ^2.2.0
   tflite: ^1.1.1
   showcaseview: ^0.1.5
-  camera: ^0.5.8+2
+  camera: ^0.6.2+1
   video_player: ^0.10.11+1
-  flutter_auth0: ^0.5.0
+  google_fonts: ^1.1.1
 
 dev_dependencies:
   flutter_test:
@@ -34,6 +33,26 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  fonts:
+    - family: Montserrat
+      fonts:
+        - asset: fonts/Montserrat-Regular.ttf
+          weight: 300
+        - asset: fonts/Montserrat-Bold.ttf
+          weight: 600
+
+    - family: GoogleSans
+      fonts:
+        - asset: fonts/GoogleSans-Regular.ttf
+          weight: 300
+        - asset: fonts/GoogleSans-Bold.ttf
+          weight: 600
+
+    - family: TitilliumWeb
+      fonts:
+        - asset: fonts/TitilliumWeb-Regular.ttf
+          weight: 300
 
   assets:
     - assets/images/
