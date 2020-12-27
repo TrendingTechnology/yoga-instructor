@@ -24,7 +24,7 @@ dependencies:
   speech_to_text: ^2.2.0
   tflite: ^1.1.1
   showcaseview: ^0.1.5
-  camera: ^0.5.8+2
+  camera: ^0.6.2+1
   video_player: ^0.10.11+1
   flutter_auth0: ^0.5.0
 
