@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:sofia/utils/sign_in.dart';
 import 'package:websafe_svg/websafe_svg.dart';
 
@@ -13,9 +12,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  dynamic currentWebAuth;
-  bool _isAuth0Processing = false;
-
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
@@ -32,8 +28,10 @@ class _LoginPageState extends State<LoginPage> {
             ),
             Text(
               "Sofia",
-              style: GoogleFonts.titilliumWeb(
-                textStyle: TextStyle(fontSize: screenSize.width / 8, color: Colors.black),
+              style: TextStyle(
+                fontFamily: 'TitilliumWeb',
+                fontSize: screenSize.width / 8,
+                color: Colors.black,
               ),
             ),
             WebsafeSvg.asset(

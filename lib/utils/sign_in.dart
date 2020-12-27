@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_auth0/flutter_auth0.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sofia/secrets.dart';
@@ -102,57 +101,6 @@ Future<void> signOutGoogle() async {
   authSignedIn = false;
 
   print("User Sign Out");
-}
-
-/// For usign Web Login using Auth0
-Future<String> signInWithAuth0() async {
-  Auth0 auth0;
-
-  auth0 = Auth0(baseUrl: 'https://$authDomain/', clientId: authClientID);
-
-  var response = await auth0.webAuth.authorize({
-    'audience': 'https://$authDomain/userinfo',
-    'scope': 'openid email offline_access',
-  });
-
-  print(response);
-
-  // DateTime now = DateTime.now();
-  // showInfo('Web Login', '''
-  // \ntoken_type: ${response['token_type']}
-  // \nexpires_in: ${DateTime.fromMillisecondsSinceEpoch(response['expires_in'] + now.millisecondsSinceEpoch)}
-  // \nrefreshToken: ${response['refresh_token']}
-  // \naccess_token: ${response['access_token']}
-  // ''');
-
-  String tokenType = response['token_type'];
-  String accessToken = response['access_token'];
-
-  assert(accessToken != null);
-
-  uid = accessToken;
-
-  // try {
-  //   var authClient = Auth0Auth(auth0.auth.clientId, auth0.auth.client.baseUrl,
-  //       bearer: '$uid');
-  //   var info = await authClient.getUserInfo();
-  //   String buffer = '';
-  //   info.forEach((k, v) => buffer = '$buffer\n$k: $v');
-  //   print(buffer);
-  //   // showInfo('User Info', buffer);
-  // } catch (e) {
-  //   print(e);
-  // }
-
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setBool('auth', true);
-  prefs.setString('uid', uid);
-  authSignedIn = true;
-
-  return 'Auth0 sign-in successful, access token: $uid';
-
-  // webLogged = true;
-  // currentWebAuth = Map.from(response);
 }
 
 Future<String> getUid() async {
