@@ -98,10 +98,9 @@ class Database {
   Future<void> storeUserData({
     @required String userName,
     @required String gender,
-    @required int age,
+    @required String age,
   }) async {
-    DocumentReference documentReferencer =
-        documentReference.collection('user_info').document(uid);
+    DocumentReference documentReferencer = documentReference.collection('user_info').document(uid);
 
     Map<String, dynamic> data = <String, dynamic>{
       "image_url": imageUrl,
@@ -124,8 +123,7 @@ class Database {
     // beginners
     int id = 1;
     poses.forEach((key, value) async {
-      DocumentReference documentReferencer =
-          documentReference.collection('tracks').document(key);
+      DocumentReference documentReferencer = documentReference.collection('tracks').document(key);
 
       Map<String, dynamic> name = <String, dynamic>{
         "id": id,
@@ -138,9 +136,8 @@ class Database {
       }).catchError((e) => print(e));
 
       value.forEach((element) async {
-        DocumentReference poseDocs = documentReferencer
-            .collection('poses')
-            .document(element.elementAt(0));
+        DocumentReference poseDocs =
+            documentReferencer.collection('poses').document(element.elementAt(0));
 
         Map<String, String> data = <String, String>{
           "title": element.elementAt(0),
