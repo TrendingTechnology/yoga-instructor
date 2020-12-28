@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:sofia/screens/age_page.dart';
 import 'package:sofia/utils/sign_in.dart';
 
@@ -68,7 +67,8 @@ class _GenderPageState extends State<GenderPage> {
                       child: Text(
                         'QUOTE',
                         textAlign: TextAlign.center,
-                        style: GoogleFonts.lexendTera(
+                        style: TextStyle(
+                          fontFamily: 'LexendTera',
                           fontSize: screenSize.width / 30,
                           color: Colors.black26,
                         ),
@@ -76,15 +76,18 @@ class _GenderPageState extends State<GenderPage> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(
-                          left: screenSize.width / 15,
-                          right: screenSize.width / 15,
-                          bottom: screenSize.height / 60),
+                        left: screenSize.width / 15,
+                        right: screenSize.width / 15,
+                        bottom: screenSize.height / 60,
+                      ),
                       child: Text(
                         'Yoga is a mirror to look at ourselves from within.',
                         textAlign: TextAlign.center,
-                        style: GoogleFonts.openSans(
+                        style: TextStyle(
+                          fontFamily: 'GoogleSans',
                           fontSize: screenSize.width / 25,
                           color: Color(0xFF284e41),
+                          letterSpacing: 0.5,
                         ),
                       ),
                     ),
@@ -167,9 +170,7 @@ class _GenderPageState extends State<GenderPage> {
                           isSelected: isSelected,
                           onPressed: (int index) {
                             setState(() {
-                              for (int indexBtn = 0;
-                                  indexBtn < isSelected.length;
-                                  indexBtn++) {
+                              for (int indexBtn = 0; indexBtn < isSelected.length; indexBtn++) {
                                 if (indexBtn == index) {
                                   isSelected[indexBtn] = !isSelected[indexBtn];
                                   selectedGender = genderList[index];
@@ -186,16 +187,14 @@ class _GenderPageState extends State<GenderPage> {
                     IconButton(
                       icon: Icon(
                         Icons.check_circle,
-                        size: screenSize.width / 12,
-                        color: selectedGender != null
-                            ? Color(0xFF284e41)
-                            : Colors.black12,
+                        size: screenSize.width / 10,
+                        color: selectedGender != null ? Color(0xFF284e41) : Colors.black12,
                       ),
                       onPressed: selectedGender != null
                           ? () {
                               textFocusNode.unfocus();
                               userName = textController.text;
-                              print('DONE EDITING');
+                              print('DONE Selecting');
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) {
