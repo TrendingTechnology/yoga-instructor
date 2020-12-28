@@ -65,9 +65,10 @@ class _NamePageState extends State<NamePage> {
                   ),
                   Padding(
                     padding: EdgeInsets.only(
-                        left: screenSize.width / 15,
-                        right: screenSize.width / 15,
-                        bottom: screenSize.height / 50),
+                      left: screenSize.width / 15,
+                      right: screenSize.width / 15,
+                      bottom: screenSize.height / 50,
+                    ),
                     child: Text(
                       'Yoga teaches us to cure what need not be endured and endure what cannot be cured.',
                       textAlign: TextAlign.center,
