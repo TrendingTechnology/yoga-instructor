@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:sofia/screens/gender_page.dart';
 import 'package:sofia/utils/sign_in.dart';
 
@@ -57,7 +56,8 @@ class _NamePageState extends State<NamePage> {
                     child: Text(
                       'QUOTE',
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.lexendTera(
+                      style: TextStyle(
+                        fontFamily: 'LexendTera',
                         fontSize: screenSize.width / 30,
                         color: Colors.black26,
                       ),
@@ -69,20 +69,15 @@ class _NamePageState extends State<NamePage> {
                         right: screenSize.width / 15,
                         bottom: screenSize.height / 50),
                     child: Text(
-                        'Yoga teaches us to cure what need not be endured and endure what cannot be cured.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: 'GoogleSans',
-                          fontSize: screenSize.width / 25,
-                          color: Color(0xFFf87473),
-                          letterSpacing: 0.5,
-                        )
-
-                        // GoogleFonts.openSans(
-                        //   fontSize: screenSize.width / 25,
-                        //   color: Color(0xFFf87473),
-                        // ),
-                        ),
+                      'Yoga teaches us to cure what need not be endured and endure what cannot be cured.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'GoogleSans',
+                        fontSize: screenSize.width / 25,
+                        color: Color(0xFFf87473),
+                        letterSpacing: 0.5,
+                      ),
+                    ),
                   ),
                   Flexible(
                     child: SvgPicture.asset(
