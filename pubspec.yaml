@@ -54,6 +54,11 @@ flutter:
         - asset: fonts/TitilliumWeb-Regular.ttf
           weight: 300
 
+    - family: LexendTera
+      fonts:
+        - asset: fonts/LexendTera-Regular.ttf
+          weight: 300
+
   assets:
     - assets/images/
     - assets/videos/
