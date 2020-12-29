@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sofia/screens/dashboard_page.dart';
 import 'package:sofia/screens/home_page.dart';
 import 'package:sofia/utils/database.dart';
 
@@ -57,7 +58,8 @@ class _AgePageState extends State<AgePage> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
-          return HomePage();
+          return DashboardPage(); // new dashboard test
+          // return HomePage();
         },
       ),
     );

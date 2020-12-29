@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:sofia/screens/dashboard_page.dart';
 import 'package:sofia/screens/home_page.dart';
 
 import 'screens/login_page.dart';
@@ -55,9 +56,10 @@ class _MyAppState extends State<MyApp> {
       title: 'Sofia: yoga trainer',
       // Redirect to the respective page as per the
       // authentication info
+      theme: ThemeData(fontFamily: 'GoogleSans'),
       home: (uid != null && authSignedIn != false)
           ? detailsUploaded
-              ? HomePage()
+              ? DashboardPage() // new page test
               : NamePage()
           : LoginPage(),
     );
