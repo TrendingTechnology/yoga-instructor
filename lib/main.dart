@@ -1,8 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:sofia/screens/dashboard_page.dart';
-import 'package:sofia/screens/home_page.dart';
-
 import 'screens/login_page.dart';
 import 'screens/name_page.dart';
 import 'utils/sign_in.dart';
