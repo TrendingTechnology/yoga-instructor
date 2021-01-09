@@ -47,6 +47,8 @@ flutter:
       fonts:
         - asset: fonts/GoogleSans-Regular.ttf
           weight: 300
+        - asset: fonts/GoogleSans-Medium.ttf
+          weight: 400
         - asset: fonts/GoogleSans-Bold.ttf
           weight: 600
 
