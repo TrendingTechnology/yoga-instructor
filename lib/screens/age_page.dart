@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sofia/res/palette.dart';
 import 'package:sofia/screens/dashboard_page.dart';
 import 'package:sofia/screens/home_page.dart';
 import 'package:sofia/utils/database.dart';
@@ -62,16 +64,21 @@ class _AgePageState extends State<AgePage> {
           // return HomePage();
         },
       ),
-    );
+    ).then((_) {
+      FlutterStatusbarcolor.setStatusBarColor(Palette.ageBackground);
+      FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    FlutterStatusbarcolor.setStatusBarColor(Palette.ageBackground);
+    FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
     var screenSize = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: Palette.ageBackground,
       appBar: appBar,
       body: Container(
-        color: Color(0xFFfeafb6),
         // Color(0xFFffe6e1), --> color for the other cover
         child: Column(
           mainAxisSize: MainAxisSize.max,

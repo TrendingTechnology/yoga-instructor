@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:sofia/res/palette.dart';
 import 'package:sofia/screens/gender_page.dart';
 import 'package:sofia/utils/sign_in.dart';
 
@@ -33,14 +35,16 @@ class _NamePageState extends State<NamePage> {
 
   @override
   Widget build(BuildContext context) {
+    FlutterStatusbarcolor.setStatusBarColor(Palette.nameBackground);
+    FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
     var screenSize = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () {
         textFocusNode.unfocus();
       },
       child: Scaffold(
+        backgroundColor: Palette.nameBackground,
         body: Container(
-          color: Color(0xFFffe6e1),
           // Color(0xFFffe6e1), --> color for the other cover
           child: SingleChildScrollView(
             child: Container(
@@ -152,7 +156,10 @@ class _NamePageState extends State<NamePage> {
                                   );
                                 },
                               ),
-                            );
+                            ).then((_) {
+                              FlutterStatusbarcolor.setStatusBarColor(Palette.nameBackground);
+                              FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
+                            });
                           },
                         ),
                       ],
