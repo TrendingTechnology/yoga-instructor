@@ -6,8 +6,14 @@ import 'package:websafe_svg/websafe_svg.dart';
 
 import 'name_page.dart';
 
-/// Widget for generating the Login Screen.
-/// Uses Google Sign In for user authentication
+/// Displays the `LoginPage`.
+///
+/// Uses Google Sign In for user authentication.
+///
+/// **Connected pages:**
+///
+/// - `NamePage` (forward)
+///
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -22,7 +28,6 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       backgroundColor: Palette.loginBackground,
       body: Container(
-        // Color(0xFFffe6e1), --> color for the other cover
         child: Column(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -44,14 +49,13 @@ class _LoginPageState extends State<LoginPage> {
               semanticsLabel: 'Cover Image',
             ),
             _googleSignInButton(),
-            // _auth0SignInButton(),
           ],
         ),
       ),
     );
   }
 
-  /// Google Sign In button widget
+  /// Generates Google Sign In button widget
   Widget _googleSignInButton() {
     return DecoratedBox(
       decoration: ShapeDecoration(
@@ -64,6 +68,8 @@ class _LoginPageState extends State<LoginPage> {
         splashColor: Colors.grey[100],
         color: Colors.grey[100],
         onPressed: () {
+          // Navigates to the NamePage if the authentication
+          // is successful.
           signInWithGoogle().then((user) {
             if (user != null) {
               Navigator.of(context).push(
@@ -73,6 +79,8 @@ class _LoginPageState extends State<LoginPage> {
                   },
                 ),
               ).then((_) {
+                // Sets the status bar color of the one set to this page
+                // if an user comes back to this page.
                 FlutterStatusbarcolor.setStatusBarColor(Palette.loginBackground);
                 FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
               });
