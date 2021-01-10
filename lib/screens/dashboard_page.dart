@@ -21,6 +21,14 @@ class _DashboardPageState extends State<DashboardPage> {
     double screeWidth = MediaQuery.of(context).size.width;
     double screeHeight = MediaQuery.of(context).size.height;
 
+    const double POSE_WIDTH_MULT = 0.5;
+    const double POSE_HEIGHT_MULT = 0.48;
+
+    const double FAV_WIDTH_MULT = 5.5;
+    const double FAV_HEIGHT_MULT = 4.8;
+
+    const double IMAGE_MULT = 0.36;
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
@@ -28,66 +36,75 @@ class _DashboardPageState extends State<DashboardPage> {
         body: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.only(top: 16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    // crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Hello, Souvik',
-                        style: TextStyle(
-                          fontSize: 26.0,
-                          fontWeight: FontWeight.bold,
-                          color: Palette.black,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      // crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Hello, Souvik',
+                          style: TextStyle(
+                            fontSize: 26.0,
+                            fontWeight: FontWeight.bold,
+                            color: Palette.black,
+                          ),
                         ),
-                      ),
-                      Stack(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(60),
-                            child: Container(
-                              color: Palette.lightDarkShade,
-                              child: Padding(
-                                padding: const EdgeInsets.all(6.0),
-                                child: Icon(
-                                  Icons.person,
-                                  color: Palette.lightShade,
-                                  size: 26,
+                        Stack(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(60),
+                              child: Container(
+                                color: Palette.lightDarkShade,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(6.0),
+                                  child: Icon(
+                                    Icons.person,
+                                    color: Palette.lightShade,
+                                    size: 26,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          imageUrl != null
-                              ? ClipRRect(
-                                  borderRadius: BorderRadius.circular(60),
-                                  child: SizedBox(width: 38.0, child: Image.network(imageUrl)),
-                                )
-                              : Container(),
-                        ],
-                      )
-                    ],
+                            imageUrl != null
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(60),
+                                    child: SizedBox(width: 38.0, child: Image.network(imageUrl)),
+                                  )
+                                : Container(),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                   SizedBox(height: 8.0),
-                  Text(
-                    'Inhale the future, exhale the past.', // Update the quote from backend
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
-                      color: Palette.black.withOpacity(0.5),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                    child: Text(
+                      'Inhale the future, exhale the past.', // Update the quote from backend
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                        color: Palette.black.withOpacity(0.5),
+                      ),
                     ),
                   ),
                   SizedBox(height: 32.0),
                   // Your favourites
-                  Text(
-                    'For beginners',
-                    style: TextStyle(
-                      fontSize: 32.0,
-                      fontWeight: FontWeight.bold,
-                      color: Palette.black,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                    child: Text(
+                      'For beginners',
+                      style: TextStyle(
+                        fontSize: 32.0,
+                        fontWeight: FontWeight.bold,
+                        color: Palette.black,
+                      ),
                     ),
                   ),
                   SizedBox(height: 16.0),
@@ -95,39 +112,109 @@ class _DashboardPageState extends State<DashboardPage> {
                     future: _database.retrievePoses(trackName: 'beginners'),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        String poseTitle = snapshot.data[0]['title'];
-                        String poseSubtitle = snapshot.data[0]['sub'];
-
                         return Container(
-                          width: screeWidth * 0.4,
-                          height: screeWidth * 0.36,
-                          decoration: BoxDecoration(
-                              color: Palette.mediumShade,
-                              borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  poseTitle[0].toUpperCase() + poseTitle.substring(1) + ' pose',
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: Palette.black,
-                                  ),
-                                ),
-                                Text(
-                                  poseSubtitle[0].toUpperCase() + poseSubtitle.substring(1),
-                                  style: TextStyle(
-                                    fontSize: 14.0,
-                                    fontWeight: FontWeight.w400,
-                                    letterSpacing: 1,
-                                    color: Palette.black,
-                                  ),
-                                ),
-                              ],
+                          height: screeWidth * POSE_HEIGHT_MULT,
+                          child: ListView.separated(
+                            physics: BouncingScrollPhysics(),
+                            scrollDirection: Axis.horizontal,
+                            itemCount: snapshot.data.length,
+                            separatorBuilder: (context, index) => SizedBox(
+                              width: 24.0,
                             ),
+                            itemBuilder: (_, index) {
+                              String poseTitle = snapshot.data[index]['title'];
+                              String poseSubtitle = snapshot.data[index]['sub'];
+
+                              return Row(
+                                children: [
+                                  if (index == 0) SizedBox(width: 16.0),
+                                  Stack(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(bottom: 16.0),
+                                        child: Container(
+                                          width: screeWidth * POSE_WIDTH_MULT,
+                                          decoration: BoxDecoration(
+                                            color: Palette.mediumShade,
+                                            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisSize: MainAxisSize.max,
+                                              children: [
+                                                Expanded(
+                                                  child: Center(
+                                                    child: SizedBox(
+                                                      width: screeWidth * IMAGE_MULT,
+                                                      child:
+                                                          Image.asset('assets/images/child.png'),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Text(
+                                                  poseTitle[0].toUpperCase() +
+                                                      poseTitle.substring(1) +
+                                                      ' pose',
+                                                  maxLines: 1,
+                                                  softWrap: false,
+                                                  overflow: TextOverflow.fade,
+                                                  style: TextStyle(
+                                                    fontSize: 16.0,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Palette.black,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  poseSubtitle[0].toUpperCase() +
+                                                      poseSubtitle.substring(1),
+                                                  maxLines: 1,
+                                                  softWrap: false,
+                                                  overflow: TextOverflow.fade,
+                                                  style: TextStyle(
+                                                    fontSize: 14.0,
+                                                    fontWeight: FontWeight.w400,
+                                                    letterSpacing: 1,
+                                                    color: Palette.black,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Align(
+                                        widthFactor: FAV_WIDTH_MULT,
+                                        heightFactor: FAV_HEIGHT_MULT,
+                                        alignment: Alignment.bottomRight,
+                                        child: ClipOval(
+                                          child: Material(
+                                            color: Palette.darkShade,
+                                            child: InkWell(
+                                              splashColor: Colors.red, // inkwell color
+                                              child: SizedBox(
+                                                width: 38,
+                                                height: 38,
+                                                child: Center(
+                                                  child: Icon(
+                                                    Icons.favorite,
+                                                    size: 20,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                              onTap: () {},
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  if (index == snapshot.data.length - 1) SizedBox(width: 16.0),
+                                ],
+                              );
+                            },
                           ),
                         );
                       }
