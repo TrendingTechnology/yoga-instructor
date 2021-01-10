@@ -5,8 +5,15 @@ import 'package:sofia/res/palette.dart';
 import 'package:sofia/screens/gender_page.dart';
 import 'package:sofia/utils/sign_in.dart';
 
-/// Widget for generating the Name Screen,
-/// taking the user name which is later stored in the database
+/// Displays the `NamePage`.
+///
+/// Accepts the full user name. It pre-populates with the
+/// name retrieved from the user's Goolge Account (if any present)
+///
+/// **Connected pages:**
+///
+/// - `GenderPage` (forward)
+///
 class NamePage extends StatefulWidget {
   @override
   _NamePageState createState() => _NamePageState();
@@ -148,6 +155,8 @@ class _NamePageState extends State<NamePage> {
                           onPressed: () {
                             textFocusNode.unfocus();
                             _userName = textController.text;
+                            // Naviagtes to the GenderPage, and passes
+                            // on the name.
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) {
@@ -157,6 +166,8 @@ class _NamePageState extends State<NamePage> {
                                 },
                               ),
                             ).then((_) {
+                              // Sets the status bar color of the one set to this page
+                              // if an user comes back to this page.
                               FlutterStatusbarcolor.setStatusBarColor(Palette.nameBackground);
                               FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
                             });
