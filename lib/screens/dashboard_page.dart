@@ -377,7 +377,33 @@ class _DashboardPageState extends State<DashboardPage> {
                       },
                     ),
                   ),
-                  SizedBox(height: 30.0)
+                  Container(
+                    color: Colors.black,
+                    child: Column(
+                      children: [
+                        Container(
+                          height: 24,
+                          width: double.maxFinite,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(8.0),
+                              bottomRight: Radius.circular(8.0),
+                            ),
+                          ),
+                        ),
+                        Text(
+                          'Privacy policy', // Update the quote from backend
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // SizedBox(height: 30.0)
                 ],
               ),
             ),
