@@ -65,8 +65,9 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Sofia: yoga trainer',
-      // Redirect to the respective page as per the
-      // authentication info
+      // Redirect to the respective page as per the authentication info
+      // Currently using DashboardPage instead of HomePage, to test
+      // the new UI
       theme: ThemeData(fontFamily: 'GoogleSans'),
       home: (uid != null && authSignedIn != false)
           ? detailsUploaded
