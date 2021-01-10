@@ -7,8 +7,15 @@ import 'package:sofia/utils/sign_in.dart';
 
 String userName;
 
-/// Widget for generating the Gender Screen,
-/// and storing it in the database
+/// Displays the `GenderPage`.
+///
+/// Allows to select one of the gender.
+///
+/// **Connected pages:**
+///
+/// - `AgePage` (forward)
+/// - `NamePage` (previous)
+///
 class GenderPage extends StatefulWidget {
   final String userName;
 
@@ -199,6 +206,10 @@ class _GenderPageState extends State<GenderPage> {
                               textFocusNode.unfocus();
                               userName = textController.text;
                               print('DONE Selecting');
+
+                              // Allows user to navigate to the AgePage
+                              // if any one gender is selected. Passes on the
+                              // name and gender to the next page.
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) {
@@ -209,6 +220,8 @@ class _GenderPageState extends State<GenderPage> {
                                   },
                                 ),
                               ).then((_) {
+                                // Sets the status bar color of the one set to this page
+                                // if an user comes back to this page.
                                 FlutterStatusbarcolor.setStatusBarColor(Palette.genderBackground);
                                 FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
                               });
