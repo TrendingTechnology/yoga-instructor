@@ -7,8 +7,21 @@ import 'package:sofia/screens/dashboard_page.dart';
 import 'package:sofia/screens/home_page.dart';
 import 'package:sofia/utils/database.dart';
 
-/// Widget for generating the Age Screen,
-/// and storing it in the database
+/// Displays the `AgePage`.
+///
+/// Allows user to choose any one of the age ranges. Also, uploads
+/// to the database when the user proceeds from this page.
+///
+/// **Connected pages:**
+///
+/// - `DashboardPage` (forward)
+/// - `GenderPage` (previous)
+///
+/// **Params:**
+///
+/// - [userName]
+/// - [gender]
+///
 class AgePage extends StatefulWidget {
   final String userName;
   final String gender;
