@@ -16,6 +16,10 @@ String userName;
 /// - `AgePage` (forward)
 /// - `NamePage` (previous)
 ///
+/// **Params:**
+///
+/// - [userName]
+///
 class GenderPage extends StatefulWidget {
   final String userName;
 
