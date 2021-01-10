@@ -14,17 +14,17 @@ String name;
 String email;
 String imageUrl;
 
-/// The main Firestore collection
+/// The main Firestore collection.
 final CollectionReference mainCollection = Firestore.instance.collection('sofia');
 
 // Use this for production
 // final DocumentReference documentReference = mainCollection.document('prod');
 
-// Use this for testing
+/// The test document reference.
 final DocumentReference documentReference = mainCollection.document('test');
 
-/// For checking if the user is already signed into the
-/// app using Google Sign In
+/// Checks if the user is already signed into the app using
+/// Google Sign In.
 Future getUser() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   authSignedIn = prefs.getBool('auth') ?? false;
@@ -42,11 +42,13 @@ Future getUser() async {
   }
 }
 
-/// For authenticating user using Google Sign In
-/// with Firebase Authentication API.
+/// Authenticates user using Google Sign In with
+/// Firebase Authentication API.
 ///
 /// Retrieves some general user related information
-/// from their Google account for ease of the login process
+/// from their Google account for ease of the login process.
+///
+/// Returns user `uid`.
 Future<String> signInWithGoogle() async {
   final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
   final GoogleSignInAuthentication googleSignInAuthentication =
@@ -91,7 +93,8 @@ Future<String> signInWithGoogle() async {
   return null;
 }
 
-/// For signing out of their Google account
+/// Signs out of the current logged in Google account
+/// in the app.
 Future<void> signOutGoogle() async {
   await googleSignIn.signOut();
   await _auth.signOut();
@@ -103,6 +106,8 @@ Future<void> signOutGoogle() async {
   print("User Sign Out");
 }
 
+/// Retrieves the user `uid` from the shared preference of the
+/// device.
 Future<String> getUid() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   uid = prefs.getString('uid');
