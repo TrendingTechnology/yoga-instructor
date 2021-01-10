@@ -190,9 +190,9 @@ class _DashboardPageState extends State<DashboardPage> {
                                         alignment: Alignment.bottomRight,
                                         child: ClipOval(
                                           child: Material(
-                                            color: Palette.darkShade,
+                                            color: Palette.lightDarkShade,
                                             child: InkWell(
-                                              splashColor: Colors.red, // inkwell color
+                                              splashColor: Palette.lightDarkShade,
                                               child: SizedBox(
                                                 width: 38,
                                                 height: 38,
