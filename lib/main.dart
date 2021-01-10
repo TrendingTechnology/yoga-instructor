@@ -5,11 +5,11 @@ import 'screens/login_page.dart';
 import 'screens/name_page.dart';
 import 'utils/sign_in.dart';
 
-/// For storing the list of cameras
+/// The list of camera types (mainly including: front and back)
 List<CameraDescription> cameras = [];
 void main() async {
-  // Getting the available device cameras
   try {
+    // To load the cameras before the app is initialized
     WidgetsFlutterBinding.ensureInitialized();
     cameras = await availableCameras();
   } on CameraException catch (e) {
@@ -20,7 +20,20 @@ void main() async {
   runApp(MyApp());
 }
 
-/// For printing the camera error, if any occurs
+/// Prints the camera error, if any occurs
+///
+/// **Inputs:**
+///
+/// [code] - error code
+///
+/// [message] - error message
+///
+/// **Use like:**
+///
+/// ```dart
+/// logError(e.code, e.description);
+/// ```
+///
 void logError(String code, String message) => print('Error: $code\nError Message: $message');
 
 /// First stateless widget to get loaded as soon as
@@ -38,8 +51,8 @@ class _MyAppState extends State<MyApp> {
     getUserInfo();
   }
 
-  /// Checking if the user is already logged in
-  /// and retrieve user info
+  /// Checks if the user is already logged in,
+  /// and retrieves user info
   Future getUserInfo() async {
     await getUser();
     // await getUid();
