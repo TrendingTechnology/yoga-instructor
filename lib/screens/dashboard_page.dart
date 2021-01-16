@@ -377,28 +377,96 @@ class _DashboardPageState extends State<DashboardPage> {
                       },
                     ),
                   ),
-                  Container(
-                    color: Colors.black,
+                  // Container(
+                  //   color: Colors.black,
+                  //   child: Column(
+                  //     children: [
+                  //       Container(
+                  //         height: 24,
+                  //         width: double.maxFinite,
+                  //         decoration: BoxDecoration(
+                  //           color: Colors.white,
+                  //           borderRadius: BorderRadius.only(
+                  //             bottomLeft: Radius.circular(8.0),
+                  //             bottomRight: Radius.circular(8.0),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //       Text(
+                  //         'Privacy policy', // Update the quote from backend
+                  //         style: TextStyle(
+                  //           fontSize: 16.0,
+                  //           fontWeight: FontWeight.bold,
+                  //           color: Colors.white,
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  SizedBox(height: 16.0),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          height: 24,
                           width: double.maxFinite,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(8.0),
-                              bottomRight: Radius.circular(8.0),
-                            ),
-                          ),
+                          height: 2,
+                          color: Palette.black.withOpacity(0.2),
                         ),
-                        Text(
-                          'Privacy policy', // Update the quote from backend
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
+                        SizedBox(height: 16.0),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.privacy_tip,
+                              color: Palette.black.withOpacity(0.6),
+                            ),
+                            SizedBox(width: 8.0),
+                            Text(
+                              'Privacy policy', // Update the quote from backend
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                                color: Palette.black.withOpacity(0.6),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 8.0),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.email,
+                              color: Palette.black.withOpacity(0.6),
+                            ),
+                            SizedBox(width: 8.0),
+                            Text(
+                              'Contact us', // Update the quote from backend
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                                color: Palette.black.withOpacity(0.6),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 8.0),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.info,
+                              color: Palette.black.withOpacity(0.6),
+                            ),
+                            SizedBox(width: 8.0),
+                            Text(
+                              'About', // Update the quote from backend
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                                color: Palette.black.withOpacity(0.6),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
