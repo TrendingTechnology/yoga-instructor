@@ -3,8 +3,10 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sofia/res/palette.dart';
 import 'package:sofia/screens/login_page.dart';
 import 'package:sofia/screens/track_page.dart';
 import 'package:sofia/speech/output_speech.dart';
@@ -327,6 +329,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    FlutterStatusbarcolor.setStatusBarColor(Color(0xFFFFF3F0));
+    FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
     var screenSize = MediaQuery.of(context).size;
     return Scaffold(
       key: _key,
@@ -463,8 +467,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                               Expanded(
-                                child: Image.asset(
-                                    'assets/images/$beginnersTrackName.png'),
+                                child: Image.asset('assets/images/$beginnersTrackName.png'),
                               )
                             ],
                           ),
