@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:sofia/res/palette.dart';
+import 'package:sofia/screens/each_track_page.dart';
 import 'package:sofia/utils/database.dart';
 import 'package:sofia/utils/sign_in.dart';
 
+// TODOD: Add caching of the data to prevent empty
+// screen during the intial load of the data from firebase
 class DashboardPage extends StatefulWidget {
   @override
   _DashboardPageState createState() => _DashboardPageState();
@@ -33,6 +36,47 @@ class _DashboardPageState extends State<DashboardPage> {
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
         backgroundColor: Colors.white,
+        // appBar: AppBar(
+        //   backgroundColor: Colors.white,
+        //   elevation: 0,
+        //   title: Text(
+        //     'Hello, Souvik',
+        //     style: TextStyle(
+        //       fontSize: 26.0,
+        //       fontWeight: FontWeight.bold,
+        //       color: Palette.black,
+        //     ),
+        //   ),
+        //   actions: [
+        //     Padding(
+        //       padding: const EdgeInsets.only(right: 16.0, top: 8.0),
+        //       child: Stack(
+        //         children: [
+        //           ClipRRect(
+        //             borderRadius: BorderRadius.circular(60),
+        //             child: Container(
+        //               color: Palette.lightDarkShade,
+        //               child: Padding(
+        //                 padding: const EdgeInsets.all(6.0),
+        //                 child: Icon(
+        //                   Icons.person,
+        //                   color: Palette.lightShade,
+        //                   size: 26,
+        //                 ),
+        //               ),
+        //             ),
+        //           ),
+        //           imageUrl != null
+        //               ? ClipRRect(
+        //                   borderRadius: BorderRadius.circular(60),
+        //                   child: SizedBox(width: 38.0, child: Image.network(imageUrl)),
+        //                 )
+        //               : Container(),
+        //         ],
+        //       ),
+        //     )
+        //   ],
+        // ),
         body: SafeArea(
           child: SingleChildScrollView(
             physics: BouncingScrollPhysics(),
@@ -252,121 +296,140 @@ class _DashboardPageState extends State<DashboardPage> {
                             itemBuilder: (_, index) {
                               String trackName = snapshot.data[index]['name'];
                               String trackDescription = snapshot.data[index]['desc'];
+                              int numberOfPoses = snapshot.data[index]['count'];
 
-                              return Container(
-                                decoration: BoxDecoration(
-                                  color: Palette.mediumShade,
-                                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(0.0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      // Expanded(
-                                      //   child: Center(
-                                      //     child: SizedBox(
-                                      //       width: screeWidth * IMAGE_MULT,
-                                      //       child:
-                                      //           Image.asset('assets/images/child.png'),
-                                      //     ),
-                                      //   ),
-                                      // ),
-                                      // Row(
-                                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      //   children: [
-                                      //     Text(
-                                      //       trackName[0].toUpperCase() +
-                                      //           trackName.substring(1) +
-                                      //           ' track',
-                                      //       maxLines: 1,
-                                      //       softWrap: false,
-                                      //       overflow: TextOverflow.fade,
-                                      //       style: TextStyle(
-                                      //         fontSize: 22.0,
-                                      //         fontWeight: FontWeight.bold,
-                                      //         color: Palette.black,
-                                      //       ),
-                                      //     ),
-                                      //     ClipOval(
-                                      //       child: Material(
-                                      //         color: Palette.lightDarkShade,
-                                      //         child: InkWell(
-                                      //           splashColor: Palette.lightDarkShade,
-                                      //           child: SizedBox(
-                                      //             width: 38,
-                                      //             height: 38,
-                                      //             child: Center(
-                                      //               child: Icon(
-                                      //                 Icons.play_arrow,
-                                      //                 size: 20,
-                                      //                 color: Colors.white,
-                                      //               ),
-                                      //             ),
-                                      //           ),
-                                      //           onTap: () {},
-                                      //         ),
-                                      //       ),
-                                      //     ),
-                                      //   ],
-                                      // ),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment: CrossAxisAlignment.end,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(left: 16.0),
-                                            child: Text(
-                                              trackName[0].toUpperCase() +
-                                                  trackName.substring(1) +
-                                                  ' track',
-                                              maxLines: 1,
-                                              softWrap: false,
-                                              overflow: TextOverflow.fade,
-                                              style: TextStyle(
-                                                fontSize: 22.0,
-                                                fontWeight: FontWeight.bold,
-                                                color: Palette.black,
+                              return InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => EachTrackPage(
+                                        trackName: trackName,
+                                        trackDescription: trackDescription,
+                                        numberOfPoses: numberOfPoses,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Palette.mediumShade,
+                                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(0.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        // Expanded(
+                                        //   child: Center(
+                                        //     child: SizedBox(
+                                        //       width: screeWidth * IMAGE_MULT,
+                                        //       child:
+                                        //           Image.asset('assets/images/child.png'),
+                                        //     ),
+                                        //   ),
+                                        // ),
+                                        // Row(
+                                        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        //   children: [
+                                        //     Text(
+                                        //       trackName[0].toUpperCase() +
+                                        //           trackName.substring(1) +
+                                        //           ' track',
+                                        //       maxLines: 1,
+                                        //       softWrap: false,
+                                        //       overflow: TextOverflow.fade,
+                                        //       style: TextStyle(
+                                        //         fontSize: 22.0,
+                                        //         fontWeight: FontWeight.bold,
+                                        //         color: Palette.black,
+                                        //       ),
+                                        //     ),
+                                        //     ClipOval(
+                                        //       child: Material(
+                                        //         color: Palette.lightDarkShade,
+                                        //         child: InkWell(
+                                        //           splashColor: Palette.lightDarkShade,
+                                        //           child: SizedBox(
+                                        //             width: 38,
+                                        //             height: 38,
+                                        //             child: Center(
+                                        //               child: Icon(
+                                        //                 Icons.play_arrow,
+                                        //                 size: 20,
+                                        //                 color: Colors.white,
+                                        //               ),
+                                        //             ),
+                                        //           ),
+                                        //           onTap: () {},
+                                        //         ),
+                                        //       ),
+                                        //     ),
+                                        //   ],
+                                        // ),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 16.0),
+                                              child: Text(
+                                                trackName[0].toUpperCase() +
+                                                    trackName.substring(1) +
+                                                    ' track',
+                                                maxLines: 1,
+                                                softWrap: false,
+                                                overflow: TextOverflow.fade,
+                                                style: TextStyle(
+                                                  fontSize: 22.0,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Palette.black,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              color: Palette.lightDarkShade,
-                                              borderRadius: BorderRadius.only(
-                                                  topRight: Radius.circular(8.0),
-                                                  bottomLeft: Radius.circular(8.0)),
-                                            ),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Icon(
-                                                Icons.play_arrow,
-                                                color: Colors.white,
-                                                size: 36.0,
+                                            InkWell(
+                                              onTap: () {
+                                                print('Play button tapped !');
+                                              },
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: Palette.lightDarkShade,
+                                                  borderRadius: BorderRadius.only(
+                                                      topRight: Radius.circular(8.0),
+                                                      bottomLeft: Radius.circular(8.0)),
+                                                ),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Icon(
+                                                    Icons.play_arrow,
+                                                    color: Colors.white,
+                                                    size: 36.0,
+                                                  ),
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(height: 8.0),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          left: 16.0,
-                                          right: 16.0,
-                                          bottom: 24.0,
+                                          ],
                                         ),
-                                        child: Text(
-                                          trackDescription,
-                                          style: TextStyle(
-                                            fontSize: 14.0,
-                                            fontWeight: FontWeight.w400,
-                                            letterSpacing: 1,
-                                            color: Palette.black,
+                                        SizedBox(height: 8.0),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                            left: 16.0,
+                                            right: 16.0,
+                                            bottom: 24.0,
+                                          ),
+                                          child: Text(
+                                            trackDescription,
+                                            style: TextStyle(
+                                              fontSize: 14.0,
+                                              fontWeight: FontWeight.w400,
+                                              letterSpacing: 1,
+                                              color: Palette.black,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               );
