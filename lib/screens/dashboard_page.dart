@@ -119,7 +119,9 @@ class _DashboardPageState extends State<DashboardPage> {
                             imageUrl != null
                                 ? ClipRRect(
                                     borderRadius: BorderRadius.circular(60),
-                                    child: SizedBox(width: 38.0, child: Image.network(imageUrl)),
+                                    child: SizedBox(
+                                        width: 38.0,
+                                        child: Image.network(imageUrl)),
                                   )
                                 : Container(),
                           ],
@@ -176,25 +178,29 @@ class _DashboardPageState extends State<DashboardPage> {
                                   Stack(
                                     children: [
                                       Padding(
-                                        padding: const EdgeInsets.only(bottom: 16.0),
+                                        padding:
+                                            const EdgeInsets.only(bottom: 16.0),
                                         child: Container(
                                           width: screeWidth * POSE_WIDTH_MULT,
                                           decoration: BoxDecoration(
                                             color: Palette.mediumShade,
-                                            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(8.0)),
                                           ),
                                           child: Padding(
                                             padding: const EdgeInsets.all(16.0),
                                             child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               mainAxisSize: MainAxisSize.max,
                                               children: [
                                                 Expanded(
                                                   child: Center(
                                                     child: SizedBox(
-                                                      width: screeWidth * IMAGE_MULT,
-                                                      child:
-                                                          Image.asset('assets/images/child.png'),
+                                                      width: screeWidth *
+                                                          IMAGE_MULT,
+                                                      child: Image.asset(
+                                                          'assets/images/child.png'),
                                                     ),
                                                   ),
                                                 ),
@@ -212,7 +218,8 @@ class _DashboardPageState extends State<DashboardPage> {
                                                   ),
                                                 ),
                                                 Text(
-                                                  poseSubtitle[0].toUpperCase() +
+                                                  poseSubtitle[0]
+                                                          .toUpperCase() +
                                                       poseSubtitle.substring(1),
                                                   maxLines: 1,
                                                   softWrap: false,
@@ -237,7 +244,8 @@ class _DashboardPageState extends State<DashboardPage> {
                                           child: Material(
                                             color: Palette.lightDarkShade,
                                             child: InkWell(
-                                              splashColor: Palette.lightDarkShade,
+                                              splashColor:
+                                                  Palette.lightDarkShade,
                                               child: SizedBox(
                                                 width: 38,
                                                 height: 38,
@@ -256,7 +264,8 @@ class _DashboardPageState extends State<DashboardPage> {
                                       )
                                     ],
                                   ),
-                                  if (index == snapshot.data.length - 1) SizedBox(width: 16.0),
+                                  if (index == snapshot.data.length - 1)
+                                    SizedBox(width: 16.0),
                                 ],
                               );
                             },
@@ -295,7 +304,8 @@ class _DashboardPageState extends State<DashboardPage> {
                             ),
                             itemBuilder: (_, index) {
                               String trackName = snapshot.data[index]['name'];
-                              String trackDescription = snapshot.data[index]['desc'];
+                              String trackDescription =
+                                  snapshot.data[index]['desc'];
                               int numberOfPoses = snapshot.data[index]['count'];
 
                               return InkWell(
@@ -313,12 +323,14 @@ class _DashboardPageState extends State<DashboardPage> {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     color: Palette.mediumShade,
-                                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.0)),
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.all(0.0),
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.max,
                                       children: [
                                         // Expanded(
@@ -369,11 +381,14 @@ class _DashboardPageState extends State<DashboardPage> {
                                         //   ],
                                         // ),
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
                                           children: [
                                             Padding(
-                                              padding: const EdgeInsets.only(left: 16.0),
+                                              padding: const EdgeInsets.only(
+                                                  left: 16.0),
                                               child: Text(
                                                 trackName[0].toUpperCase() +
                                                     trackName.substring(1) +
@@ -395,12 +410,18 @@ class _DashboardPageState extends State<DashboardPage> {
                                               child: Container(
                                                 decoration: BoxDecoration(
                                                   color: Palette.lightDarkShade,
-                                                  borderRadius: BorderRadius.only(
-                                                      topRight: Radius.circular(8.0),
-                                                      bottomLeft: Radius.circular(8.0)),
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  8.0),
+                                                          bottomLeft:
+                                                              Radius.circular(
+                                                                  8.0)),
                                                 ),
                                                 child: Padding(
-                                                  padding: const EdgeInsets.all(8.0),
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
                                                   child: Icon(
                                                     Icons.play_arrow,
                                                     color: Colors.white,
