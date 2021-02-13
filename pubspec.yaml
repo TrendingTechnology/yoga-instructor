@@ -27,6 +27,7 @@ dependencies:
   video_player: ^0.10.11+1
   google_fonts: ^1.1.1
   flutter_statusbarcolor: ^0.2.3
+  flare_flutter: ^2.0.6
 
 dev_dependencies:
   flutter_test:
@@ -66,3 +67,4 @@ flutter:
     - assets/images/
     - assets/videos/
     - assets/model/
+    - assets/rive/
