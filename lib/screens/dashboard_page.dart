@@ -24,13 +24,13 @@ class _DashboardPageState extends State<DashboardPage> {
     double screeWidth = MediaQuery.of(context).size.width;
     double screeHeight = MediaQuery.of(context).size.height;
 
-    const double POSE_WIDTH_MULT = 0.5;
-    const double POSE_HEIGHT_MULT = 0.48;
+    const double POSE_WIDTH_MULT = 0.6;
+    const double POSE_HEIGHT_MULT = 0.53;
 
     const double FAV_WIDTH_MULT = 5.5;
     const double FAV_HEIGHT_MULT = 4.8;
 
-    const double IMAGE_MULT = 0.36;
+    const double IMAGE_MULT = 1.0;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
@@ -175,94 +175,116 @@ class _DashboardPageState extends State<DashboardPage> {
                               return Row(
                                 children: [
                                   if (index == 0) SizedBox(width: 16.0),
-                                  Stack(
-                                    children: [
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 16.0),
-                                        child: Container(
-                                          width: screeWidth * POSE_WIDTH_MULT,
-                                          decoration: BoxDecoration(
-                                            color: Palette.mediumShade,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(8.0)),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.only(bottom: 16.0),
+                                    child: Container(
+                                      width: screeWidth * POSE_WIDTH_MULT,
+                                      decoration: BoxDecoration(
+                                        color: Palette.mediumShade,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(8.0)),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(8.0),
+                                              topRight: Radius.circular(8.0),
+                                            ),
+                                            child: SizedBox(
+                                              width: screeWidth * IMAGE_MULT,
+                                              child: Image.asset(
+                                                'assets/images/triangle.png',
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
                                           ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(16.0),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              mainAxisSize: MainAxisSize.max,
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                              left: 8.0,
+                                              right: 8.0,
+                                              top: 8.0,
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
-                                                Expanded(
-                                                  child: Center(
-                                                    child: SizedBox(
-                                                      width: screeWidth *
-                                                          IMAGE_MULT,
-                                                      child: Image.asset(
-                                                          'assets/images/child.png'),
+                                                Flexible(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        poseTitle[0]
+                                                                .toUpperCase() +
+                                                            poseTitle
+                                                                .substring(1) +
+                                                            ' pose',
+                                                        maxLines: 1,
+                                                        softWrap: false,
+                                                        overflow:
+                                                            TextOverflow.fade,
+                                                        style: TextStyle(
+                                                          fontSize: 16.0,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Palette.black,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        poseSubtitle[0]
+                                                                .toUpperCase() +
+                                                            poseSubtitle
+                                                                .substring(1),
+                                                        maxLines: 1,
+                                                        softWrap: false,
+                                                        overflow:
+                                                            TextOverflow.fade,
+                                                        style: TextStyle(
+                                                          fontSize: 14.0,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          letterSpacing: 1,
+                                                          color: Palette.black,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                ClipOval(
+                                                  child: Material(
+                                                    color:
+                                                        Palette.lightDarkShade,
+                                                    child: InkWell(
+                                                      splashColor: Palette
+                                                          .lightDarkShade,
+                                                      child: SizedBox(
+                                                        width: 38,
+                                                        height: 38,
+                                                        child: Center(
+                                                          child: Icon(
+                                                            Icons.favorite,
+                                                            size: 20,
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      onTap: () {},
                                                     ),
-                                                  ),
-                                                ),
-                                                Text(
-                                                  poseTitle[0].toUpperCase() +
-                                                      poseTitle.substring(1) +
-                                                      ' pose',
-                                                  maxLines: 1,
-                                                  softWrap: false,
-                                                  overflow: TextOverflow.fade,
-                                                  style: TextStyle(
-                                                    fontSize: 16.0,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Palette.black,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  poseSubtitle[0]
-                                                          .toUpperCase() +
-                                                      poseSubtitle.substring(1),
-                                                  maxLines: 1,
-                                                  softWrap: false,
-                                                  overflow: TextOverflow.fade,
-                                                  style: TextStyle(
-                                                    fontSize: 14.0,
-                                                    fontWeight: FontWeight.w400,
-                                                    letterSpacing: 1,
-                                                    color: Palette.black,
                                                   ),
                                                 ),
                                               ],
                                             ),
                                           ),
-                                        ),
+                                        ],
                                       ),
-                                      Align(
-                                        widthFactor: FAV_WIDTH_MULT,
-                                        heightFactor: FAV_HEIGHT_MULT,
-                                        alignment: Alignment.bottomRight,
-                                        child: ClipOval(
-                                          child: Material(
-                                            color: Palette.lightDarkShade,
-                                            child: InkWell(
-                                              splashColor:
-                                                  Palette.lightDarkShade,
-                                              child: SizedBox(
-                                                width: 38,
-                                                height: 38,
-                                                child: Center(
-                                                  child: Icon(
-                                                    Icons.favorite,
-                                                    size: 20,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
-                                              onTap: () {},
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                    ],
+                                    ),
                                   ),
                                   if (index == snapshot.data.length - 1)
                                     SizedBox(width: 16.0),
