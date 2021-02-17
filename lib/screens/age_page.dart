@@ -4,7 +4,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sofia/res/palette.dart';
 import 'package:sofia/screens/dashboard_page.dart';
-import 'package:sofia/screens/home_page.dart';
 import 'package:sofia/utils/database.dart';
 
 /// Displays the `AgePage`.
@@ -149,7 +148,9 @@ class _AgePageState extends State<AgePage> {
                       borderRadius: BorderRadius.circular(8.0),
                       border: Border.all(
                         width: 3,
-                        color: _selectedList[0] ? Color(0xFFed576a) : Color(0xFFf1919c),
+                        color: _selectedList[0]
+                            ? Color(0xFFed576a)
+                            : Color(0xFFf1919c),
                       ),
                     ),
                     child: Padding(
@@ -184,7 +185,9 @@ class _AgePageState extends State<AgePage> {
                       borderRadius: BorderRadius.circular(8.0),
                       border: Border.all(
                         width: 3,
-                        color: _selectedList[1] ? Color(0xFFed576a) : Color(0xFFf1919c),
+                        color: _selectedList[1]
+                            ? Color(0xFFed576a)
+                            : Color(0xFFf1919c),
                       ),
                     ),
                     child: Padding(
@@ -219,7 +222,9 @@ class _AgePageState extends State<AgePage> {
                       borderRadius: BorderRadius.circular(8.0),
                       border: Border.all(
                         width: 3,
-                        color: _selectedList[2] ? Color(0xFFed576a) : Color(0xFFf1919c),
+                        color: _selectedList[2]
+                            ? Color(0xFFed576a)
+                            : Color(0xFFf1919c),
                       ),
                     ),
                     child: Padding(
@@ -246,13 +251,16 @@ class _AgePageState extends State<AgePage> {
             SizedBox(height: screenSize.height / 20),
             _isStoring
                 ? CircularProgressIndicator(
-                    valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFFed576a)),
+                    valueColor:
+                        new AlwaysStoppedAnimation<Color>(Color(0xFFed576a)),
                   )
                 : IconButton(
                     icon: Icon(
                       Icons.check_circle,
                       size: screenSize.width / 10,
-                      color: _selectedAgeGroup != null ? Color(0xFFed576a) : Colors.black12,
+                      color: _selectedAgeGroup != null
+                          ? Color(0xFFed576a)
+                          : Colors.black12,
                     ),
                     onPressed: _selectedAgeGroup != null
                         ? () async {
