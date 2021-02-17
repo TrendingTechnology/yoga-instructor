@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sofia/res/palette.dart';
+import 'package:sofia/screens/timer_overlay.dart';
 import 'package:sofia/utils/database.dart';
 
 class EachTrackPage extends StatefulWidget {
@@ -48,7 +49,8 @@ class _EachTrackPageState extends State<EachTrackPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0, bottom: 16.0),
+                  padding: const EdgeInsets.only(
+                      top: 16.0, left: 16.0, right: 16.0, bottom: 16.0),
                   child: Text(
                     trackName[0].toUpperCase() + trackName.substring(1),
                     style: TextStyle(
@@ -72,7 +74,85 @@ class _EachTrackPageState extends State<EachTrackPage> {
                 //   ),
                 // ),
                 Image.asset(
-                    'assets/images/${trackName[0].toUpperCase() + trackName.substring(1)}.jpg'),
+                  'assets/images/${trackName[0].toUpperCase() + trackName.substring(1)}.jpg',
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.access_time,
+                            color: Palette.black.withOpacity(0.8),
+                          ),
+                          SizedBox(width: 8.0),
+                          Text(
+                            '15 minutes',
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.w400,
+                              letterSpacing: 1,
+                              color: Palette.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        print('Play all button tapped !');
+                        Navigator.of(context).push(
+                          PageRouteBuilder(
+                            opaque: false,
+                            pageBuilder: (context, _, __) => TimerOverlay(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Palette.lightDarkShade,
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(8.0),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 8.0,
+                            right: 16.0,
+                            top: 8.0,
+                            bottom: 8.0,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.play_arrow,
+                                color: Colors.white,
+                                size: 36.0,
+                              ),
+                              Text(
+                                'Play all',
+                                // maxLines: 1,
+                                softWrap: true,
+                                overflow: TextOverflow.fade,
+                                style: TextStyle(
+                                  fontSize: 22.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
                 Padding(
                   padding: const EdgeInsets.only(
                     top: 16.0,
@@ -124,12 +204,12 @@ class _EachTrackPageState extends State<EachTrackPage> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(
-                                Icons.access_time,
+                                Icons.star_border,
                                 color: Palette.black.withOpacity(0.8),
                               ),
                               SizedBox(width: 8.0),
                               Text(
-                                '15 minutes',
+                                '160',
                                 style: TextStyle(
                                   fontSize: 18.0,
                                   fontWeight: FontWeight.w400,
@@ -176,22 +256,26 @@ class _EachTrackPageState extends State<EachTrackPage> {
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: Palette.mediumShade,
-                                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8.0)),
                                 ),
                                 child: Padding(
                                   padding: const EdgeInsets.all(0.0),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.max,
                                     children: [
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Expanded(
                                             child: Padding(
-                                              padding:
-                                                  const EdgeInsets.only(left: 16.0, top: 24.0),
+                                              padding: const EdgeInsets.only(
+                                                  left: 16.0, top: 24.0),
                                               child: Text(
                                                 poseTitle[0].toUpperCase() +
                                                     poseTitle.substring(1),
@@ -206,26 +290,43 @@ class _EachTrackPageState extends State<EachTrackPage> {
                                               ),
                                             ),
                                           ),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              color: Palette.lightDarkShade,
-                                              borderRadius: BorderRadius.only(
-                                                  topRight: Radius.circular(8.0),
-                                                  bottomLeft: Radius.circular(8.0)),
-                                            ),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Icon(
-                                                Icons.play_arrow,
-                                                color: Colors.white,
-                                                size: 36.0,
+                                          InkWell(
+                                            onTap: () {
+                                              print('Play button tapped !');
+                                              Navigator.of(context).push(
+                                                PageRouteBuilder(
+                                                  opaque: false,
+                                                  pageBuilder:
+                                                      (context, _, __) =>
+                                                          TimerOverlay(),
+                                                ),
+                                              );
+                                            },
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: Palette.lightDarkShade,
+                                                borderRadius: BorderRadius.only(
+                                                    topRight:
+                                                        Radius.circular(8.0),
+                                                    bottomLeft:
+                                                        Radius.circular(8.0)),
+                                              ),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Icon(
+                                                  Icons.play_arrow,
+                                                  color: Colors.white,
+                                                  size: 36.0,
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ],
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.only(left: 16.0, top: 4.0),
+                                        padding: const EdgeInsets.only(
+                                            left: 16.0, top: 4.0),
                                         child: Text(
                                           poseSubtitle[0].toUpperCase() +
                                               poseSubtitle.substring(1),
