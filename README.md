@@ -20,6 +20,11 @@
 
 * **TFLite** model is used for pose recognition.
 
+<img src="https://github.com/sbis04/yoga-instructor/raw/master/screenshots/sofia_timeline.png" alt="Sofia timeline" />
+
+> :construction: **WIP: Timeline updated on [February 2021]**
+
+
 # Screenshots
 
 <p align="center">
