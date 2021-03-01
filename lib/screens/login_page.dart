@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:sofia/res/palette.dart';
 import 'package:sofia/utils/sign_in.dart';
@@ -25,31 +26,34 @@ class _LoginPageState extends State<LoginPage> {
     FlutterStatusbarcolor.setStatusBarColor(Palette.loginBackground);
     FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
     var screenSize = MediaQuery.of(context).size;
-    return Scaffold(
-      backgroundColor: Palette.loginBackground,
-      body: Container(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.005,
-            ),
-            Text(
-              "Sofia",
-              style: TextStyle(
-                fontFamily: 'TitilliumWeb',
-                fontSize: screenSize.width / 8,
-                color: Colors.black,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark,
+      child: Scaffold(
+        backgroundColor: Palette.loginBackground,
+        body: Container(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.005,
               ),
-            ),
-            WebsafeSvg.asset(
-              'assets/images/cover1.svg',
-              width: MediaQuery.of(context).size.width,
-              semanticsLabel: 'Cover Image',
-            ),
-            _googleSignInButton(),
-          ],
+              Text(
+                "Sofia",
+                style: TextStyle(
+                  fontFamily: 'TitilliumWeb',
+                  fontSize: screenSize.width / 8,
+                  color: Colors.black,
+                ),
+              ),
+              WebsafeSvg.asset(
+                'assets/images/cover1.svg',
+                width: MediaQuery.of(context).size.width,
+                semanticsLabel: 'Cover Image',
+              ),
+              _googleSignInButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -72,7 +76,7 @@ class _LoginPageState extends State<LoginPage> {
           // is successful.
           signInWithGoogle().then((user) {
             if (user != null) {
-              Navigator.of(context).push(
+              Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
                   builder: (context) {
                     return NamePage();
@@ -81,7 +85,8 @@ class _LoginPageState extends State<LoginPage> {
               ).then((_) {
                 // Sets the status bar color of the one set to this page
                 // if an user comes back to this page.
-                FlutterStatusbarcolor.setStatusBarColor(Palette.loginBackground);
+                FlutterStatusbarcolor.setStatusBarColor(
+                    Palette.loginBackground);
                 FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
               });
             }
@@ -98,15 +103,17 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Image(image: AssetImage("assets/images/google_logo.png"), height: 35.0),
+              Image(
+                  image: AssetImage("assets/images/google_logo.png"),
+                  height: 35.0),
               Padding(
                 padding: const EdgeInsets.only(left: 10),
                 child: Text(
                   'Sign in with Google',
                   style: TextStyle(
                     fontSize: 20,
-                    color: Colors.grey,
-                    fontWeight: FontWeight.w400,
+                    color: Colors.black45,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               )
