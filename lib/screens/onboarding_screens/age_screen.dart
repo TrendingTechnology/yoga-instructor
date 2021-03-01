@@ -1,10 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sofia/res/palette.dart';
-import 'package:sofia/screens/dashboard_page.dart';
+import 'package:sofia/screens/dashboard_screen.dart';
 import 'package:sofia/utils/database.dart';
 
 /// Displays the `AgePage`.
@@ -22,17 +23,22 @@ import 'package:sofia/utils/database.dart';
 /// - [userName]
 /// - [gender]
 ///
-class AgePage extends StatefulWidget {
+class AgeScreen extends StatefulWidget {
+  final FirebaseUser user;
   final String userName;
   final String gender;
 
-  AgePage({@required this.userName, @required this.gender});
+  AgeScreen({
+    @required this.user,
+    @required this.userName,
+    @required this.gender,
+  });
 
   @override
-  _AgePageState createState() => _AgePageState();
+  _AgeScreenState createState() => _AgeScreenState();
 }
 
-class _AgePageState extends State<AgePage> {
+class _AgeScreenState extends State<AgeScreen> {
   Database _database = Database();
 
   String errorString;
@@ -44,6 +50,9 @@ class _AgePageState extends State<AgePage> {
 
   AppBar appBar = AppBar(
     centerTitle: true,
+    leading: BackButton(
+      color: Colors.black54,
+    ),
     title: Text(
       '',
       style: TextStyle(color: Colors.deepOrangeAccent[700], fontSize: 30),
@@ -73,7 +82,7 @@ class _AgePageState extends State<AgePage> {
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(
         builder: (context) {
-          return DashboardPage(); // new dashboard test
+          return DashboardScreen(); // new dashboard test
           // return HomePage();
         },
       ),
