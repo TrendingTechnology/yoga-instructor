@@ -1,9 +1,9 @@
 name: sofia
-description: A new Flutter project.
+description: AI powered yoga instructor
 
 publish_to: "none"
 
-version: 1.0.0+1
+version: 0.2.1+2
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -28,10 +28,16 @@ dependencies:
   google_fonts: ^1.1.1
   flutter_statusbarcolor: ^0.2.3
   flare_flutter: ^2.0.6
+  flutter_riverpod: ^0.12.4
+  json_annotation: ^3.1.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  freezed: ^0.12.7
+  build_runner: ^1.11.1
+  json_serializable: ^3.5.1
 
 flutter:
   uses-material-design: true
