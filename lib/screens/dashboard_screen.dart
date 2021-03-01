@@ -1,19 +1,23 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:sofia/res/palette.dart';
 import 'package:sofia/screens/each_track_page.dart';
 import 'package:sofia/utils/database.dart';
-import 'package:sofia/utils/sign_in.dart';
 
-// TODOD: Add caching of the data to prevent empty
+// TODO: Add caching of the data to prevent empty
 // screen during the intial load of the data from firebase
-class DashboardPage extends StatefulWidget {
+class DashboardScreen extends StatefulWidget {
+  final FirebaseUser user;
+
+  const DashboardScreen({Key key, this.user}) : super(key: key);
+
   @override
-  _DashboardPageState createState() => _DashboardPageState();
+  _DashboardScreenState createState() => _DashboardScreenState();
 }
 
-class _DashboardPageState extends State<DashboardPage> {
+class _DashboardScreenState extends State<DashboardScreen> {
   Database _database = Database();
 
   @override
@@ -31,6 +35,14 @@ class _DashboardPageState extends State<DashboardPage> {
     const double FAV_HEIGHT_MULT = 4.8;
 
     const double IMAGE_MULT = 1.0;
+
+    String imageUrl;
+
+    @override
+    void initState() {
+      super.initState();
+      imageUrl = widget.user.photoUrl;
+    }
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
