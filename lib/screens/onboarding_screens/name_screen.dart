@@ -1,10 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:sofia/res/palette.dart';
-import 'package:sofia/screens/gender_page.dart';
-import 'package:sofia/utils/sign_in.dart';
+
+import 'gender_screen.dart';
 
 /// Displays the `NamePage`.
 ///
@@ -15,16 +16,26 @@ import 'package:sofia/utils/sign_in.dart';
 ///
 /// - `GenderPage` (forward)
 ///
-class NamePage extends StatefulWidget {
+class NameScreen extends StatefulWidget {
+  final FirebaseUser user;
+
+  const NameScreen({
+    Key key,
+    @required this.user,
+  }) : super(key: key);
+
   @override
-  _NamePageState createState() => _NamePageState();
+  _NameScreenState createState() => _NameScreenState();
 }
 
-class _NamePageState extends State<NamePage> {
-  final textController = name != null
-      ? TextEditingController(text: name.split(' ')[0])
-      : TextEditingController();
+class _NameScreenState extends State<NameScreen> {
+  // final textController = name != null
+  //     ? TextEditingController(text: name.split(' ')[0])
+  //     : TextEditingController();
+
+  TextEditingController textController;
   FocusNode textFocusNode;
+  FirebaseUser user;
 
   String _userName;
   bool _isEditing = false;
@@ -32,6 +43,12 @@ class _NamePageState extends State<NamePage> {
   @override
   void initState() {
     super.initState();
+
+    user = widget.user;
+
+    textController = user.displayName != null
+        ? TextEditingController(text: user.displayName.split(' ')[0])
+        : TextEditingController();
     textFocusNode = FocusNode();
   }
 
@@ -173,7 +190,8 @@ class _NamePageState extends State<NamePage> {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) {
-                                    return GenderPage(
+                                    return GenderScreen(
+                                      currentUser: user,
                                       userName: _userName,
                                     );
                                   },
