@@ -1,10 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:sofia/res/palette.dart';
-import 'package:sofia/screens/age_page.dart';
-import 'package:sofia/utils/sign_in.dart';
+
+import 'age_screen.dart';
 
 String userName;
 
@@ -21,19 +22,23 @@ String userName;
 ///
 /// - [userName]
 ///
-class GenderPage extends StatefulWidget {
+class GenderScreen extends StatefulWidget {
+  final FirebaseUser currentUser;
   final String userName;
 
-  GenderPage({@required this.userName});
+  GenderScreen({
+    @required this.currentUser,
+    @required this.userName,
+  });
 
   @override
-  _GenderPageState createState() => _GenderPageState();
+  _GenderScreenState createState() => _GenderScreenState();
 }
 
-class _GenderPageState extends State<GenderPage> {
-  final textController = name != null
-      ? TextEditingController(text: name.split(' ')[0])
-      : TextEditingController(text: '');
+class _GenderScreenState extends State<GenderScreen> {
+  TextEditingController textController;
+  FirebaseUser user;
+
   FocusNode textFocusNode;
   List<bool> isSelected = [false, false, false];
   List<String> genderList = ['Male', 'Female', 'Non Binary'];
@@ -53,6 +58,14 @@ class _GenderPageState extends State<GenderPage> {
   @override
   void initState() {
     super.initState();
+
+    user = widget.currentUser;
+
+    String name = user.displayName;
+    textController = name != null
+        ? TextEditingController(text: name.split(' ')[0])
+        : TextEditingController(text: '');
+
     textFocusNode = FocusNode();
   }
 
@@ -60,7 +73,9 @@ class _GenderPageState extends State<GenderPage> {
   Widget build(BuildContext context) {
     FlutterStatusbarcolor.setStatusBarColor(Palette.genderBackground);
     FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
+
     var screenSize = MediaQuery.of(context).size;
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
@@ -225,7 +240,8 @@ class _GenderPageState extends State<GenderPage> {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (context) {
-                                      return AgePage(
+                                      return AgeScreen(
+                                        user: user,
                                         userName: widget.userName,
                                         gender: selectedGender,
                                       );
