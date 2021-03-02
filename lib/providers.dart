@@ -5,9 +5,12 @@ import 'package:sofia/application/notifiers/store_user_data_notifier.dart';
 import 'package:sofia/utils/authentication_client.dart';
 import 'package:sofia/utils/database.dart';
 
-// Authentication Providers: ---------------------------------
 final authenticationClientProvider = Provider<AuthenticationClient>(
   (ref) => AuthenticationClient(),
+);
+
+final databaseProvider = Provider<Database>(
+  (ref) => Database(),
 );
 
 final authSignInNotifierProvider = StateNotifierProvider(
@@ -15,12 +18,10 @@ final authSignInNotifierProvider = StateNotifierProvider(
 );
 
 final authCurrentUserNotifierProvider = StateNotifierProvider(
-  (ref) => AuthCurrentUserNotifier(ref.watch(authenticationClientProvider)),
-);
-
-// Databse Providers: -----------------------------------------
-final databaseProvider = Provider<Database>(
-  (ref) => Database(),
+  (ref) => AuthCurrentUserNotifier(
+    ref.watch(authenticationClientProvider),
+    ref.watch(databaseProvider),
+  ),
 );
 
 final storeUserDataNotifierProvider = StateNotifierProvider(
