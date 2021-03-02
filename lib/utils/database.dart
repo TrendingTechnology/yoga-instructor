@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sofia/model/pose.dart';
 import 'package:sofia/model/user.dart';
 
 /// The main Firestore collection.
@@ -214,13 +215,19 @@ class Database {
   }
 
   /// For retrieving the poses from the database
-  retrievePoses({@required String trackName}) async {
+  Future<List<Pose>> retrievePoses({@required String trackName}) async {
     QuerySnapshot posesQuery = await documentReference
         .collection('tracks')
         .document(trackName)
         .collection('poses')
         .getDocuments();
 
-    return posesQuery.documents;
+    List<Pose> poses = [];
+
+    posesQuery.documents.forEach((doc) {
+      poses.add(Pose.fromJson(doc.data));
+    });
+
+    return poses;
   }
 }
