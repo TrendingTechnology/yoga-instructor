@@ -37,10 +37,8 @@ class OnboardingScreen extends StatelessWidget {
               },
               finding: () => SplashScreen(),
               notSignedIn: () => LoginScreen(),
-              alreadySignedIn: (user) => DashboardScreen(),
-              detailsNotUploaded: (user) => NameScreen(
-                user: user,
-              ),
+              alreadySignedIn: (userData) => DashboardScreen(user: userData),
+              detailsNotUploaded: (user) => NameScreen(user: user),
               error: (message) => LoginScreen(),
             ),
           );
