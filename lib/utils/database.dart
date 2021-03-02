@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sofia/model/user.dart';
 
 /// The main Firestore collection.
 final CollectionReference mainCollection =
@@ -152,23 +153,28 @@ class Database {
   }
 
   /// For storing user data on the database
-  Future<void> storeUserData({
+  Future<User> storeUserData({
     @required String uid,
     @required String imageUrl,
     @required String userName,
     @required String gender,
     @required String age,
   }) async {
+    User userData;
+
     DocumentReference documentReferencer =
         documentReference.collection('user_info').document(uid);
 
     Map<String, dynamic> data = <String, dynamic>{
-      "image_url": imageUrl,
-      "name": userName,
+      "uid": uid,
+      "imageUrl": imageUrl,
+      "userName": userName,
       "gender": gender,
       "age": age,
     };
     print('DATA:\n$data');
+
+    userData = User.fromJson(data);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -176,6 +182,8 @@ class Database {
       print("User Info added to the database");
       prefs.setBool('details_uploaded', true);
     }).catchError((e) => print(e));
+
+    return userData;
   }
 
   // Future getProducts() async {
@@ -186,11 +194,13 @@ class Database {
   // }
 
   /// For retrieving the user info from the database
-  retrieveUserInfo({@required String uid}) async {
+  Future<User> retrieveUserInfo({@required String uid}) async {
     DocumentSnapshot userInfo =
         await documentReference.collection('user_info').document(uid).get();
 
-    return userInfo;
+    User userData = User.fromJson(userInfo.data);
+
+    return userData;
   }
 
   /// For retrieving the tracks from the database
