@@ -11,4 +11,5 @@ class Palette {
   static final nameBackground = Color(0xFFffe6e1);
   static final genderBackground = Color(0xFF5cb798);
   static final ageBackground = Color(0xFFfeafb6);
+  static final accentDarkPink = Color(0xFFed576a);
 }
