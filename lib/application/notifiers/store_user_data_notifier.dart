@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sofia/application/states/store_user_data_state.dart';
+import 'package:sofia/model/user.dart';
 import 'package:sofia/utils/database.dart';
 
 class StoreUserDataNotifier extends StateNotifier<StoreUserDataState> {
@@ -17,16 +18,17 @@ class StoreUserDataNotifier extends StateNotifier<StoreUserDataState> {
   }) async {
     try {
       state = StoreUserDataState.storing();
-      await _database.storeUserData(
+      User userData = await _database.storeUserData(
         uid: uid,
         imageUrl: imageUrl,
         userName: userName,
         gender: gender,
         age: age,
       );
-      state = StoreUserDataState.stored();
+      print('USER DATA: $userData');
+      state = StoreUserDataState.stored(userData);
     } catch (error) {
-      state = StoreUserDataState.error(message: 'Error signing in.');
+      state = StoreUserDataState.error(message: 'Error storing user data');
     }
   }
 }
