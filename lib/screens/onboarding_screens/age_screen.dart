@@ -1,12 +1,19 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sofia/application/states/store_user_data_state.dart';
+import 'package:sofia/providers.dart';
 import 'package:sofia/res/palette.dart';
 import 'package:sofia/screens/dashboard_screen.dart';
 import 'package:sofia/utils/database.dart';
+import 'package:sofia/widgets/age_widgets/user_info_error_widget.dart';
+import 'package:sofia/widgets/age_widgets/user_info_initial_widget.dart';
+import 'package:sofia/widgets/age_widgets/user_info_stored_widget.dart';
+import 'package:sofia/widgets/age_widgets/user_info_storing_widget.dart';
 
 /// Displays the `AgePage`.
 ///
@@ -42,11 +49,11 @@ class _AgeScreenState extends State<AgeScreen> {
   Database _database = Database();
 
   String errorString;
-  bool _isStoring = false;
-  int _selectedAgeGroup;
+  // bool _isStoring = false;
+  // int _selectedAgeGroup;
 
-  List<String> _ageGroupList = ['< 20', '20 - 34', '35+'];
-  List<bool> _selectedList = [false, false, false];
+  // List<String> _ageGroupList = ['< 20', '20 - 34', '35+'];
+  // List<bool> _selectedList = [false, false, false];
 
   AppBar appBar = AppBar(
     centerTitle: true,
@@ -61,6 +68,12 @@ class _AgeScreenState extends State<AgeScreen> {
     elevation: 0,
   );
 
+  @override
+  void initState() {
+    super.initState();
+    print(widget.userName);
+  }
+
   bool isNumeric(String s) {
     if (s == null) {
       return false;
@@ -68,30 +81,32 @@ class _AgeScreenState extends State<AgeScreen> {
     return double.tryParse(s) != null;
   }
 
-  Future<void> _uploadData() async {
-    setState(() {
-      _isStoring = true;
-    });
+  // Future<void> _uploadData() async {
+  //   setState(() {
+  //     _isStoring = true;
+  //   });
 
-    await _database.storeUserData(
-      userName: widget.userName,
-      gender: widget.gender,
-      age: _ageGroupList[_selectedAgeGroup],
-    );
-    _isStoring = false;
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(
-        builder: (context) {
-          return DashboardScreen(); // new dashboard test
-          // return HomePage();
-        },
-      ),
-      (route) => false,
-    ).then((_) {
-      FlutterStatusbarcolor.setStatusBarColor(Palette.ageBackground);
-      FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
-    });
-  }
+  //   await _database.storeUserData(
+  //     uid: widget.user.uid,
+  //     imageUrl: widget.user.photoUrl,
+  //     userName: widget.userName,
+  //     gender: widget.gender,
+  //     age: _ageGroupList[_selectedAgeGroup],
+  //   );
+  //   _isStoring = false;
+  //   Navigator.of(context).pushAndRemoveUntil(
+  //     MaterialPageRoute(
+  //       builder: (context) {
+  //         return DashboardScreen(); // new dashboard test
+  //         // return HomePage();
+  //       },
+  //     ),
+  //     (route) => false,
+  //   ).then((_) {
+  //     FlutterStatusbarcolor.setStatusBarColor(Palette.ageBackground);
+  //     FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -145,144 +160,74 @@ class _AgeScreenState extends State<AgeScreen> {
                 ),
               ),
               SizedBox(height: screenSize.height / 50),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  InkWell(
-                    onTap: () {
-                      setState(() {
-                        _selectedList = [true, false, false];
-                        _selectedAgeGroup = 0;
-                      });
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Color(0xFFf1919c),
-                        borderRadius: BorderRadius.circular(8.0),
-                        border: Border.all(
-                          width: 3,
-                          color: _selectedList[0]
-                              ? Color(0xFFed576a)
-                              : Color(0xFFf1919c),
-                        ),
+
+              ProviderListener(
+                provider: storeUserDataNotifierProvider.state,
+                onChange: (context, state) {
+                  if (state is StoredUserData) {
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return DashboardScreen(user: state.userData);
+                        },
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          top: 16.0,
-                          bottom: 16.0,
-                          left: 8.0,
-                          right: 8.0,
-                        ),
-                        child: Text(
-                          _ageGroupList[0],
-                          style: TextStyle(
-                            fontFamily: 'GoogleSans',
-                            color: Colors.black,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 20.0,
-                          ),
-                        ),
+                      (route) => false,
+                    ).then((_) {
+                      FlutterStatusbarcolor.setStatusBarColor(
+                          Palette.ageBackground);
+                      FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
+                    });
+                  }
+                },
+                child: Consumer(
+                  builder: (context, watch, child) {
+                    final state = watch(
+                      storeUserDataNotifierProvider.state,
+                    );
+
+                    return state.when(
+                      () => UserInfoInitialWidget(
+                        screenSize: screenSize,
+                        uid: widget.user.uid,
+                        imageUrl: widget.user.photoUrl,
+                        userName: widget.userName,
+                        gender: widget.gender,
                       ),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      setState(() {
-                        _selectedList = [false, true, false];
-                        _selectedAgeGroup = 1;
-                      });
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Color(0xFFf1919c),
-                        borderRadius: BorderRadius.circular(8.0),
-                        border: Border.all(
-                          width: 3,
-                          color: _selectedList[1]
-                              ? Color(0xFFed576a)
-                              : Color(0xFFf1919c),
-                        ),
+                      storing: () => UserInfoStoringWidget(),
+                      stored: (_) => UserInfoStoredWidget(),
+                      error: (message) => UserInfoErrorWidget(
+                        errorMessage: message,
+                        screenSize: screenSize,
+                        uid: widget.user.uid,
+                        imageUrl: widget.user.photoUrl,
+                        userName: widget.userName,
+                        gender: widget.gender,
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          top: 16.0,
-                          bottom: 16.0,
-                          left: 8.0,
-                          right: 8.0,
-                        ),
-                        child: Text(
-                          _ageGroupList[1],
-                          style: TextStyle(
-                            fontFamily: 'GoogleSans',
-                            color: Colors.black,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 20.0,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      setState(() {
-                        _selectedList = [false, false, true];
-                        _selectedAgeGroup = 2;
-                      });
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Color(0xFFf1919c),
-                        borderRadius: BorderRadius.circular(8.0),
-                        border: Border.all(
-                          width: 3,
-                          color: _selectedList[2]
-                              ? Color(0xFFed576a)
-                              : Color(0xFFf1919c),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          top: 16.0,
-                          bottom: 16.0,
-                          left: 8.0,
-                          right: 8.0,
-                        ),
-                        child: Text(
-                          _ageGroupList[2],
-                          style: TextStyle(
-                            fontFamily: 'GoogleSans',
-                            color: Colors.black,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 20.0,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                    );
+                  },
+                ),
               ),
-              SizedBox(height: screenSize.height / 20),
-              _isStoring
-                  ? CircularProgressIndicator(
-                      valueColor:
-                          new AlwaysStoppedAnimation<Color>(Color(0xFFed576a)),
-                    )
-                  : IconButton(
-                      icon: Icon(
-                        Icons.check_circle,
-                        size: screenSize.width / 10,
-                        color: _selectedAgeGroup != null
-                            ? Color(0xFFed576a)
-                            : Colors.black12,
-                      ),
-                      onPressed: _selectedAgeGroup != null
-                          ? () async {
-                              await _uploadData().catchError(
-                                (e) => print('UPLOAD ERROR: $e'),
-                              );
-                            }
-                          : null,
-                    ),
+              // _isStoring
+              //     ? CircularProgressIndicator(
+              //         valueColor:
+              //             new AlwaysStoppedAnimation<Color>(Color(0xFFed576a)),
+              //       )
+              //     : IconButton(
+              //         icon: Icon(
+              //           Icons.check_circle,
+              //           size: screenSize.width / 10,
+              //           color: _selectedAgeGroup != null
+              //               ? Color(0xFFed576a)
+              //               : Colors.black12,
+              //         ),
+              //         onPressed: _selectedAgeGroup != null
+              //             ? () async {
+              //                 await _uploadData().catchError(
+              //                   (e) => print('UPLOAD ERROR: $e'),
+              //                 );
+              //               }
+              //             : null,
+              //       ),
             ],
           ),
         ),

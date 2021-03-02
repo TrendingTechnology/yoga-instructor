@@ -77,7 +77,7 @@ class _GenderScreenState extends State<GenderScreen> {
     var screenSize = MediaQuery.of(context).size;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light,
+      value: SystemUiOverlayStyle.dark,
       child: Scaffold(
         backgroundColor: Palette.genderBackground,
         appBar: appBar,
