@@ -163,8 +163,10 @@ class _AgeScreenState extends State<AgeScreen> {
 
               ProviderListener(
                 provider: storeUserDataNotifierProvider.state,
-                onChange: (context, state) {
+                onChange: (context, state) async {
                   if (state is StoredUserData) {
+                    await Future.delayed(Duration(seconds: 1));
+
                     Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(
                         builder: (context) {
