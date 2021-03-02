@@ -2,7 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'sign_in.dart';
+/// The main Firestore collection.
+final CollectionReference mainCollection =
+    Firestore.instance.collection('sofia');
+
+// Use this for production
+// final DocumentReference documentReference = mainCollection.document('prod');
+
+/// The test document reference.
+final DocumentReference documentReference = mainCollection.document('test');
 
 class Database {
   List<String> tracks = [
@@ -111,7 +119,8 @@ class Database {
     // beginners
     int id = 1;
     poses.forEach((key, value) async {
-      DocumentReference documentReferencer = documentReference.collection('tracks').document(key);
+      DocumentReference documentReferencer =
+          documentReference.collection('tracks').document(key);
 
       Map<String, dynamic> name = <String, dynamic>{
         "id": id,
@@ -126,8 +135,9 @@ class Database {
       }).catchError((e) => print(e));
 
       value.forEach((element) async {
-        DocumentReference poseDocs =
-            documentReferencer.collection('poses').document(element.elementAt(0));
+        DocumentReference poseDocs = documentReferencer
+            .collection('poses')
+            .document(element.elementAt(0));
 
         Map<String, String> data = <String, String>{
           "title": element.elementAt(0),
@@ -143,11 +153,14 @@ class Database {
 
   /// For storing user data on the database
   Future<void> storeUserData({
+    @required String uid,
+    @required String imageUrl,
     @required String userName,
     @required String gender,
     @required String age,
   }) async {
-    DocumentReference documentReferencer = documentReference.collection('user_info').document(uid);
+    DocumentReference documentReferencer =
+        documentReference.collection('user_info').document(uid);
 
     Map<String, dynamic> data = <String, dynamic>{
       "image_url": imageUrl,
@@ -173,7 +186,7 @@ class Database {
   // }
 
   /// For retrieving the user info from the database
-  retrieveUserInfo() async {
+  retrieveUserInfo({@required String uid}) async {
     DocumentSnapshot userInfo =
         await documentReference.collection('user_info').document(uid).get();
 
