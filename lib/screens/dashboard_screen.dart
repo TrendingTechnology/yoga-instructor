@@ -1,17 +1,24 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
+import 'package:sofia/model/user.dart';
+import 'package:sofia/providers.dart';
 import 'package:sofia/res/palette.dart';
 import 'package:sofia/screens/each_track_page.dart';
 import 'package:sofia/utils/database.dart';
+import 'package:sofia/widgets/dashboard_widgets/poses_initial_widget.dart';
+import 'package:sofia/widgets/dashboard_widgets/poses_row_widget.dart';
 
 // TODO: Add caching of the data to prevent empty
 // screen during the intial load of the data from firebase
 class DashboardScreen extends StatefulWidget {
-  final FirebaseUser user;
+  final User user;
 
-  const DashboardScreen({Key key, this.user}) : super(key: key);
+  const DashboardScreen({
+    Key key,
+    @required this.user,
+  }) : super(key: key);
 
   @override
   _DashboardScreenState createState() => _DashboardScreenState();
@@ -19,6 +26,16 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   Database _database = Database();
+
+  String imageUrl;
+  String userName;
+
+  @override
+  void initState() {
+    super.initState();
+    imageUrl = widget.user.imageUrl;
+    userName = widget.user.userName;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,14 +52,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     const double FAV_HEIGHT_MULT = 4.8;
 
     const double IMAGE_MULT = 1.0;
-
-    String imageUrl;
-
-    @override
-    void initState() {
-      super.initState();
-      imageUrl = widget.user.photoUrl;
-    }
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
@@ -99,7 +108,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 centerTitle: false,
                 pinned: true,
                 title: Text(
-                  'Hello, Souvik',
+                  'Hello, $userName',
                   style: TextStyle(
                     fontSize: 26.0,
                     fontWeight: FontWeight.bold,
@@ -168,152 +177,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                   ),
                   SizedBox(height: 16.0),
-                  FutureBuilder(
-                    future: _database.retrievePoses(trackName: 'beginners'),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return Container(
-                          height: screeWidth * POSE_HEIGHT_MULT,
-                          child: ListView.separated(
-                            physics: BouncingScrollPhysics(),
-                            scrollDirection: Axis.horizontal,
-                            itemCount: snapshot.data.length,
-                            separatorBuilder: (context, index) => SizedBox(
-                              width: 24.0,
-                            ),
-                            itemBuilder: (_, index) {
-                              String poseTitle = snapshot.data[index]['title'];
-                              String poseSubtitle = snapshot.data[index]['sub'];
+                  Consumer(
+                    builder: (context, watch, child) {
+                      final state = watch(
+                        retrievePosesNotifierProvider.state,
+                      );
 
-                              return Row(
-                                children: [
-                                  if (index == 0) SizedBox(width: 16.0),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.only(bottom: 16.0),
-                                    child: Container(
-                                      width: screeWidth * POSE_WIDTH_MULT,
-                                      decoration: BoxDecoration(
-                                        color: Palette.mediumShade,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(8.0)),
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          ClipRRect(
-                                            borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(8.0),
-                                              topRight: Radius.circular(8.0),
-                                            ),
-                                            child: SizedBox(
-                                              width: screeWidth * IMAGE_MULT,
-                                              child: Image.asset(
-                                                'assets/images/triangle.png',
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                              left: 8.0,
-                                              right: 8.0,
-                                              top: 8.0,
-                                            ),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Flexible(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        poseTitle[0]
-                                                                .toUpperCase() +
-                                                            poseTitle
-                                                                .substring(1) +
-                                                            ' pose',
-                                                        maxLines: 1,
-                                                        softWrap: false,
-                                                        overflow:
-                                                            TextOverflow.fade,
-                                                        style: TextStyle(
-                                                          fontSize: 16.0,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: Palette.black,
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        poseSubtitle[0]
-                                                                .toUpperCase() +
-                                                            poseSubtitle
-                                                                .substring(1),
-                                                        maxLines: 1,
-                                                        softWrap: false,
-                                                        overflow:
-                                                            TextOverflow.fade,
-                                                        style: TextStyle(
-                                                          fontSize: 14.0,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          letterSpacing: 1,
-                                                          color: Palette.black,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                // Icon(
-                                                //   Icons.favorite_border,
-                                                //   size: 26,
-                                                //   color: Palette.lightDarkShade,
-                                                // ),
-                                                ClipOval(
-                                                  child: Material(
-                                                    color:
-                                                        Palette.lightDarkShade,
-                                                    child: InkWell(
-                                                      splashColor: Palette
-                                                          .lightDarkShade,
-                                                      child: SizedBox(
-                                                        width: 38,
-                                                        height: 38,
-                                                        child: Center(
-                                                          child: Icon(
-                                                            Icons.favorite,
-                                                            size: 20,
-                                                            color: Palette
-                                                                .lightShade, // TODO: Change color to white as clicked
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      onTap: () {},
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  if (index == snapshot.data.length - 1)
-                                    SizedBox(width: 16.0),
-                                ],
-                              );
-                            },
-                          ),
-                        );
-                      }
-                      return Container();
+                      return state.when(
+                        () {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            context
+                                .read(retrievePosesNotifierProvider)
+                                .retrievePoses(trackName: 'beginners');
+                          });
+                          return PosesInitialWidget(
+                            screeWidth: screeWidth,
+                          );
+                        },
+                        retrieving: () => PosesInitialWidget(
+                          screeWidth: screeWidth,
+                        ),
+                        retrieved: (poses) => PosesRowWidget(
+                          screeWidth: screeWidth,
+                          poses: poses,
+                        ),
+                        error: (message) => PosesInitialWidget(
+                          screeWidth: screeWidth,
+                        ),
+                      );
                     },
                   ),
                   SizedBox(height: 24.0),
