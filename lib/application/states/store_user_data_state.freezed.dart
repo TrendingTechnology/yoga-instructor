@@ -24,8 +24,10 @@ class _$StoreUserDataStateTearOff {
   }
 
 // ignore: unused_element
-  StoredUserData stored() {
-    return const StoredUserData();
+  StoredUserData stored(User userData) {
+    return StoredUserData(
+      userData,
+    );
   }
 
 // ignore: unused_element
@@ -46,14 +48,14 @@ mixin _$StoreUserDataState {
   TResult when<TResult extends Object>(
     TResult $default(), {
     @required TResult storing(),
-    @required TResult stored(),
+    @required TResult stored(User userData),
     @required TResult error(String message),
   });
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object>(
     TResult $default(), {
     TResult storing(),
-    TResult stored(),
+    TResult stored(User userData),
     TResult error(String message),
     @required TResult orElse(),
   });
@@ -132,7 +134,7 @@ class _$InitialUserData implements InitialUserData {
   TResult when<TResult extends Object>(
     TResult $default(), {
     @required TResult storing(),
-    @required TResult stored(),
+    @required TResult stored(User userData),
     @required TResult error(String message),
   }) {
     assert($default != null);
@@ -147,7 +149,7 @@ class _$InitialUserData implements InitialUserData {
   TResult maybeWhen<TResult extends Object>(
     TResult $default(), {
     TResult storing(),
-    TResult stored(),
+    TResult stored(User userData),
     TResult error(String message),
     @required TResult orElse(),
   }) {
@@ -235,7 +237,7 @@ class _$StoringUserData implements StoringUserData {
   TResult when<TResult extends Object>(
     TResult $default(), {
     @required TResult storing(),
-    @required TResult stored(),
+    @required TResult stored(User userData),
     @required TResult error(String message),
   }) {
     assert($default != null);
@@ -250,7 +252,7 @@ class _$StoringUserData implements StoringUserData {
   TResult maybeWhen<TResult extends Object>(
     TResult $default(), {
     TResult storing(),
-    TResult stored(),
+    TResult stored(User userData),
     TResult error(String message),
     @required TResult orElse(),
   }) {
@@ -302,6 +304,7 @@ abstract class $StoredUserDataCopyWith<$Res> {
   factory $StoredUserDataCopyWith(
           StoredUserData value, $Res Function(StoredUserData) then) =
       _$StoredUserDataCopyWithImpl<$Res>;
+  $Res call({User userData});
 }
 
 /// @nodoc
@@ -314,38 +317,60 @@ class _$StoredUserDataCopyWithImpl<$Res>
 
   @override
   StoredUserData get _value => super._value as StoredUserData;
+
+  @override
+  $Res call({
+    Object userData = freezed,
+  }) {
+    return _then(StoredUserData(
+      userData == freezed ? _value.userData : userData as User,
+    ));
+  }
 }
 
 /// @nodoc
 class _$StoredUserData implements StoredUserData {
-  const _$StoredUserData();
+  const _$StoredUserData(this.userData) : assert(userData != null);
+
+  @override
+  final User userData;
 
   @override
   String toString() {
-    return 'StoreUserDataState.stored()';
+    return 'StoreUserDataState.stored(userData: $userData)';
   }
 
   @override
   bool operator ==(dynamic other) {
-    return identical(this, other) || (other is StoredUserData);
+    return identical(this, other) ||
+        (other is StoredUserData &&
+            (identical(other.userData, userData) ||
+                const DeepCollectionEquality()
+                    .equals(other.userData, userData)));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode =>
+      runtimeType.hashCode ^ const DeepCollectionEquality().hash(userData);
+
+  @JsonKey(ignore: true)
+  @override
+  $StoredUserDataCopyWith<StoredUserData> get copyWith =>
+      _$StoredUserDataCopyWithImpl<StoredUserData>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object>(
     TResult $default(), {
     @required TResult storing(),
-    @required TResult stored(),
+    @required TResult stored(User userData),
     @required TResult error(String message),
   }) {
     assert($default != null);
     assert(storing != null);
     assert(stored != null);
     assert(error != null);
-    return stored();
+    return stored(userData);
   }
 
   @override
@@ -353,13 +378,13 @@ class _$StoredUserData implements StoredUserData {
   TResult maybeWhen<TResult extends Object>(
     TResult $default(), {
     TResult storing(),
-    TResult stored(),
+    TResult stored(User userData),
     TResult error(String message),
     @required TResult orElse(),
   }) {
     assert(orElse != null);
     if (stored != null) {
-      return stored();
+      return stored(userData);
     }
     return orElse();
   }
@@ -397,7 +422,11 @@ class _$StoredUserData implements StoredUserData {
 }
 
 abstract class StoredUserData implements StoreUserDataState {
-  const factory StoredUserData() = _$StoredUserData;
+  const factory StoredUserData(User userData) = _$StoredUserData;
+
+  User get userData;
+  @JsonKey(ignore: true)
+  $StoredUserDataCopyWith<StoredUserData> get copyWith;
 }
 
 /// @nodoc
@@ -464,7 +493,7 @@ class _$ErrorStoringUserData implements ErrorStoringUserData {
   TResult when<TResult extends Object>(
     TResult $default(), {
     @required TResult storing(),
-    @required TResult stored(),
+    @required TResult stored(User userData),
     @required TResult error(String message),
   }) {
     assert($default != null);
@@ -479,7 +508,7 @@ class _$ErrorStoringUserData implements ErrorStoringUserData {
   TResult maybeWhen<TResult extends Object>(
     TResult $default(), {
     TResult storing(),
-    TResult stored(),
+    TResult stored(User userData),
     TResult error(String message),
     @required TResult orElse(),
   }) {
