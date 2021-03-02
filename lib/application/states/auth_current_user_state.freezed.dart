@@ -24,7 +24,7 @@ class _$AuthCurrentUserStateTearOff {
   }
 
 // ignore: unused_element
-  SignedInUser alreadySignedIn(FirebaseUser user) {
+  SignedInUser alreadySignedIn(User user) {
     return SignedInUser(
       user,
     );
@@ -60,7 +60,7 @@ mixin _$AuthCurrentUserState {
   TResult when<TResult extends Object>(
     TResult $default(), {
     @required TResult finding(),
-    @required TResult alreadySignedIn(FirebaseUser user),
+    @required TResult alreadySignedIn(User user),
     @required TResult detailsNotUploaded(FirebaseUser user),
     @required TResult notSignedIn(),
     @required TResult error(String message),
@@ -69,7 +69,7 @@ mixin _$AuthCurrentUserState {
   TResult maybeWhen<TResult extends Object>(
     TResult $default(), {
     TResult finding(),
-    TResult alreadySignedIn(FirebaseUser user),
+    TResult alreadySignedIn(User user),
     TResult detailsNotUploaded(FirebaseUser user),
     TResult notSignedIn(),
     TResult error(String message),
@@ -152,7 +152,7 @@ class _$Initial implements Initial {
   TResult when<TResult extends Object>(
     TResult $default(), {
     @required TResult finding(),
-    @required TResult alreadySignedIn(FirebaseUser user),
+    @required TResult alreadySignedIn(User user),
     @required TResult detailsNotUploaded(FirebaseUser user),
     @required TResult notSignedIn(),
     @required TResult error(String message),
@@ -171,7 +171,7 @@ class _$Initial implements Initial {
   TResult maybeWhen<TResult extends Object>(
     TResult $default(), {
     TResult finding(),
-    TResult alreadySignedIn(FirebaseUser user),
+    TResult alreadySignedIn(User user),
     TResult detailsNotUploaded(FirebaseUser user),
     TResult notSignedIn(),
     TResult error(String message),
@@ -265,7 +265,7 @@ class _$Finding implements Finding {
   TResult when<TResult extends Object>(
     TResult $default(), {
     @required TResult finding(),
-    @required TResult alreadySignedIn(FirebaseUser user),
+    @required TResult alreadySignedIn(User user),
     @required TResult detailsNotUploaded(FirebaseUser user),
     @required TResult notSignedIn(),
     @required TResult error(String message),
@@ -284,7 +284,7 @@ class _$Finding implements Finding {
   TResult maybeWhen<TResult extends Object>(
     TResult $default(), {
     TResult finding(),
-    TResult alreadySignedIn(FirebaseUser user),
+    TResult alreadySignedIn(User user),
     TResult detailsNotUploaded(FirebaseUser user),
     TResult notSignedIn(),
     TResult error(String message),
@@ -344,7 +344,7 @@ abstract class $SignedInUserCopyWith<$Res> {
   factory $SignedInUserCopyWith(
           SignedInUser value, $Res Function(SignedInUser) then) =
       _$SignedInUserCopyWithImpl<$Res>;
-  $Res call({FirebaseUser user});
+  $Res call({User user});
 }
 
 /// @nodoc
@@ -363,7 +363,7 @@ class _$SignedInUserCopyWithImpl<$Res>
     Object user = freezed,
   }) {
     return _then(SignedInUser(
-      user == freezed ? _value.user : user as FirebaseUser,
+      user == freezed ? _value.user : user as User,
     ));
   }
 }
@@ -373,7 +373,7 @@ class _$SignedInUser implements SignedInUser {
   const _$SignedInUser(this.user) : assert(user != null);
 
   @override
-  final FirebaseUser user;
+  final User user;
 
   @override
   String toString() {
@@ -402,7 +402,7 @@ class _$SignedInUser implements SignedInUser {
   TResult when<TResult extends Object>(
     TResult $default(), {
     @required TResult finding(),
-    @required TResult alreadySignedIn(FirebaseUser user),
+    @required TResult alreadySignedIn(User user),
     @required TResult detailsNotUploaded(FirebaseUser user),
     @required TResult notSignedIn(),
     @required TResult error(String message),
@@ -421,7 +421,7 @@ class _$SignedInUser implements SignedInUser {
   TResult maybeWhen<TResult extends Object>(
     TResult $default(), {
     TResult finding(),
-    TResult alreadySignedIn(FirebaseUser user),
+    TResult alreadySignedIn(User user),
     TResult detailsNotUploaded(FirebaseUser user),
     TResult notSignedIn(),
     TResult error(String message),
@@ -473,9 +473,9 @@ class _$SignedInUser implements SignedInUser {
 }
 
 abstract class SignedInUser implements AuthCurrentUserState {
-  const factory SignedInUser(FirebaseUser user) = _$SignedInUser;
+  const factory SignedInUser(User user) = _$SignedInUser;
 
-  FirebaseUser get user;
+  User get user;
   @JsonKey(ignore: true)
   $SignedInUserCopyWith<SignedInUser> get copyWith;
 }
@@ -543,7 +543,7 @@ class _$DetailsNotUploaded implements DetailsNotUploaded {
   TResult when<TResult extends Object>(
     TResult $default(), {
     @required TResult finding(),
-    @required TResult alreadySignedIn(FirebaseUser user),
+    @required TResult alreadySignedIn(User user),
     @required TResult detailsNotUploaded(FirebaseUser user),
     @required TResult notSignedIn(),
     @required TResult error(String message),
@@ -562,7 +562,7 @@ class _$DetailsNotUploaded implements DetailsNotUploaded {
   TResult maybeWhen<TResult extends Object>(
     TResult $default(), {
     TResult finding(),
-    TResult alreadySignedIn(FirebaseUser user),
+    TResult alreadySignedIn(User user),
     TResult detailsNotUploaded(FirebaseUser user),
     TResult notSignedIn(),
     TResult error(String message),
@@ -662,7 +662,7 @@ class _$NotSignedInUser implements NotSignedInUser {
   TResult when<TResult extends Object>(
     TResult $default(), {
     @required TResult finding(),
-    @required TResult alreadySignedIn(FirebaseUser user),
+    @required TResult alreadySignedIn(User user),
     @required TResult detailsNotUploaded(FirebaseUser user),
     @required TResult notSignedIn(),
     @required TResult error(String message),
@@ -681,7 +681,7 @@ class _$NotSignedInUser implements NotSignedInUser {
   TResult maybeWhen<TResult extends Object>(
     TResult $default(), {
     TResult finding(),
-    TResult alreadySignedIn(FirebaseUser user),
+    TResult alreadySignedIn(User user),
     TResult detailsNotUploaded(FirebaseUser user),
     TResult notSignedIn(),
     TResult error(String message),
@@ -796,7 +796,7 @@ class _$Error implements Error {
   TResult when<TResult extends Object>(
     TResult $default(), {
     @required TResult finding(),
-    @required TResult alreadySignedIn(FirebaseUser user),
+    @required TResult alreadySignedIn(User user),
     @required TResult detailsNotUploaded(FirebaseUser user),
     @required TResult notSignedIn(),
     @required TResult error(String message),
@@ -815,7 +815,7 @@ class _$Error implements Error {
   TResult maybeWhen<TResult extends Object>(
     TResult $default(), {
     TResult finding(),
-    TResult alreadySignedIn(FirebaseUser user),
+    TResult alreadySignedIn(User user),
     TResult detailsNotUploaded(FirebaseUser user),
     TResult notSignedIn(),
     TResult error(String message),
