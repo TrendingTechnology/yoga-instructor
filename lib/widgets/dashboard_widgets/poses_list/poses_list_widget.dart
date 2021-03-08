@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sofia/model/pose.dart';
 import 'package:sofia/res/palette.dart';
+import 'package:sofia/screens/each_pose_page.dart';
 import 'package:sofia/screens/timer_overlay.dart';
 
 class PosesListWidget extends StatelessWidget {
@@ -26,14 +27,11 @@ class PosesListWidget extends StatelessWidget {
 
         return InkWell(
           onTap: () {
-            // Navigator.of(context).push(
-            //   MaterialPageRoute(
-            //     builder: (context) => EachTrackPage(
-            //       trackName: trackName,
-            //       trackDescription: trackDescription,
-            //     ),
-            //   ),
-            // );
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => EachPosePage(),
+              ),
+            );
           },
           child: Container(
             decoration: BoxDecoration(
