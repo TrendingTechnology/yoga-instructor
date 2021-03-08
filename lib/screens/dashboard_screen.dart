@@ -5,11 +5,10 @@ import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:sofia/model/user.dart';
 import 'package:sofia/providers.dart';
 import 'package:sofia/res/palette.dart';
-import 'package:sofia/utils/database.dart';
-import 'package:sofia/widgets/dashboard_widgets/poses_initial_widget.dart';
-import 'package:sofia/widgets/dashboard_widgets/poses_row_widget.dart';
-import 'package:sofia/widgets/dashboard_widgets/tracks_initial_widget.dart';
-import 'package:sofia/widgets/dashboard_widgets/tracks_list_widget.dart';
+import 'package:sofia/widgets/dashboard_widgets/poses_row/poses_initial_widget.dart';
+import 'package:sofia/widgets/dashboard_widgets/poses_row/poses_row_widget.dart';
+import 'package:sofia/widgets/dashboard_widgets/tracks_list/tracks_initial_widget.dart';
+import 'package:sofia/widgets/dashboard_widgets/tracks_list/tracks_list_widget.dart';
 
 // TODO: Add caching of the data to prevent empty
 // screen during the intial load of the data from firebase
@@ -26,8 +25,6 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  Database _database = Database();
-
   String imageUrl;
   String userName;
 
@@ -44,15 +41,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
 
     double screeWidth = MediaQuery.of(context).size.width;
-    double screeHeight = MediaQuery.of(context).size.height;
-
-    const double POSE_WIDTH_MULT = 0.6;
-    const double POSE_HEIGHT_MULT = 0.53;
-
-    const double FAV_WIDTH_MULT = 5.5;
-    const double FAV_HEIGHT_MULT = 4.8;
-
-    const double IMAGE_MULT = 1.0;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
@@ -140,15 +128,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   Consumer(
                     builder: (context, watch, child) {
                       final state = watch(
-                        retrievePosesNotifierProvider.state,
+                        retrievePosesNotifierProvider('beginners').state,
                       );
 
                       return state.when(
                         () {
                           WidgetsBinding.instance.addPostFrameCallback((_) {
                             context
-                                .read(retrievePosesNotifierProvider)
-                                .retrievePoses(trackName: 'beginners');
+                                .read(
+                                    retrievePosesNotifierProvider('beginners'))
+                                .retrievePoses();
                           });
                           return PosesInitialWidget(
                             screeWidth: screeWidth,
