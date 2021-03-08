@@ -5,14 +5,12 @@ part 'track.g.dart';
 
 @JsonSerializable()
 class Track {
-  List<Pose> poses;
   int id;
   String name;
   String desc;
   int count;
 
   Track({
-    this.poses,
     this.id,
     this.name,
     this.desc,
