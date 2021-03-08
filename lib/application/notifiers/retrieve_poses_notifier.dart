@@ -15,7 +15,7 @@ class RetrievePosesNotifier extends StateNotifier<RetrievePosesState> {
       List<Pose> poses = await _database.retrievePoses(trackName: trackName);
       state = RetrievePosesState.retrieved(poses);
     } catch (error) {
-      state = RetrievePosesState.error(message: 'Error storing user data');
+      state = RetrievePosesState.error(message: 'Error retrieving poses');
     }
   }
 }
