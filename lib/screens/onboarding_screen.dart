@@ -17,6 +17,8 @@ class OnboardingScreen extends StatelessWidget {
       // the new UI
       theme: ThemeData(
         fontFamily: 'GoogleSans',
+        primaryColor: Colors.white,
+        accentColor: Colors.white,
       ),
       home: Consumer(
         builder: (context, watch, child) {
