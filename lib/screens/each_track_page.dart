@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:sofia/model/track.dart';
 import 'package:sofia/providers.dart';
 import 'package:sofia/res/palette.dart';
 import 'package:sofia/screens/timer_overlay.dart';
 import 'package:sofia/utils/database.dart';
+import 'package:sofia/widgets/dashboard_widgets/poses_list/poses_list_error_widget.dart';
 import 'package:sofia/widgets/dashboard_widgets/poses_list/poses_list_initial_widget.dart';
+import 'package:sofia/widgets/dashboard_widgets/poses_list/poses_list_loading_widget.dart';
 import 'package:sofia/widgets/dashboard_widgets/poses_list/poses_list_widget.dart';
 
 class EachTrackPage extends StatefulWidget {
@@ -36,6 +39,9 @@ class _EachTrackPageState extends State<EachTrackPage> {
 
   @override
   Widget build(BuildContext context) {
+    FlutterStatusbarcolor.setStatusBarColor(Colors.white);
+    FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
+
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
@@ -248,11 +254,11 @@ class _EachTrackPageState extends State<EachTrackPage> {
                             });
                             return PosesListInitialWidget();
                           },
-                          retrieving: () => PosesListInitialWidget(),
+                          retrieving: () => PosesListLoadingWidget(),
                           retrieved: (poses) => PosesListWidget(
                             poses: poses,
                           ),
-                          error: (message) => PosesListInitialWidget(),
+                          error: (message) => PosesListErrorWidget(),
                         );
                       },
                     ),
