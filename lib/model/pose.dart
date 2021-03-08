@@ -6,10 +6,12 @@ part 'pose.g.dart';
 class Pose {
   String title;
   String sub;
+  String benefits;
 
   Pose({
     this.title,
     this.sub,
+    this.benefits,
   });
 
   factory Pose.fromJson(Map<String, dynamic> json) => _$PoseFromJson(json);
