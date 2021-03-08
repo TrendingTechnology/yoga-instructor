@@ -19,6 +19,8 @@ void main() async {
     ProviderScope(
       child: OnboardingScreen(),
     ),
+    // For re-uploading the data to Firebase:
+    // DebugScreen()
   );
 }
 
