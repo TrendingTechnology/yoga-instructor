@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sofia/screens/predictor_page.dart';
 import 'package:sofia/utils/database.dart';
-import 'package:sofia/widget/voice_assistant_button.dart';
+import 'package:sofia/widgets/voice_assistant_button.dart';
 
 /// Widget for displaying the information
 /// related to each track, retrieved from the database

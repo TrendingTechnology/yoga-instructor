@@ -6,13 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:sofia/res/palette.dart';
-import 'package:sofia/screens/login_page.dart';
 import 'package:sofia/screens/track_page.dart';
 import 'package:sofia/speech/output_speech.dart';
 import 'package:sofia/utils/database.dart';
-import 'package:sofia/utils/sign_in.dart';
-import 'package:sofia/widget/voice_assistant_button.dart';
+import 'package:sofia/widgets/voice_assistant_button.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
@@ -385,13 +382,13 @@ class _HomePageState extends State<HomePage> {
                             ),
                             FlatButton(
                               onPressed: () async {
-                                await signOutGoogle().whenComplete(
-                                  () => Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                      builder: (context) => LoginPage(),
-                                    ),
-                                  ),
-                                );
+                                // await signOutGoogle().whenComplete(
+                                //   () => Navigator.of(context).pushReplacement(
+                                //     MaterialPageRoute(
+                                //       builder: (context) => LoginPage(),
+                                //     ),
+                                //   ),
+                                // );
                               },
                               color: Colors.red,
                               shape: RoundedRectangleBorder(
@@ -467,7 +464,8 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                               Expanded(
-                                child: Image.asset('assets/images/$beginnersTrackName.png'),
+                                child: Image.asset(
+                                    'assets/images/$beginnersTrackName.png'),
                               )
                             ],
                           ),
