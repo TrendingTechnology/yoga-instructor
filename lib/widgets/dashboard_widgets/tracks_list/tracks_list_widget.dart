@@ -17,24 +17,17 @@ class TracksListWidget extends StatelessWidget {
       shrinkWrap: true,
       physics: BouncingScrollPhysics(),
       itemCount: tracks.length,
-      separatorBuilder: (context, index) => SizedBox(
-        height: 32.0,
-      ),
+      separatorBuilder: (context, index) => SizedBox(height: 32.0),
       itemBuilder: (_, index) {
         Track track = tracks[index];
         String trackName = track.name;
         String trackDescription = track.desc;
-        int numberOfPoses = track.count;
 
         return InkWell(
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => EachTrackPage(
-                  trackName: trackName,
-                  trackDescription: trackDescription,
-                  numberOfPoses: numberOfPoses,
-                ),
+                builder: (context) => EachTrackPage(track: track),
               ),
             );
           },
