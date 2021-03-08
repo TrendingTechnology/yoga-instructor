@@ -45,6 +45,7 @@ class _EachPosePageState extends State<EachPosePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
+        physics: PageScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -224,6 +225,7 @@ class _EachPosePageState extends State<EachPosePage> {
                 },
               ),
             ),
+            SizedBox(height: 30.0),
           ],
         ),
       ),
