@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sofia/model/track.dart';
+import 'package:sofia/providers.dart';
 import 'package:sofia/res/palette.dart';
 import 'package:sofia/screens/timer_overlay.dart';
 import 'package:sofia/utils/database.dart';
+import 'package:sofia/widgets/dashboard_widgets/poses_list/poses_list_initial_widget.dart';
+import 'package:sofia/widgets/dashboard_widgets/poses_list/poses_list_widget.dart';
 
 class EachTrackPage extends StatefulWidget {
-  final String trackName;
-  final String trackDescription;
-  final int numberOfPoses;
+  final Track track;
 
   const EachTrackPage({
-    @required this.trackName,
-    @required this.trackDescription,
-    @required this.numberOfPoses,
+    @required this.track,
   });
 
   @override
@@ -28,9 +29,9 @@ class _EachTrackPageState extends State<EachTrackPage> {
   @override
   void initState() {
     super.initState();
-    trackName = widget.trackName;
-    trackDescription = widget.trackDescription;
-    totalNumberOfPoses = widget.numberOfPoses;
+    trackName = widget.track.name;
+    trackDescription = widget.track.desc;
+    totalNumberOfPoses = widget.track.count;
   }
 
   @override
@@ -71,311 +72,337 @@ class _EachTrackPageState extends State<EachTrackPage> {
               ),
             ),
             SliverList(
-              delegate: SliverChildListDelegate([
-                Image.asset(
-                  'assets/images/${trackName[0].toUpperCase() + trackName.substring(1)}.jpg',
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 16.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.access_time,
-                            color: Palette.black.withOpacity(0.8),
-                          ),
-                          SizedBox(width: 8.0),
-                          Text(
-                            '15 minutes',
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.w400,
-                              letterSpacing: 1,
-                              color: Palette.black,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        print('Play all button tapped !');
-                        Navigator.of(context).push(
-                          PageRouteBuilder(
-                            opaque: false,
-                            pageBuilder: (context, _, __) => TimerOverlay(),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Palette.lightDarkShade,
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(8.0),
-                          ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            left: 8.0,
-                            right: 16.0,
-                            top: 8.0,
-                            bottom: 8.0,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.play_arrow,
-                                color: Colors.white,
-                                size: 36.0,
-                              ),
-                              Text(
-                                'Play all',
-                                // maxLines: 1,
-                                softWrap: true,
-                                overflow: TextOverflow.fade,
-                                style: TextStyle(
-                                  fontSize: 22.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 16.0,
-                    left: 16.0,
-                    right: 16.0,
+              delegate: SliverChildListDelegate(
+                [
+                  Image.asset(
+                    'assets/images/${trackName[0].toUpperCase() + trackName.substring(1)}.jpg',
                   ),
-                  child: Text(
-                    trackDescription,
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.6,
-                      color: Palette.black,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 16.0,
-                    left: 16.0,
-                    right: 16.0,
-                  ),
-                  child: Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Container(
-                        width: screenWidth / 2.2,
-                        child: Center(
-                          child: Text(
-                            '$totalNumberOfPoses asanas',
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.w400,
-                              letterSpacing: 1,
-                              color: Palette.black,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.access_time,
+                              color: Palette.black.withOpacity(0.8),
                             ),
-                          ),
+                            SizedBox(width: 8.0),
+                            Text(
+                              '15 minutes',
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.w400,
+                                letterSpacing: 1,
+                                color: Palette.black,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      Container(
-                        color: Palette.black.withOpacity(0.4),
-                        height: 40,
-                        width: 2,
-                      ),
-                      Container(
-                        width: screenWidth / 2.2,
-                        child: Center(
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.star_border,
-                                color: Palette.black.withOpacity(0.8),
-                              ),
-                              SizedBox(width: 8.0),
-                              Text(
-                                '160',
-                                style: TextStyle(
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.w400,
-                                  letterSpacing: 1,
-                                  color: Palette.black,
+                      InkWell(
+                        onTap: () {
+                          print('Play all button tapped !');
+                          Navigator.of(context).push(
+                            PageRouteBuilder(
+                              opaque: false,
+                              pageBuilder: (context, _, __) => TimerOverlay(),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Palette.lightDarkShade,
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(8.0),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              left: 8.0,
+                              right: 16.0,
+                              top: 8.0,
+                              bottom: 8.0,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.play_arrow,
+                                  color: Colors.white,
+                                  size: 36.0,
                                 ),
-                              ),
-                            ],
+                                Text(
+                                  'Play all',
+                                  // maxLines: 1,
+                                  softWrap: true,
+                                  overflow: TextOverflow.fade,
+                                  style: TextStyle(
+                                    fontSize: 22.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ],
                   ),
-                ),
-                SizedBox(height: 24.0),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 16.0,
-                    right: 16.0,
-                    bottom: 30.0,
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      top: 16.0,
+                      left: 16.0,
+                      right: 16.0,
+                    ),
+                    child: Text(
+                      trackDescription,
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.6,
+                        color: Palette.black,
+                      ),
+                    ),
                   ),
-                  child: FutureBuilder(
-                    future: _database.retrievePoses(trackName: trackName),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return ListView.separated(
-                          shrinkWrap: true,
-                          physics: BouncingScrollPhysics(),
-                          itemCount: snapshot.data.length,
-                          separatorBuilder: (context, index) => SizedBox(
-                            height: 32.0,
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      top: 16.0,
+                      left: 16.0,
+                      right: 16.0,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: screenWidth / 2.2,
+                          child: Center(
+                            child: Text(
+                              '$totalNumberOfPoses asanas',
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.w400,
+                                letterSpacing: 1,
+                                color: Palette.black,
+                              ),
+                            ),
                           ),
-                          itemBuilder: (_, index) {
-                            String poseTitle = snapshot.data[index]['title'];
-                            String poseSubtitle = snapshot.data[index]['sub'];
-
-                            return InkWell(
-                              onTap: () {
-                                // Navigator.of(context).push(
-                                //   MaterialPageRoute(
-                                //     builder: (context) => EachTrackPage(
-                                //       trackName: trackName,
-                                //       trackDescription: trackDescription,
-                                //     ),
-                                //   ),
-                                // );
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Palette.mediumShade,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8.0)),
+                        ),
+                        Container(
+                          color: Palette.black.withOpacity(0.4),
+                          height: 40,
+                          width: 2,
+                        ),
+                        Container(
+                          width: screenWidth / 2.2,
+                          child: Center(
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.star_border,
+                                  color: Palette.black.withOpacity(0.8),
                                 ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(0.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Expanded(
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 16.0, top: 24.0),
-                                              child: Text(
-                                                poseTitle[0].toUpperCase() +
-                                                    poseTitle.substring(1),
-                                                // maxLines: 1,
-                                                softWrap: true,
-                                                overflow: TextOverflow.fade,
-                                                style: TextStyle(
-                                                  fontSize: 22.0,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Palette.black,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          InkWell(
-                                            onTap: () {
-                                              print('Play button tapped !');
-                                              Navigator.of(context).push(
-                                                PageRouteBuilder(
-                                                  opaque: false,
-                                                  pageBuilder:
-                                                      (context, _, __) =>
-                                                          TimerOverlay(),
-                                                ),
-                                              );
-                                            },
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                color: Palette.lightDarkShade,
-                                                borderRadius: BorderRadius.only(
-                                                    topRight:
-                                                        Radius.circular(8.0),
-                                                    bottomLeft:
-                                                        Radius.circular(8.0)),
-                                              ),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Icon(
-                                                  Icons.play_arrow,
-                                                  color: Colors.white,
-                                                  size: 36.0,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 16.0, top: 4.0),
-                                        child: Text(
-                                          poseSubtitle[0].toUpperCase() +
-                                              poseSubtitle.substring(1),
-                                          maxLines: 1,
-                                          softWrap: false,
-                                          overflow: TextOverflow.fade,
-                                          style: TextStyle(
-                                            fontSize: 16.0,
-                                            fontWeight: FontWeight.w400,
-                                            color: Palette.black,
-                                          ),
-                                        ),
-                                      ),
-                                      // SizedBox(height: 24.0),
-                                      // TODO: Add the description when the descriptions
-                                      // are updated to firebase.
-                                      SizedBox(height: 8.0),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          left: 16.0,
-                                          right: 16.0,
-                                          bottom: 24.0,
-                                        ),
-                                        child: Text(
-                                          trackDescription,
-                                          style: TextStyle(
-                                            fontSize: 14.0,
-                                            fontWeight: FontWeight.w400,
-                                            letterSpacing: 1,
-                                            color: Palette.black,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                SizedBox(width: 8.0),
+                                Text(
+                                  '160',
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.w400,
+                                    letterSpacing: 1,
+                                    color: Palette.black,
                                   ),
                                 ),
-                              ),
-                            );
-                          },
-                        );
-                      }
-                      return Container();
-                    },
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ]),
+                  SizedBox(height: 24.0),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 16.0,
+                      right: 16.0,
+                      bottom: 30.0,
+                    ),
+                    child: Consumer(
+                      builder: (context, watch, child) {
+                        final state = watch(
+                          retrievePosesNotifierProvider(trackName).state,
+                        );
+
+                        return state.when(
+                          () {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              context
+                                  .read(
+                                      retrievePosesNotifierProvider(trackName))
+                                  .retrievePoses();
+                            });
+                            return PosesListInitialWidget();
+                          },
+                          retrieving: () => PosesListInitialWidget(),
+                          retrieved: (poses) => PosesListWidget(
+                            poses: poses,
+                          ),
+                          error: (message) => PosesListInitialWidget(),
+                        );
+                      },
+                    ),
+                    // child: FutureBuilder(
+                    //   future: _database.retrievePoses(trackName: trackName),
+                    //   builder: (context, snapshot) {
+                    //     if (snapshot.hasData) {
+                    //       return ListView.separated(
+                    //         shrinkWrap: true,
+                    //         physics: BouncingScrollPhysics(),
+                    //         itemCount: snapshot.data.length,
+                    //         separatorBuilder: (context, index) => SizedBox(
+                    //           height: 32.0,
+                    //         ),
+                    //         itemBuilder: (_, index) {
+                    //           String poseTitle = snapshot.data[index]['title'];
+                    //           String poseSubtitle = snapshot.data[index]['sub'];
+
+                    //           return InkWell(
+                    //             onTap: () {
+                    //               // Navigator.of(context).push(
+                    //               //   MaterialPageRoute(
+                    //               //     builder: (context) => EachTrackPage(
+                    //               //       trackName: trackName,
+                    //               //       trackDescription: trackDescription,
+                    //               //     ),
+                    //               //   ),
+                    //               // );
+                    //             },
+                    //             child: Container(
+                    //               decoration: BoxDecoration(
+                    //                 color: Palette.mediumShade,
+                    //                 borderRadius:
+                    //                     BorderRadius.all(Radius.circular(8.0)),
+                    //               ),
+                    //               child: Padding(
+                    //                 padding: const EdgeInsets.all(0.0),
+                    //                 child: Column(
+                    //                   crossAxisAlignment:
+                    //                       CrossAxisAlignment.start,
+                    //                   mainAxisSize: MainAxisSize.max,
+                    //                   children: [
+                    //                     Row(
+                    //                       mainAxisAlignment:
+                    //                           MainAxisAlignment.spaceBetween,
+                    //                       crossAxisAlignment:
+                    //                           CrossAxisAlignment.start,
+                    //                       children: [
+                    //                         Expanded(
+                    //                           child: Padding(
+                    //                             padding: const EdgeInsets.only(
+                    //                                 left: 16.0, top: 24.0),
+                    //                             child: Text(
+                    //                               poseTitle[0].toUpperCase() +
+                    //                                   poseTitle.substring(1),
+                    //                               // maxLines: 1,
+                    //                               softWrap: true,
+                    //                               overflow: TextOverflow.fade,
+                    //                               style: TextStyle(
+                    //                                 fontSize: 22.0,
+                    //                                 fontWeight: FontWeight.bold,
+                    //                                 color: Palette.black,
+                    //                               ),
+                    //                             ),
+                    //                           ),
+                    //                         ),
+                    //                         InkWell(
+                    //                           onTap: () {
+                    //                             print('Play button tapped !');
+                    //                             Navigator.of(context).push(
+                    //                               PageRouteBuilder(
+                    //                                 opaque: false,
+                    //                                 pageBuilder:
+                    //                                     (context, _, __) =>
+                    //                                         TimerOverlay(),
+                    //                               ),
+                    //                             );
+                    //                           },
+                    //                           child: Container(
+                    //                             decoration: BoxDecoration(
+                    //                               color: Palette.lightDarkShade,
+                    //                               borderRadius: BorderRadius.only(
+                    //                                   topRight:
+                    //                                       Radius.circular(8.0),
+                    //                                   bottomLeft:
+                    //                                       Radius.circular(8.0)),
+                    //                             ),
+                    //                             child: Padding(
+                    //                               padding:
+                    //                                   const EdgeInsets.all(8.0),
+                    //                               child: Icon(
+                    //                                 Icons.play_arrow,
+                    //                                 color: Colors.white,
+                    //                                 size: 36.0,
+                    //                               ),
+                    //                             ),
+                    //                           ),
+                    //                         ),
+                    //                       ],
+                    //                     ),
+                    //                     Padding(
+                    //                       padding: const EdgeInsets.only(
+                    //                           left: 16.0, top: 4.0),
+                    //                       child: Text(
+                    //                         poseSubtitle[0].toUpperCase() +
+                    //                             poseSubtitle.substring(1),
+                    //                         maxLines: 1,
+                    //                         softWrap: false,
+                    //                         overflow: TextOverflow.fade,
+                    //                         style: TextStyle(
+                    //                           fontSize: 16.0,
+                    //                           fontWeight: FontWeight.w400,
+                    //                           color: Palette.black,
+                    //                         ),
+                    //                       ),
+                    //                     ),
+                    //                     // SizedBox(height: 24.0),
+                    //                     // TODO: Add the description when the descriptions
+                    //                     // are updated to firebase.
+                    //                     SizedBox(height: 8.0),
+                    //                     Padding(
+                    //                       padding: const EdgeInsets.only(
+                    //                         left: 16.0,
+                    //                         right: 16.0,
+                    //                         bottom: 24.0,
+                    //                       ),
+                    //                       child: Text(
+                    //                         trackDescription,
+                    //                         style: TextStyle(
+                    //                           fontSize: 14.0,
+                    //                           fontWeight: FontWeight.w400,
+                    //                           letterSpacing: 1,
+                    //                           color: Palette.black,
+                    //                         ),
+                    //                       ),
+                    //                     ),
+                    //                   ],
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //           );
+                    //         },
+                    //       );
+                    //     }
+                    //     return Container();
+                    //   },
+                    // ),
+                  ),
+                ],
+              ),
             )
           ],
         ),
