@@ -34,7 +34,6 @@ class _EachPosePageState extends State<EachPosePage> {
         currentPose.sub[0].toUpperCase() + currentPose.sub.substring(1);
 
     benefitList = currentPose.benefits.split('. ');
-    print(benefitList);
   }
 
   @override
@@ -215,7 +214,7 @@ class _EachPosePageState extends State<EachPosePage> {
                               fontSize: 16.0,
                               fontWeight: FontWeight.w600,
                               letterSpacing: 0.6,
-                              color: Palette.black,
+                              color: Palette.lightDarkShade,
                             ),
                           ),
                         ),
