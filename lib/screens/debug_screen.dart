@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:sofia/utils/database.dart';
 
 class DebugScreen extends StatefulWidget {
@@ -12,6 +13,9 @@ class _DebugScreenState extends State<DebugScreen> {
 
   @override
   Widget build(BuildContext context) {
+    FlutterStatusbarcolor.setStatusBarColor(Colors.black);
+    FlutterStatusbarcolor.setStatusBarWhiteForeground(true);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Sofia: yoga trainer',
