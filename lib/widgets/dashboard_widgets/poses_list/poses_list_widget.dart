@@ -22,14 +22,17 @@ class PosesListWidget extends StatelessWidget {
         height: 32.0,
       ),
       itemBuilder: (_, index) {
-        String poseTitle = poses[index].title;
-        String poseSubtitle = poses[index].sub;
+        Pose pose = poses[index];
+        String poseTitle = pose.title;
+        String poseSubtitle = pose.sub;
 
         return InkWell(
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => EachPosePage(),
+                builder: (context) => EachPosePage(
+                  pose: pose,
+                ),
               ),
             );
           },
