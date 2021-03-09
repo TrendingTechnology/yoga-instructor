@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
+
 import 'package:sofia/model/pose.dart';
 import 'package:sofia/res/palette.dart';
 import 'package:sofia/screens/timer_overlay.dart';
+import 'package:sofia/widgets/each_pose_widgets/next_widget.dart';
+import 'package:sofia/widgets/each_pose_widgets/prev_next_widget.dart';
+import 'package:sofia/widgets/each_pose_widgets/prev_widget.dart';
 
 class EachPosePage extends StatefulWidget {
-  final Pose pose;
+  final List<Pose> poses;
+  final int currentIndex;
 
   const EachPosePage({
     Key key,
-    @required this.pose,
+    @required this.poses,
+    @required this.currentIndex,
   }) : super(key: key);
 
   @override
@@ -17,16 +23,21 @@ class EachPosePage extends StatefulWidget {
 }
 
 class _EachPosePageState extends State<EachPosePage> {
+  int currentIndex;
   Pose currentPose;
   String poseName;
   String poseSubtitle;
   String poseNameDisplay;
   List<String> benefitList;
 
+  List<Pose> poses;
+
   @override
   void initState() {
     super.initState();
-    currentPose = widget.pose;
+    poses = widget.poses;
+    currentIndex = widget.currentIndex;
+    currentPose = widget.poses[currentIndex];
     poseName = currentPose.title;
     poseNameDisplay = poseName[0].toUpperCase() + poseName.substring(1);
 
@@ -44,6 +55,21 @@ class _EachPosePageState extends State<EachPosePage> {
 
     return Scaffold(
       backgroundColor: Colors.white,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: currentIndex == 0
+          ? NextWidget(
+              poses: poses,
+              currentIndex: currentIndex,
+            )
+          : currentIndex == poses.length - 1
+              ? PrevWidget(
+                  poses: poses,
+                  currentIndex: currentIndex,
+                )
+              : PrevNextWidget(
+                  poses: poses,
+                  currentIndex: currentIndex,
+                ),
       body: SingleChildScrollView(
         physics: PageScrollPhysics(),
         child: Column(
@@ -225,7 +251,7 @@ class _EachPosePageState extends State<EachPosePage> {
                 },
               ),
             ),
-            SizedBox(height: 30.0),
+            SizedBox(height: 50.0),
           ],
         ),
       ),
