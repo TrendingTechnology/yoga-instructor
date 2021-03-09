@@ -31,7 +31,8 @@ class PosesListWidget extends StatelessWidget {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => EachPosePage(
-                  pose: pose,
+                  poses: poses,
+                  currentIndex: index,
                 ),
               ),
             );
