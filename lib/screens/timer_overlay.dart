@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flare_flutter/flare_actor.dart';
-import 'package:sofia/res/palette.dart';
+import 'package:sofia/screens/preview_screen.dart';
+import 'package:video_player/video_player.dart';
 
 class TimerOverlay extends StatefulWidget {
   @override
@@ -12,10 +13,24 @@ class TimerOverlay extends StatefulWidget {
 class _TimerOverlayState extends State<TimerOverlay> {
   Timer _timer;
   int _start = 5;
+  VideoPlayerController _controller;
+
+  bool _isInitialized = false;
+
+  Future<void> initializeVideoController() async {
+    _controller = VideoPlayerController.network(
+        'https://stream.mux.com/kiBM5MAziq4wGLnc2GCVixAL8EXYg7wcUDA00VcSkzNM.m3u8.m3u8');
+    await _controller.initialize();
+
+    _isInitialized = true;
+
+    print(_isInitialized);
+  }
 
   @override
   void initState() {
     super.initState();
+    initializeVideoController();
     startTimer();
   }
 
@@ -45,7 +60,16 @@ class _TimerOverlayState extends State<TimerOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    if (_start == 1) Navigator.of(context).pop();
+    if (_start == 1 && _isInitialized) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) =>
+                PreviewScreen(videoPlayerController: _controller),
+          ),
+        );
+      });
+    }
     return Scaffold(
       backgroundColor: Colors.white.withOpacity(0.8),
       body: SafeArea(
