@@ -29,6 +29,8 @@
 
 # Screenshots
 
+> The following screenshots are outdated, we are currently working on a new UI design :wink:
+
 <p align="center">
   <img width="250" src="https://github.com/sbis04/yoga-instructor/raw/master/screenshots/sofia_auth.png" alt="Sofia Login" />
   <img width="250" src="https://github.com/sbis04/yoga-instructor/raw/master/screenshots/sofia_name.png" alt="Sofia Name" />
