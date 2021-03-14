@@ -3,6 +3,7 @@ import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 
 import 'package:sofia/model/pose.dart';
 import 'package:sofia/res/palette.dart';
+import 'package:sofia/screens/preview_screen.dart';
 import 'package:sofia/screens/timer_overlay.dart';
 import 'package:sofia/widgets/each_pose_widgets/next_widget.dart';
 import 'package:sofia/widgets/each_pose_widgets/prev_next_widget.dart';
@@ -111,10 +112,17 @@ class _EachPosePageState extends State<EachPosePage> {
                 InkWell(
                   onTap: () {
                     print('Play button tapped !');
+                    // Navigator.of(context).push(
+                    //   PageRouteBuilder(
+                    //     opaque: false,
+                    //     pageBuilder: (context, _, __) => TimerOverlay(),
+                    //   ),
+                    // );
                     Navigator.of(context).push(
-                      PageRouteBuilder(
-                        opaque: false,
-                        pageBuilder: (context, _, __) => TimerOverlay(),
+                      MaterialPageRoute(
+                        builder: (context) => PreviewScreen(
+                          pose: currentPose,
+                        ),
                       ),
                     );
                   },
