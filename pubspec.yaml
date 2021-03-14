@@ -24,7 +24,7 @@ dependencies:
   tflite: ^1.1.1
   showcaseview: ^0.1.5
   camera: ^0.6.2+1
-  video_player: ^0.10.11+1
+  video_player: ^1.0.0
   google_fonts: ^1.1.1
   flutter_statusbarcolor: ^0.2.3
   flare_flutter: ^2.0.6
