@@ -55,3 +55,7 @@ android/.settings/org.eclipse.buildship.core.prefs
 # Secrets
 lib/secrets.dart
 .vscode/launch.json
+
+
+# TFLite models
+assets/tflite/
