@@ -64,7 +64,7 @@ class _TimerOverlayState extends State<TimerOverlay> {
         //     builder: (context) => PreviewScreen(),
         //   ),
         // );
-        // Navigator.of(context).pop();
+        Navigator.of(context).pop();
       });
     }
     return Scaffold(
