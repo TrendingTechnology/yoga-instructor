@@ -4,7 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:sofia/main.dart';
 import 'package:sofia/model/pose.dart';
+import 'package:sofia/screens/recognizer_screen.dart';
 import 'package:sofia/screens/timer_overlay.dart';
+import 'package:sofia/widgets/preview_screen/camera_preview_widget.dart';
+import 'package:sofia/widgets/preview_screen/rotate_to_landspace_widget.dart';
 import 'package:tflite/tflite.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:math' as math;
@@ -43,7 +46,7 @@ class _PreviewScreenState extends State<PreviewScreen> {
     await _videoController.initialize();
   }
 
-  setRecognitions(recognitions, imageHeight, imageWidth) {
+  setRecognitions(recognitions, imageHeight, imageWidth) async {
     totalPartsInFrame = 0;
     _isBodyVisible = false;
     if (mounted) {
@@ -75,20 +78,35 @@ class _PreviewScreenState extends State<PreviewScreen> {
             // Tflite?.close();
             // _cameraController?.stopImageStream();
           });
+        } else {
+          setState(() {
+            totalNumOfTimesPositive = 0;
+          });
         }
 
         if (totalNumOfTimesPositive > 5) {
           Tflite?.close();
           _cameraController?.stopImageStream();
           print('READY');
-          Navigator.of(context).push(
-            PageRouteBuilder(
-              opaque: false,
-              pageBuilder: (context, _, __) => TimerOverlay(
-                pose: widget.pose,
-              ),
-            ),
-          );
+          await Navigator.of(context)
+              .push(
+                PageRouteBuilder(
+                  opaque: false,
+                  pageBuilder: (context, _, __) => TimerOverlay(
+                    pose: widget.pose,
+                  ),
+                ),
+              )
+              .whenComplete(
+                () => Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => RecognizerScreen(
+                      cameraController: _cameraController,
+                      videoController: _videoController,
+                    ),
+                  ),
+                ),
+              );
         }
       }
     }
@@ -96,7 +114,7 @@ class _PreviewScreenState extends State<PreviewScreen> {
 
   Future<void> initializeCameraController() async {
     await Tflite.loadModel(
-      model: "assets/model/posenet.tflite",
+      model: "assets/tflite/posenet.tflite",
       numThreads: 4,
     );
 
@@ -168,149 +186,28 @@ class _PreviewScreenState extends State<PreviewScreen> {
 
   @override
   dispose() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
-    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
-    _cameraController?.dispose();
+    // SystemChrome.setPreferredOrientations([
+    //   DeviceOrientation.portraitUp,
+    //   DeviceOrientation.portraitDown,
+    // ]);
+    // SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+    // _cameraController?.dispose();
 
-    _videoController?.dispose();
+    // _videoController?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // if (_cameraController == null || !_cameraController.value.isInitialized) {
-    //   return Container();
-    // }
-
     FlutterStatusbarcolor.setStatusBarColor(Colors.white);
     FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
-
-    // print(
-    //     'Sensor rotation: ${_cameraController.description.sensorOrientation}');
-    // SystemChrome.setEnabledSystemUIOverlays([]);
-    // var tmp = MediaQuery.of(context).size;
-    // var screenH = math.max(tmp.height, tmp.width);
-    // var screenW = math.min(tmp.height, tmp.width);
-    // tmp = _cameraController.value.previewSize;
-    // var previewH = math.max(tmp.height, tmp.width);
-    // var previewW = math.min(tmp.height, tmp.width);
-    // var screenRatio = screenH / screenW;
-    // var previewRatio = previewH / previewW;
-
-    // return OverflowBox(
-    //   maxHeight:
-    //       screenRatio > previewRatio ? screenH : screenW / previewW * previewH,
-    //   maxWidth:
-    //       screenRatio > previewRatio ? screenH / previewH * previewW : screenW,
-    //   child: CameraPreview(_cameraController),
-    // );
-
-    // return Scaffold(
-    //   resizeToAvoidBottomPadding: false,
-    //   body: Row(
-    //     children: [
-    //       Expanded(
-    //         child: Container(
-    //           color: Colors.green,
-    //         ),
-    //       ),
-    //       RotatedBox(
-    //         quarterTurns: 3,
-    //         child: Container(
-    //           // height: screenSize.height * 0.45,
-    //           // width: screenSize.width / 1.5,
-    //           child: AspectRatio(
-    //             aspectRatio: _cameraController.value.aspectRatio,
-    //             child: CameraPreview(_cameraController),
-    //           ),
-    //         ),
-    //       ),
-    //       Expanded(
-    //         child: Container(
-    //           color: Colors.green,
-    //         ),
-    //       ),
-    //     ],
-    //   ),
-    // );
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: OrientationBuilder(
         builder: (context, orientation) {
           if (orientation == Orientation.portrait) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset('assets/images/landspace_orientation.jpg'),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      RichText(
-                        text: TextSpan(
-                          text: 'Please rotate your device to the ',
-                          style: TextStyle(color: Colors.black, fontSize: 16.0),
-                          children: [
-                            TextSpan(
-                              text: 'landscape mode.',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                              children: [
-                                TextSpan(
-                                  text:
-                                      '\n\nIf you want to auto-set the device orientation to landscape as you enter the preview mode, enable ',
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.normal),
-                                  children: [
-                                    TextSpan(
-                                      text: '"Auto set orientation" ',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                      children: [
-                                        TextSpan(
-                                          text: 'in the settings.',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: Row(
-                          children: [
-                            Text(
-                              'Rotate to the right',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16.0,
-                                fontFamily: '',
-                              ),
-                            ),
-                            SizedBox(width: 16.0),
-                            Icon(Icons.arrow_forward_rounded),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                  // child: Text(
-                  //   'Please rotate your device to the landscape mode. If you want to auto-set the device orientation to landscape as you enter the preview mode, enable "Auto set orientation" in the settings.',
-                  // ),
-                ),
-              ],
-            );
+            return RotateToLandscapeWidget();
           } else {
             fixInLandscape();
 
@@ -360,41 +257,5 @@ class _PreviewScreenState extends State<PreviewScreen> {
     //     ),
     //   ),
     // );
-  }
-}
-
-class CameraPreviewWidget extends StatelessWidget {
-  const CameraPreviewWidget({
-    Key key,
-    @required bool isBodyVisible,
-    @required CameraController cameraController,
-  })  : _isBodyVisible = isBodyVisible,
-        _cameraController = cameraController,
-        super(key: key);
-
-  final bool _isBodyVisible;
-  final CameraController _cameraController;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: _isBodyVisible
-          ? Colors.green.withOpacity(0.8)
-          : Colors.red.withOpacity(0.8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          RotatedBox(
-            quarterTurns: 1,
-            child: Container(
-              child: AspectRatio(
-                aspectRatio: _cameraController.value.aspectRatio,
-                child: CameraPreview(_cameraController),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }
