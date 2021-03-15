@@ -101,6 +101,7 @@ class _PreviewScreenState extends State<PreviewScreen> {
                 () => Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                     builder: (context) => RecognizerScreen(
+                      pose: widget.pose,
                       cameraController: _cameraController,
                       videoController: _videoController,
                     ),
