@@ -74,3 +74,4 @@ flutter:
     - assets/videos/
     - assets/model/
     - assets/rive/
+    - assets/tflite/
