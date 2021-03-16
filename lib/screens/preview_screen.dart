@@ -71,7 +71,7 @@ class _PreviewScreenState extends State<PreviewScreen> {
 
         print('TOTAL PARTS: $totalPartsInFrame');
 
-        if (totalPartsInFrame > 11) {
+        if (totalPartsInFrame > 15) {
           setState(() {
             _isBodyVisible = true;
             totalNumOfTimesPositive++;
@@ -85,7 +85,7 @@ class _PreviewScreenState extends State<PreviewScreen> {
         }
 
         if (totalNumOfTimesPositive > 5) {
-          Tflite?.close();
+          // Tflite?.close();
           _cameraController?.stopImageStream();
           print('READY');
           await Navigator.of(context)
