@@ -27,11 +27,20 @@ class _RecognizerScreenState extends State<RecognizerScreen> {
   CameraController _cameraController;
   List<int> _pausePoints;
   int _currentPauseIndex = 0;
+  int _totalFramesPositive = 0;
 
   bool _isDetecting = false;
   List<dynamic> _recognitions;
   int _imageHeight = 0;
   int _imageWidth = 0;
+
+  bool _isDetectionAllowed = false;
+
+  double _confidence = 0.0;
+
+  bool _isPoseCorrectStatus = false;
+
+  final List<int> POSE_INDEX = [3, 4];
 
   // Future<void> initializeVideoController() async {
   //   _videoController = VideoPlayerController.network(
@@ -44,16 +53,79 @@ class _RecognizerScreenState extends State<RecognizerScreen> {
   //   setState(() {});
   // }
 
-  setRecognitions(recognitions, imageHeight, imageWidth) async {
+  setRecognitions(recognitions, imageHeight, imageWidth) {
     if (mounted) {
-      setState(() {
-        _recognitions = recognitions;
-        _imageHeight = imageHeight;
-        _imageWidth = imageWidth;
-      });
-      String label = _recognitions[0]["label"];
-      print('RECOG: $label');
+      String label = recognitions[0]["label"];
+      int index = recognitions[0]["index"];
+      double confidence = recognitions[0]["confidence"];
+      print('RECOG: $label ($confidence)');
+
+      if (POSE_INDEX.contains(index) && confidence > 0.6) {
+        _totalFramesPositive++;
+
+        if (_totalFramesPositive > 10) {
+          _isPoseCorrectStatus = true;
+        }
+
+        if (_totalFramesPositive > 20) {
+          // await _cameraController?.stopImageStream();
+
+          setState(() {
+            _isDetectionAllowed = false;
+            _currentPauseIndex == _pausePoints.length - 1
+                ? _currentPauseIndex = 0
+                : _currentPauseIndex++;
+          });
+
+          _videoController.play();
+
+          _totalFramesPositive = 0;
+        }
+
+        setState(() {
+          _recognitions = recognitions;
+          _imageHeight = imageHeight;
+          _imageWidth = imageWidth;
+          _confidence = confidence;
+        });
+      } else {
+        _totalFramesPositive = 0;
+        setState(() {
+          _isPoseCorrectStatus = false;
+        });
+      }
     }
+  }
+
+  _initializeCameraStream() {
+    Tflite.loadModel(
+      model: "assets/tflite/beginners_model.tflite",
+      labels: "assets/tflite/beginners_labels.txt",
+      numThreads: 4,
+      // useGpuDelegate: true,
+    );
+
+    _videoController.play();
+
+    _videoController.addListener(() {
+      final bool isPlaying = _videoController.value.isPlaying;
+
+      if (isPlaying) {
+        int currentPositionInSeconds =
+            _videoController.value.position.inSeconds;
+
+        if (currentPositionInSeconds == _pausePoints[_currentPauseIndex]) {
+          _videoController.pause();
+          setState(() {
+            _isDetectionAllowed = true;
+          });
+        }
+      }
+      if (_videoController.value.duration.inSeconds ==
+          _videoController.value.position.inSeconds) {
+        Navigator.of(context).pop();
+      }
+    });
   }
 
   @override
@@ -70,50 +142,33 @@ class _RecognizerScreenState extends State<RecognizerScreen> {
 
     _pausePoints = [95, 194];
 
-    Tflite.loadModel(
-      model: "assets/tflite/beginners_model.tflite",
-      labels: "assets/tflite/beginners_labels.txt",
-      numThreads: 4,
-      // useGpuDelegate: true,
-    );
+    // initializeVideoController();
+    _initializeCameraStream();
 
-    _videoController.play();
-    _videoController.addListener(() {
-      final bool isPlaying = _videoController.value.isPlaying;
+    _cameraController.startImageStream((image) {
+      if (!_isDetecting && _isDetectionAllowed) {
+        _isDetecting = true;
 
-      if (isPlaying) {
-        int currentPositionInSeconds =
-            _videoController.value.position.inSeconds;
-
-        if (currentPositionInSeconds == _pausePoints[_currentPauseIndex]) {
-          _videoController.pause();
-
-          _cameraController.startImageStream((image) {
-            if (!_isDetecting) {
-              _isDetecting = true;
-
-              Tflite.runModelOnFrame(
-                imageMean: 128,
-                imageStd: 128,
-                bytesList: image.planes.map((plane) {
-                  return plane.bytes;
-                }).toList(),
-                imageHeight: image.height,
-                imageWidth: image.width,
-                asynch: true,
-                rotation: 180,
-                numResults: 1,
-                threshold: 0.2,
-              ).then((recognitions) {
-                setRecognitions(recognitions, image.height, image.width);
-                _isDetecting = false;
-              });
-            }
-          });
-        }
+        Tflite.runModelOnFrame(
+          imageMean: 128,
+          imageStd: 128,
+          bytesList: image.planes.map((plane) {
+            return plane.bytes;
+          }).toList(),
+          imageHeight: image.height,
+          imageWidth: image.width,
+          asynch: true,
+          rotation: 180,
+          numResults: 1,
+          threshold: 0.2,
+        ).then((recognitions) {
+          if (_isDetectionAllowed) {
+            setRecognitions(recognitions, image.height, image.width);
+            _isDetecting = false;
+          }
+        });
       }
     });
-    // initializeVideoController();
 
     super.initState();
   }
@@ -153,17 +208,51 @@ class _RecognizerScreenState extends State<RecognizerScreen> {
                     ),
                   )
                 : Container(),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Container(
+                // height: screenSize.height * 0.7,
+                width: screenSize.width * 0.215,
+                color: Colors.white38,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: screenSize.height * 0.3,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text('Score: ${_confidence.round() * 100}'),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Icon(
+                        Icons.circle,
+                        size: 32,
+                        color: _isPoseCorrectStatus
+                            ? Colors.greenAccent
+                            : Colors.redAccent,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
             Hero(
               tag: 'camera_view',
               child: Align(
                 alignment: Alignment.topRight,
-                child: RotatedBox(
-                  quarterTurns: 1,
-                  child: SizedBox(
-                    width: screenSize.width * 0.16,
-                    child: AspectRatio(
-                      aspectRatio: _cameraController.value.aspectRatio,
-                      child: CameraPreview(_cameraController),
+                child: ClipRRect(
+                  borderRadius:
+                      BorderRadius.only(bottomLeft: Radius.circular(20)),
+                  child: RotatedBox(
+                    quarterTurns: 1,
+                    child: SizedBox(
+                      width: screenSize.width * 0.16,
+                      child: AspectRatio(
+                        aspectRatio: _cameraController.value.aspectRatio,
+                        child: CameraPreview(_cameraController),
+                      ),
                     ),
                   ),
                 ),
