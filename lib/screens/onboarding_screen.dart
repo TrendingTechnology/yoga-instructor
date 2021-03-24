@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sofia/providers.dart';
 import 'package:sofia/screens/dashboard_screen.dart';
@@ -9,6 +10,12 @@ import 'onboarding_screens/splash_screen.dart';
 class OnboardingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
+    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Sofia: yoga trainer',
