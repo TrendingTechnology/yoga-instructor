@@ -1,6 +1,9 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
+import 'package:sofia/utils/video_manager.dart';
+import 'package:sofia/widgets/recognizer_screen/scrore_viewer_widget.dart';
 import 'package:tflite/tflite.dart';
 import 'package:video_player/video_player.dart';
 
@@ -9,13 +12,11 @@ import 'package:sofia/model/pose.dart';
 class RecognizerScreen extends StatefulWidget {
   final Pose pose;
   final CameraController cameraController;
-  final VideoPlayerController videoController;
 
   const RecognizerScreen({
     Key key,
     @required this.pose,
     @required this.cameraController,
-    @required this.videoController,
   }) : super(key: key);
 
   @override
@@ -53,21 +54,21 @@ class _RecognizerScreenState extends State<RecognizerScreen> {
   //   setState(() {});
   // }
 
-  setRecognitions(recognitions, imageHeight, imageWidth) {
+  setRecognitions(recognitions, imageHeight, imageWidth) async {
     if (mounted) {
       String label = recognitions[0]["label"];
       int index = recognitions[0]["index"];
       double confidence = recognitions[0]["confidence"];
-      print('RECOG: $label ($confidence)');
+      // print('RECOG: $label ($confidence)');
 
-      if (POSE_INDEX.contains(index) && confidence > 0.6) {
+      if (POSE_INDEX.contains(index)) {
         _totalFramesPositive++;
 
-        if (_totalFramesPositive > 10) {
+        if (_totalFramesPositive > 20) {
           _isPoseCorrectStatus = true;
         }
 
-        if (_totalFramesPositive > 20) {
+        if (_totalFramesPositive > 50) {
           // await _cameraController?.stopImageStream();
 
           setState(() {
@@ -83,13 +84,15 @@ class _RecognizerScreenState extends State<RecognizerScreen> {
         }
 
         setState(() {
-          _recognitions = recognitions;
-          _imageHeight = imageHeight;
-          _imageWidth = imageWidth;
+          // _recognitions = recognitions;
+          // _imageHeight = imageHeight;
+          // _imageWidth = imageWidth;
           _confidence = confidence;
+          // print('CONFI: $_confidence');
         });
       } else {
         _totalFramesPositive = 0;
+
         setState(() {
           _isPoseCorrectStatus = false;
         });
@@ -97,7 +100,7 @@ class _RecognizerScreenState extends State<RecognizerScreen> {
     }
   }
 
-  _initializeCameraStream() {
+  _initializeCameraStream({@required BuildContext context}) {
     Tflite.loadModel(
       model: "assets/tflite/beginners_model.tflite",
       labels: "assets/tflite/beginners_labels.txt",
@@ -114,7 +117,8 @@ class _RecognizerScreenState extends State<RecognizerScreen> {
         int currentPositionInSeconds =
             _videoController.value.position.inSeconds;
 
-        if (currentPositionInSeconds == _pausePoints[_currentPauseIndex]) {
+        if (currentPositionInSeconds == _pausePoints[_currentPauseIndex] &&
+            mounted) {
           _videoController.pause();
           setState(() {
             _isDetectionAllowed = true;
@@ -124,6 +128,16 @@ class _RecognizerScreenState extends State<RecognizerScreen> {
       if (_videoController.value.duration.inSeconds ==
           _videoController.value.position.inSeconds) {
         Navigator.of(context).pop();
+        // _videoController?.dispose();
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.portraitUp,
+          DeviceOrientation.portraitDown,
+        ]);
+
+        SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+
+        // _cameraController?.dispose();
+        Tflite?.close();
       }
     });
   }
@@ -138,12 +152,12 @@ class _RecognizerScreenState extends State<RecognizerScreen> {
     SystemChrome.setEnabledSystemUIOverlays([]);
 
     _cameraController = widget.cameraController;
-    _videoController = widget.videoController;
+    _videoController = VideoManager.videoController;
 
     _pausePoints = [95, 194];
 
     // initializeVideoController();
-    _initializeCameraStream();
+    _initializeCameraStream(context: context);
 
     _cameraController.startImageStream((image) {
       if (!_isDetecting && _isDetectionAllowed) {
@@ -161,7 +175,7 @@ class _RecognizerScreenState extends State<RecognizerScreen> {
           rotation: 180,
           numResults: 1,
           threshold: 0.2,
-        ).then((recognitions) {
+        ).then((recognitions) async {
           if (_isDetectionAllowed) {
             setRecognitions(recognitions, image.height, image.width);
             _isDetecting = false;
@@ -173,114 +187,126 @@ class _RecognizerScreenState extends State<RecognizerScreen> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
+  // @override
+  // void dispose() {
+  //   super.dispose();
 
-    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
-
-    _videoController?.dispose();
-    _cameraController?.dispose();
-    Tflite?.close();
-
-    super.dispose();
-  }
+  // }
 
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
 
-    return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: [
-            _videoController.value.initialized
-                ? OverflowBox(
-                    maxWidth: screenSize.width,
-                    maxHeight:
-                        screenSize.width * _videoController.value.aspectRatio,
-                    child: AspectRatio(
-                      aspectRatio: _videoController.value.aspectRatio,
-                      child: VideoPlayer(_videoController),
-                    ),
-                  )
-                : Container(),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Container(
-                // height: screenSize.height * 0.7,
-                width: screenSize.width * 0.215,
-                color: Colors.white38,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: screenSize.height * 0.3,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text('Score: ${_confidence.round() * 100}'),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Icon(
-                        Icons.circle,
-                        size: 32,
-                        color: _isPoseCorrectStatus
-                            ? Colors.greenAccent
-                            : Colors.redAccent,
+    return WillPopScope(
+      onWillPop: () async {
+        FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
+        return true;
+      },
+      child: Scaffold(
+        body: SafeArea(
+          child: Stack(
+            children: [
+              _videoController.value.initialized
+                  ? OverflowBox(
+                      maxWidth: screenSize.width,
+                      maxHeight:
+                          screenSize.width * _videoController.value.aspectRatio,
+                      child: AspectRatio(
+                        aspectRatio: _videoController.value.aspectRatio,
+                        child: VideoPlayer(_videoController),
                       ),
-                    ),
-                  ],
+                    )
+                  : Container(),
+
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Opacity(
+                  opacity: _isDetectionAllowed ? 1.0 : 0.4,
+                  child: ScroreViewerWidget(
+                    accuracy: double.parse(_confidence.toStringAsFixed(2)),
+                  ),
                 ),
               ),
-            ),
-            Hero(
-              tag: 'camera_view',
-              child: Align(
-                alignment: Alignment.topRight,
-                child: ClipRRect(
-                  borderRadius:
-                      BorderRadius.only(bottomLeft: Radius.circular(20)),
-                  child: RotatedBox(
-                    quarterTurns: 1,
-                    child: SizedBox(
-                      width: screenSize.width * 0.16,
-                      child: AspectRatio(
-                        aspectRatio: _cameraController.value.aspectRatio,
-                        child: CameraPreview(_cameraController),
+              // Align(
+              //   alignment: Alignment.bottomRight,
+              //   child: Container(
+              //     // height: screenSize.height * 0.7,
+              //     width: screenSize.width * 0.215,
+              //     color: Colors.white38,
+              //     child: Column(
+              //       mainAxisAlignment: MainAxisAlignment.center,
+              //       children: [
+              //         SizedBox(
+              //           height: screenSize.height * 0.3,
+              //         ),
+              //         Padding(
+              //           padding: const EdgeInsets.all(16.0),
+              //           child: Text(
+              //             'Score: ${_confidence.toStringAsFixed(2)}',
+              //             style: TextStyle(
+              //               fontSize: 40.0,
+              //               color: Colors.black,
+              //             ),
+              //           ),
+              //         ),
+              //         Padding(
+              //           padding: const EdgeInsets.all(16.0),
+              //           child: Icon(
+              //             Icons.circle,
+              //             size: 32,
+              //             color: _isPoseCorrectStatus
+              //                 ? Colors.greenAccent
+              //                 : Colors.redAccent,
+              //           ),
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ),
+              Hero(
+                tag: 'camera_view',
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: ClipRRect(
+                    borderRadius:
+                        BorderRadius.only(bottomLeft: Radius.circular(20)),
+                    child: RotatedBox(
+                      quarterTurns: 1,
+                      child: SizedBox(
+                        width: screenSize.width * 0.16,
+                        child: AspectRatio(
+                          aspectRatio: _cameraController.value.aspectRatio,
+                          child: CameraPreview(_cameraController),
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
+          // child: Column(
+          //   children: [
+          //     Padding(
+          //       padding: const EdgeInsets.all(16.0),
+          //       child: Text(
+          //         'pose',
+          //         style: TextStyle(
+          //           fontSize: 24.0,
+          //         ),
+          //       ),
+          //     ),
+          //     _videoController.value.initialized
+          //         ? Flexible(
+          //             child: AspectRatio(
+          //               aspectRatio: _videoController.value.aspectRatio,
+          //               child: VideoPlayer(_videoController),
+          //             ),
+          //           )
+          //         : Container(),
+          //   ],
+          // ),
         ),
-        // child: Column(
-        //   children: [
-        //     Padding(
-        //       padding: const EdgeInsets.all(16.0),
-        //       child: Text(
-        //         'pose',
-        //         style: TextStyle(
-        //           fontSize: 24.0,
-        //         ),
-        //       ),
-        //     ),
-        //     _videoController.value.initialized
-        //         ? Flexible(
-        //             child: AspectRatio(
-        //               aspectRatio: _videoController.value.aspectRatio,
-        //               child: VideoPlayer(_videoController),
-        //             ),
-        //           )
-        //         : Container(),
-        //   ],
-        // ),
       ),
     );
   }
