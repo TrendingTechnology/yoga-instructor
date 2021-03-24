@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sofia/screens/custom_painter_test.dart';
 import 'package:sofia/screens/debug_screen.dart';
 import 'package:sofia/screens/onboarding_screen.dart';
 
@@ -22,6 +23,8 @@ void main() async {
     ),
     // For re-uploading the data to Firebase:
     // DebugScreen(),
+    // Test painter
+    // CustomPainterTest(),
   );
 }
 
