@@ -6,6 +6,7 @@ import 'package:sofia/main.dart';
 import 'package:sofia/model/pose.dart';
 import 'package:sofia/screens/recognizer_screen.dart';
 import 'package:sofia/screens/timer_overlay.dart';
+import 'package:sofia/utils/video_manager.dart';
 import 'package:sofia/widgets/preview_screen/camera_preview_widget.dart';
 import 'package:sofia/widgets/preview_screen/rotate_to_landspace_widget.dart';
 import 'package:tflite/tflite.dart';
@@ -25,7 +26,7 @@ class PreviewScreen extends StatefulWidget {
 }
 
 class _PreviewScreenState extends State<PreviewScreen> {
-  VideoPlayerController _videoController;
+  // VideoPlayerController _videoController;
 
   CameraController _cameraController;
 
@@ -40,11 +41,11 @@ class _PreviewScreenState extends State<PreviewScreen> {
   int totalPartsInFrame = 0;
   int totalNumOfTimesPositive = 0;
 
-  Future<void> initializeVideoController() async {
-    _videoController = VideoPlayerController.network(
-        'https://stream.mux.com/kiBM5MAziq4wGLnc2GCVixAL8EXYg7wcUDA00VcSkzNM.m3u8.m3u8');
-    await _videoController.initialize();
-  }
+  // Future<void> initializeVideoController() async {
+  //   _videoController = VideoPlayerController.network(
+  //       'https://stream.mux.com/kiBM5MAziq4wGLnc2GCVixAL8EXYg7wcUDA00VcSkzNM.m3u8.m3u8');
+  //   await _videoController.initialize();
+  // }
 
   setRecognitions(recognitions, imageHeight, imageWidth) async {
     totalPartsInFrame = 0;
@@ -103,7 +104,6 @@ class _PreviewScreenState extends State<PreviewScreen> {
                     builder: (context) => RecognizerScreen(
                       pose: widget.pose,
                       cameraController: _cameraController,
-                      videoController: _videoController,
                     ),
                   ),
                 ),
@@ -181,21 +181,8 @@ class _PreviewScreenState extends State<PreviewScreen> {
     ]);
 
     initializeCameraController();
-    initializeVideoController();
+    VideoManager.initializeVideoController();
     super.initState();
-  }
-
-  @override
-  dispose() {
-    // SystemChrome.setPreferredOrientations([
-    //   DeviceOrientation.portraitUp,
-    //   DeviceOrientation.portraitDown,
-    // ]);
-    // SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
-    // _cameraController?.dispose();
-
-    // _videoController?.dispose();
-    super.dispose();
   }
 
   @override
@@ -203,27 +190,33 @@ class _PreviewScreenState extends State<PreviewScreen> {
     FlutterStatusbarcolor.setStatusBarColor(Colors.white);
     FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: OrientationBuilder(
-        builder: (context, orientation) {
-          if (orientation == Orientation.portrait) {
-            return RotateToLandscapeWidget();
-          } else {
-            fixInLandscape();
-
-            if (_cameraController.value.isInitialized) {
-              return CameraPreviewWidget(
-                isBodyVisible: _isBodyVisible,
-                cameraController: _cameraController,
-              );
+    return WillPopScope(
+      onWillPop: () async {
+        FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
+        return true;
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: OrientationBuilder(
+          builder: (context, orientation) {
+            if (orientation == Orientation.portrait) {
+              return RotateToLandscapeWidget();
             } else {
-              return Container(
-                color: Colors.white,
-              );
+              fixInLandscape();
+
+              if (_cameraController.value.isInitialized) {
+                return CameraPreviewWidget(
+                  isBodyVisible: _isBodyVisible,
+                  cameraController: _cameraController,
+                );
+              } else {
+                return Container(
+                  color: Colors.white,
+                );
+              }
             }
-          }
-        },
+          },
+        ),
       ),
     );
 
