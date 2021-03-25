@@ -128,7 +128,9 @@ class _PreviewScreenState extends State<PreviewScreen> {
       _cameraController.startImageStream((CameraImage image) {
         // print('IMAGE: ${image.height} x ${image.width}');
 
-        if (!isDetecting && isInLandscape) {
+        if (!isDetecting &&
+            isInLandscape &&
+            _cameraController.value.isStreamingImages) {
           isDetecting = true;
 
           Tflite.runPoseNetOnFrame(
