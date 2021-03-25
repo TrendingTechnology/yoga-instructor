@@ -29,17 +29,14 @@ class _RecognizerScreenState extends State<RecognizerScreen> {
   List<int> _pausePoints;
   int _currentPauseIndex = 0;
   int _totalFramesPositive = 0;
+  double _myPoseAcuracy = 0.0;
+  double _myPoseAcuracyTotal = 0.0;
 
   bool _isDetecting = false;
-  List<dynamic> _recognitions;
-  int _imageHeight = 0;
-  int _imageWidth = 0;
-
   bool _isDetectionAllowed = false;
-
-  double _confidence = 0.0;
-
   bool _isPoseCorrectStatus = false;
+
+  Tween<double> _accuracyTween;
 
   final List<int> POSE_INDEX = [3, 4];
 
@@ -64,12 +61,13 @@ class _RecognizerScreenState extends State<RecognizerScreen> {
       if (POSE_INDEX.contains(index)) {
         _totalFramesPositive++;
 
-        if (_totalFramesPositive > 20) {
+        if (_totalFramesPositive == 20) {
           _isPoseCorrectStatus = true;
-        }
-
-        if (_totalFramesPositive > 50) {
+          _myPoseAcuracy = confidence;
+          setState(() {});
+        } else if (_totalFramesPositive > 80 && _myPoseAcuracy > 0.5) {
           // await _cameraController?.stopImageStream();
+          _myPoseAcuracy = (_myPoseAcuracy + confidence) / 2;
 
           setState(() {
             _isDetectionAllowed = false;
@@ -80,16 +78,21 @@ class _RecognizerScreenState extends State<RecognizerScreen> {
 
           _videoController.play();
 
-          _totalFramesPositive = 0;
-        }
+          if (_myPoseAcuracyTotal == 0.0) {
+            _myPoseAcuracyTotal = _myPoseAcuracy;
+          } else {
+            _myPoseAcuracyTotal = (_myPoseAcuracyTotal + _myPoseAcuracy) / 2;
+          }
 
-        setState(() {
-          // _recognitions = recognitions;
-          // _imageHeight = imageHeight;
-          // _imageWidth = imageWidth;
-          _confidence = confidence;
-          // print('CONFI: $_confidence');
-        });
+          _totalFramesPositive = 0;
+
+          setState(() {});
+        } else {
+          if (_isPoseCorrectStatus) {
+            _myPoseAcuracy = (_myPoseAcuracy + confidence) / 2;
+            setState(() {});
+          }
+        }
       } else {
         _totalFramesPositive = 0;
 
@@ -100,7 +103,28 @@ class _RecognizerScreenState extends State<RecognizerScreen> {
     }
   }
 
-  _initializeCameraStream({@required BuildContext context}) {
+  @override
+  void initState() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+    ]);
+
+    SystemChrome.setEnabledSystemUIOverlays([]);
+
+    _cameraController = widget.cameraController;
+    _videoController = VideoManager.videoController;
+
+    _pausePoints = [95, 194];
+
+    _accuracyTween = Tween(
+      begin: 0.0,
+      end: _myPoseAcuracy,
+    );
+
+    // initializeVideoController();
+    // _initializeCameraStream(context: context);
+
     Tflite.loadModel(
       model: "assets/tflite/beginners_model.tflite",
       labels: "assets/tflite/beginners_labels.txt",
@@ -125,9 +149,12 @@ class _RecognizerScreenState extends State<RecognizerScreen> {
           });
         }
       }
+
       if (_videoController.value.duration.inSeconds ==
-          _videoController.value.position.inSeconds) {
+              _videoController.value.position.inSeconds &&
+          !_videoController.value.isPlaying) {
         Navigator.of(context).pop();
+        print('Accuracy each: $_myPoseAcuracy, total: $_myPoseAcuracyTotal');
         // _videoController?.dispose();
         SystemChrome.setPreferredOrientations([
           DeviceOrientation.portraitUp,
@@ -140,24 +167,8 @@ class _RecognizerScreenState extends State<RecognizerScreen> {
         Tflite?.close();
       }
     });
-  }
 
-  @override
-  void initState() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft,
-    ]);
-
-    SystemChrome.setEnabledSystemUIOverlays([]);
-
-    _cameraController = widget.cameraController;
-    _videoController = VideoManager.videoController;
-
-    _pausePoints = [95, 194];
-
-    // initializeVideoController();
-    _initializeCameraStream(context: context);
+    ////...
 
     _cameraController.startImageStream((image) {
       if (!_isDetecting && _isDetectionAllowed) {
@@ -223,7 +234,8 @@ class _RecognizerScreenState extends State<RecognizerScreen> {
                 child: Opacity(
                   opacity: _isDetectionAllowed ? 1.0 : 0.4,
                   child: ScroreViewerWidget(
-                    accuracy: double.parse(_confidence.toStringAsFixed(2)),
+                    accuracyTween: _accuracyTween,
+                    accuracy: double.parse(_myPoseAcuracy.toStringAsFixed(2)),
                   ),
                 ),
               ),
