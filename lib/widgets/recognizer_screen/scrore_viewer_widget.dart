@@ -29,24 +29,6 @@ class _ScroreViewerWidgetState extends State<ScroreViewerWidget>
     widget.accuracyTween.end = widget.accuracy;
     _animationController.forward();
   }
-  // ...
-
-  // _accuracyTween = Tween(
-  //     begin: 0.0,
-  //     end: _,
-  //   );
-
-  //   controller = AnimationController(
-  //     vsync: this,
-  //     duration: Duration(milliseconds: 20),
-  //   );
-
-  //   animation = _accuracyTween.animate(controller)
-  //     ..addListener(() {
-  //       setState(() {});
-  //     });
-
-  //   controller.forward();
 
   @override
   void initState() {
