@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:simple_animations/simple_animations.dart';
+import 'package:sofia/widgets/recognizer_screen/total_accuracy_painter.dart';
 import 'package:supercharged/supercharged.dart';
 
 import 'package:sofia/model/pose.dart';
@@ -163,16 +164,6 @@ class _ScoreOverlayState extends State<ScoreOverlay>
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
-    // if (_start == 1) {
-    //   WidgetsBinding.instance.addPostFrameCallback((_) {
-    //     // Navigator.of(context).pushReplacement(
-    //     //   MaterialPageRoute(
-    //     //     builder: (context) => PreviewScreen(),
-    //     //   ),
-    //     // );
-    //     Navigator.of(context).pop();
-    //   });
-    // }
     return GestureDetector(
       onTap: () {
         Navigator.of(context).pop();
@@ -180,15 +171,16 @@ class _ScoreOverlayState extends State<ScoreOverlay>
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
-            child: AnimatedBuilder(
-          animation: _animationController,
-          builder: (context, child) => _buildAnimation(
-            context: context,
-            child: child,
-            height: height,
-            width: width,
+          child: AnimatedBuilder(
+            animation: _animationController,
+            builder: (context, child) => _buildAnimation(
+              context: context,
+              child: child,
+              height: height,
+              width: width,
+            ),
           ),
-        )),
+        ),
       ),
     );
   }
@@ -269,8 +261,9 @@ class _ScoreOverlayState extends State<ScoreOverlay>
                             painter: TotalAccuracyPainter(
                               width: width,
                               height: height,
-                              accuracy:
-                                  _animation.value.get(AnimProps.accuracy),
+                              accuracy: _animation.value.get(
+                                AnimProps.accuracy,
+                              ),
                             ),
                             child: SizedBox(
                               height: height / 2,
@@ -389,61 +382,5 @@ class _ScoreOverlayState extends State<ScoreOverlay>
         ],
       ),
     );
-  }
-}
-
-class TotalAccuracyPainter extends CustomPainter {
-  final double width;
-  final double height;
-  final double accuracy;
-
-  TotalAccuracyPainter({
-    @required this.width,
-    @required this.height,
-    @required this.accuracy,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    var paint1 = Paint()
-      ..color = Palette.lightShade
-      ..strokeWidth = 16
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-
-    var paint2 = Paint()
-      ..color = Palette.lightDarkShade
-      ..strokeWidth = 18
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-
-    canvas.drawArc(
-      Rect.fromCenter(
-        center: Offset(height / 4, height / 4),
-        height: 180,
-        width: 180,
-      ),
-      (2 * math.pi) / 3,
-      (5 * math.pi) / 3,
-      false,
-      paint1,
-    );
-
-    canvas.drawArc(
-      Rect.fromCenter(
-        center: Offset(height / 4, height / 4),
-        height: 180,
-        width: 180,
-      ),
-      (2 * math.pi) / 3,
-      ((5 * math.pi) / 3) * accuracy,
-      false,
-      paint2,
-    );
-  }
-
-  @override
-  bool shouldRepaint(TotalAccuracyPainter oldDelegate) {
-    return accuracy != oldDelegate.accuracy;
   }
 }
