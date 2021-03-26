@@ -2,6 +2,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
+import 'package:sofia/screens/score_overlay.dart';
 import 'package:sofia/utils/video_manager.dart';
 import 'package:sofia/widgets/recognizer_screen/scrore_viewer_widget.dart';
 import 'package:tflite/tflite.dart';
@@ -38,6 +39,8 @@ class _RecognizerScreenState extends State<RecognizerScreen> {
 
   Tween<double> _accuracyTween;
 
+  DateTime _startTime;
+
   final List<int> POSE_INDEX = [3, 4];
 
   // Future<void> initializeVideoController() async {
@@ -65,7 +68,7 @@ class _RecognizerScreenState extends State<RecognizerScreen> {
           _isPoseCorrectStatus = true;
           _myPoseAcuracy = confidence;
           setState(() {});
-        } else if (_totalFramesPositive > 80 && _myPoseAcuracy > 0.5) {
+        } else if (_totalFramesPositive > 100 && _myPoseAcuracy > 0.5) {
           // await _cameraController?.stopImageStream();
           _myPoseAcuracy = (_myPoseAcuracy + confidence) / 2;
 
@@ -134,6 +137,8 @@ class _RecognizerScreenState extends State<RecognizerScreen> {
 
     _videoController.play();
 
+    _startTime = DateTime.now();
+
     _videoController.addListener(() {
       final bool isPlaying = _videoController.value.isPlaying;
 
@@ -153,15 +158,26 @@ class _RecognizerScreenState extends State<RecognizerScreen> {
       if (_videoController.value.duration.inSeconds ==
               _videoController.value.position.inSeconds &&
           !_videoController.value.isPlaying) {
-        Navigator.of(context).pop();
+        // Navigator.of(context).pop();
+        Navigator.of(context).pushReplacement(
+          PageRouteBuilder(
+            opaque: false,
+            pageBuilder: (context, _, __) => ScoreOverlay(
+              startTime: _startTime,
+              totalAccuracy: _myPoseAcuracyTotal,
+              pose: widget.pose,
+            ),
+          ),
+        );
         print('Accuracy each: $_myPoseAcuracy, total: $_myPoseAcuracyTotal');
         // _videoController?.dispose();
-        SystemChrome.setPreferredOrientations([
-          DeviceOrientation.portraitUp,
-          DeviceOrientation.portraitDown,
-        ]);
+        // SystemChrome.setPreferredOrientations([
+        //   DeviceOrientation.portraitUp,
+        //   DeviceOrientation.portraitDown,
+        // ]);
 
-        SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+        // SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+        // FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
 
         // _cameraController?.dispose();
         Tflite?.close();
