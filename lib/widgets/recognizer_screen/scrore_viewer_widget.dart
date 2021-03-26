@@ -69,7 +69,7 @@ class _ScroreViewerWidgetState extends State<ScroreViewerWidget>
             child: Align(
               alignment: Alignment.center,
               child: Text(
-                '${(widget.accuracy * 100).toStringAsFixed(1)}',
+                '${widget.accuracy == 1.0 ? 100 : (widget.accuracy * 100).toStringAsFixed(0)}',
                 style: TextStyle(
                   fontSize: 32.0,
                   fontWeight: FontWeight.bold,
