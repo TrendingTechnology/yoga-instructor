@@ -1,14 +1,14 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:simple_animations/simple_animations.dart';
+import 'package:supercharged/supercharged.dart';
 
 import 'package:sofia/model/pose.dart';
 import 'package:sofia/res/palette.dart';
-import 'dart:math' as math;
-
-import 'package:supercharged/supercharged.dart';
 
 enum AnimProps {
   accuracy,
@@ -22,11 +22,13 @@ enum AnimProps {
 class ScoreOverlay extends StatefulWidget {
   final Pose pose;
   final double totalAccuracy;
+  final DateTime startTime;
 
   const ScoreOverlay({
     Key key,
     @required this.pose,
     @required this.totalAccuracy,
+    @required this.startTime,
   }) : super(key: key);
 
   @override
@@ -38,18 +40,32 @@ class _ScoreOverlayState extends State<ScoreOverlay>
   AnimationController _animationController;
   Animation<TimelineValue<AnimProps>> _animation;
 
+  double _accuracy;
+  Pose _currentPose;
+  String durationString;
+
   Timer _timer;
-  int _start = 5;
-  // Pose _currentPose;
+  int _start = 10;
 
   @override
   void initState() {
     super.initState();
-    // _currentPose = widget.pose;
+    _currentPose = widget.pose;
+    _accuracy = widget.totalAccuracy;
+    Duration duration = DateTime.now().difference(widget.startTime);
+
+    if (duration.inSeconds < 60) {
+      durationString = '${duration.inSeconds}sec';
+    } else if (duration.inMinutes < 60) {
+      durationString = '${duration.inMinutes}min ${duration.inSeconds % 60}sec';
+    } else {
+      durationString =
+          '${duration.inHours}hr ${duration.inMinutes % 60}min ${duration.inSeconds % 60}sec';
+    }
     // startTimer();
 
     _animationController = AnimationController(
-      duration: Duration(seconds: 2),
+      duration: Duration(seconds: 5),
       vsync: this,
     );
 
@@ -61,7 +77,7 @@ class _ScoreOverlayState extends State<ScoreOverlay>
         )
         .animate(
           AnimProps.accuracy,
-          tween: Tween(begin: 0.0, end: widget.totalAccuracy),
+          tween: Tween(begin: 0.0, end: _accuracy),
         )
         .addSubsequentScene(
           delay: 200.milliseconds,
@@ -83,7 +99,7 @@ class _ScoreOverlayState extends State<ScoreOverlay>
         .animate(AnimProps.stars, tween: Tween(begin: 0.0, end: 1.0))
         .addSubsequentScene(
           delay: 200.milliseconds,
-          duration: 1000.milliseconds,
+          duration: 600.milliseconds,
           curve: Curves.easeIn,
         )
         .animate(AnimProps.time, tween: Tween(begin: 0.0, end: 1.0))
@@ -96,7 +112,9 @@ class _ScoreOverlayState extends State<ScoreOverlay>
         .parent
         .animatedBy(_animationController);
 
-    _animationController.forward();
+    _animationController
+        .forward()
+        .whenComplete(() => startTimer(context: context));
   }
 
   @override
@@ -106,7 +124,7 @@ class _ScoreOverlayState extends State<ScoreOverlay>
     super.dispose();
   }
 
-  startTimer() {
+  startTimer({@required BuildContext context}) {
     const oneSec = const Duration(seconds: 1);
     _timer = Timer.periodic(
       oneSec,
@@ -115,6 +133,16 @@ class _ScoreOverlayState extends State<ScoreOverlay>
           setState(() {
             timer.cancel();
           });
+
+          Navigator.of(context).pop();
+
+          SystemChrome.setPreferredOrientations([
+            DeviceOrientation.portraitUp,
+            DeviceOrientation.portraitDown,
+          ]);
+
+          SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+          FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
         } else {
           setState(() {
             _start--;
@@ -126,12 +154,12 @@ class _ScoreOverlayState extends State<ScoreOverlay>
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft,
-    ]);
+    // SystemChrome.setPreferredOrientations([
+    //   DeviceOrientation.landscapeRight,
+    //   DeviceOrientation.landscapeLeft,
+    // ]);
 
-    SystemChrome.setEnabledSystemUIOverlays([]);
+    // SystemChrome.setEnabledSystemUIOverlays([]);
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
@@ -171,192 +199,195 @@ class _ScoreOverlayState extends State<ScoreOverlay>
     @required height,
     @required width,
   }) {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Opacity(
-          opacity: _animation.value.get(AnimProps.opacity),
-          child: Container(
-            width: double.maxFinite,
-            color: Palette.accentDarkPink,
-            child: Padding(
-              padding: const EdgeInsets.only(
-                left: 24.0,
-                top: 10.0,
-                bottom: 10.0,
-              ),
-              child: RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  text: 'You will be redirected to the dashboard in ',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16.0,
-                    fontFamily: 'GoogleSans',
-                    letterSpacing: 1,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: '5 seconds',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18.0,
-                      ),
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Opacity(
+            opacity: _animation.value.get(AnimProps.opacity),
+            child: Container(
+              width: double.maxFinite,
+              color: Palette.accentDarkPink,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  left: 24.0,
+                  top: 10.0,
+                  bottom: 10.0,
+                ),
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    text: 'You will be redirected to the dashboard in ',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                      fontFamily: 'GoogleSans',
+                      letterSpacing: 1,
                     ),
-                  ],
+                    children: [
+                      TextSpan(
+                        text: '$_start seconds',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18.0,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-        Container(
-          height: height - 50,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Accuracy',
-                      style: TextStyle(
-                        color: Palette.black,
-                        fontSize: 24.0,
-                        fontFamily: 'GoogleSans',
-                        letterSpacing: 1,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16.0),
-                      child: Container(
-                        height: height / 2,
-                        width: height / 2,
-                        child: CustomPaint(
-                          painter: TotalAccuracyPainter(
-                            width: width,
-                            height: height,
-                            accuracy: _animation.value.get(AnimProps.accuracy),
-                          ),
-                          child: SizedBox(
-                            height: height / 2,
-                            width: height / 2,
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: Text(
-                                '${_animation.value.get(AnimProps.accuracy) == 1.0 ? 100 : (_animation.value.get(AnimProps.accuracy) * 100).toStringAsFixed(1)}',
-                                style: TextStyle(
-                                  fontSize: 46.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Palette.darkShade,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Opacity(
-                      opacity: _animation.value.get(AnimProps.title),
-                      child: Text(
-                        'Congratulations 🎉',
-                        style: TextStyle(
-                          color: Colors.greenAccent.shade400,
-                          fontSize:
-                              36.0 * _animation.value.get(AnimProps.title),
-                          letterSpacing: 1,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 4.0),
-                    Opacity(
-                      opacity: _animation.value.get(AnimProps.subtitle),
-                      child: Text(
-                        'you have successfully completed the triangle pose',
+          Container(
+            height: height - 50,
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Accuracy',
                         style: TextStyle(
                           color: Palette.black,
                           fontSize: 24.0,
+                          fontFamily: 'GoogleSans',
                           letterSpacing: 1,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                    SizedBox(height: 16.0),
-                    Opacity(
-                      opacity: _animation.value.get(AnimProps.stars),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.star,
-                            color: Palette.accentDarkPink,
-                            size: 36.0,
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: Container(
+                          height: height / 2,
+                          width: height / 2,
+                          child: CustomPaint(
+                            painter: TotalAccuracyPainter(
+                              width: width,
+                              height: height,
+                              accuracy:
+                                  _animation.value.get(AnimProps.accuracy),
+                            ),
+                            child: SizedBox(
+                              height: height / 2,
+                              width: height / 2,
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  '${_animation.value.get(AnimProps.accuracy) == 1.0 ? 100 : (_animation.value.get(AnimProps.accuracy) * 100).toStringAsFixed(1)}',
+                                  style: TextStyle(
+                                    fontSize: 46.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Palette.darkShade,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
-                          SizedBox(width: 16.0),
-                          RichText(
-                            text: TextSpan(
-                              text: '19 ',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Opacity(
+                        opacity: _animation.value.get(AnimProps.title),
+                        child: Text(
+                          'Congratulations 🎉',
+                          style: TextStyle(
+                            color: Colors.greenAccent.shade400,
+                            fontSize:
+                                36.0 * _animation.value.get(AnimProps.title),
+                            letterSpacing: 1,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 4.0),
+                      Opacity(
+                        opacity: _animation.value.get(AnimProps.subtitle),
+                        child: Text(
+                          'you have successfully completed the ${_currentPose.title} pose',
+                          style: TextStyle(
+                            color: Palette.black,
+                            fontSize: 24.0,
+                            letterSpacing: 1,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 16.0),
+                      Opacity(
+                        opacity: _animation.value.get(AnimProps.stars),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.star,
+                              color: Palette.accentDarkPink,
+                              size: 36.0,
+                            ),
+                            SizedBox(width: 16.0),
+                            RichText(
+                              text: TextSpan(
+                                text: '${(_accuracy * 20).toStringAsFixed(0)} ',
+                                style: TextStyle(
+                                  color: Palette.accentDarkPink,
+                                  fontSize: 26.0,
+                                  fontFamily: 'GoogleSans',
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                children: [
+                                  TextSpan(
+                                    text: '/ 20',
+                                    style: TextStyle(
+                                      color: Palette.accentDarkPink
+                                          .withOpacity(0.5),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 16.0),
+                      Opacity(
+                        opacity: _animation.value.get(AnimProps.time),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.watch_later_outlined,
+                              color: Palette.accentDarkPink,
+                              size: 36.0,
+                            ),
+                            SizedBox(width: 16.0),
+                            Text(
+                              durationString,
                               style: TextStyle(
                                 color: Palette.accentDarkPink,
                                 fontSize: 26.0,
-                                fontFamily: 'GoogleSans',
                                 fontWeight: FontWeight.bold,
                               ),
-                              children: [
-                                TextSpan(
-                                  text: '/ 20',
-                                  style: TextStyle(
-                                    color:
-                                        Palette.accentDarkPink.withOpacity(0.5),
-                                  ),
-                                ),
-                              ],
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 16.0),
-                    Opacity(
-                      opacity: _animation.value.get(AnimProps.time),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.watch_later_outlined,
-                            color: Palette.accentDarkPink,
-                            size: 36.0,
-                          ),
-                          SizedBox(width: 16.0),
-                          Text(
-                            '3min 15sec',
-                            style: TextStyle(
-                              color: Palette.accentDarkPink,
-                              fontSize: 26.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            ],
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
