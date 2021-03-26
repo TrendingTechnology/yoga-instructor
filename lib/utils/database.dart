@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sofia/model/pose.dart';
 import 'package:sofia/model/track.dart';
 import 'package:sofia/model/user.dart';
+import 'package:sofia/utils/authentication_client.dart';
 
 /// The main Firestore collection.
 final CollectionReference mainCollection =
@@ -527,5 +528,54 @@ class Database {
     });
 
     return poses;
+  }
+
+  uploadScore({
+    @required String poseName,
+    @required int stars,
+    @required double accuracy,
+    @required int timeInMilliseconds,
+  }) async {
+    String currentUid = AuthenticationClient.presentUser.uid;
+
+    DocumentReference documentReferencer = documentReference
+        .collection('user_info')
+        .document(currentUid)
+        .collection('score')
+        .document(poseName);
+
+    Map<String, dynamic> data = <String, dynamic>{
+      "stars": stars,
+      "double": accuracy,
+      "time": timeInMilliseconds,
+    };
+    print('DATA:\n$data');
+
+    await documentReferencer.setData(data).whenComplete(() {
+      print("Score added to the database!");
+    }).catchError((e) => print(e));
+
+    QuerySnapshot scoreDocs = await documentReference
+        .collection('user_info')
+        .document(currentUid)
+        .collection('score')
+        .getDocuments();
+
+    int totalStars = 0;
+    double totalAcuracy = 0.0;
+    int totalTimeInMilliseconds = 0;
+
+    scoreDocs.documents.forEach((doc) {
+      totalStars += doc.data['stars'];
+      totalAcuracy += doc.data['accuracy'];
+      totalTimeInMilliseconds += doc.data['time'];
+    });
+
+    DocumentReference userReferencer =
+        documentReference.collection('user_info').document(currentUid);
+
+    await userReferencer.updateData(data).whenComplete(() {
+      print('User total score updated!');
+    }).catchError((e) => print(e));
   }
 }
